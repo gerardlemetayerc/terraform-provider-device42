@@ -21,7 +21,7 @@ type VirtualMachine struct {
 }
 
 func (c *Client) CreateVirtualMachine(vm *VirtualMachine) error {
-	url := c.BaseURL + "/virtual_machines"
+	url := c.BaseURL + "/device"
 
 	jsonBody, err := json.Marshal(vm)
 	if err != nil {
@@ -50,7 +50,7 @@ func (c *Client) CreateVirtualMachine(vm *VirtualMachine) error {
 }
 
 func (c *Client) ReadVirtualMachine(id int) (*VirtualMachine, error) {
-	url := c.BaseURL + "/virtual_machines/" + strconv.Itoa(id)
+	url := c.BaseURL + "/device/" + strconv.Itoa(id)
 
 	resp, err := c.HttpClient.Get(url)
 	if err != nil {
@@ -73,7 +73,7 @@ func (c *Client) ReadVirtualMachine(id int) (*VirtualMachine, error) {
 }
 
 func (c *Client) UpdateVirtualMachine(id int, vm *VirtualMachine) error {
-	url := c.BaseURL + "/virtual_machines/" + strconv.Itoa(id)
+	url := c.BaseURL + "/device/" + strconv.Itoa(id)
 
 	jsonBody, err := json.Marshal(vm)
 	if err != nil {
@@ -102,7 +102,7 @@ func (c *Client) UpdateVirtualMachine(id int, vm *VirtualMachine) error {
 }
 
 func (c *Client) DeleteVirtualMachine(id int) error {
-	url := c.BaseURL + "/virtual_machines/" + strconv.Itoa(id)
+	url := c.BaseURL + "/device/" + strconv.Itoa(id)
 
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
