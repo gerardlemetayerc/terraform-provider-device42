@@ -1,4 +1,4 @@
-package main
+package device42
 
 import (
 	"bytes"
@@ -14,10 +14,10 @@ type Client struct {
 }
 
 type VirtualMachine struct {
-	Name       string `json:"name"`
-	IP         string `json:"ip"`
-	Subnet     string `json:"subnet"`
-	AppName    string `json:"app_name"`
+	Name    string `json:"name"`
+	IP      string `json:"ip"`
+	Subnet  string `json:"subnet"`
+	AppName string `json:"app_name"`
 }
 
 func (c *Client) CreateVirtualMachine(vm *VirtualMachine) error {

@@ -4,11 +4,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )
 
 const defaultBaseURL = "https://device42.example.com"
@@ -66,4 +65,3 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 func providerError(msg string, args ...interface{}) error {
 	return fmt.Errorf("device42: "+msg, args...)
 }
-

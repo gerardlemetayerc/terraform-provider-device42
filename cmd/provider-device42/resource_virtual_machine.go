@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/device42/device42-go/device42"
+	device42 "github.com/gerardlemetayerc/terraform-provider-device42/device42"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -44,10 +44,10 @@ func resourceVirtualMachineCreate(d *schema.ResourceData, m interface{}) error {
 	application := d.Get("application").(string)
 
 	vm := device42.VirtualMachine{
-		Name:         name,
-		IP:           ipAddress,
-		Subnet:       subnet,
-		BusinessApp:  application,
+		Name:        name,
+		IP:          ipAddress,
+		Subnet:      subnet,
+		BusinessApp: application,
 	}
 
 	newVM, _, err := client.CreateVirtualMachine(context.Background(), vm)
@@ -84,11 +84,11 @@ func resourceVirtualMachineUpdate(d *schema.ResourceData, m interface{}) error {
 	id := d.Id()
 
 	vm := device42.VirtualMachine{
-		ID:           id,
-		Name:         d.Get("name").(string),
-		IP:           d.Get("ip_address").(string),
-		Subnet:       d.Get("subnet").(string),
-		BusinessApp:  d.Get("application").(string),
+		ID:          id,
+		Name:        d.Get("name").(string),
+		IP:          d.Get("ip_address").(string),
+		Subnet:      d.Get("subnet").(string),
+		BusinessApp: d.Get("application").(string),
 	}
 
 	_, _, err := client.UpdateVirtualMachine(context.Background(), vm)
