@@ -75,20 +75,20 @@ func resourceD42Device() *schema.Resource {
 		Delete: resourceDevice42DeviceDelete,
 
 		Schema: map[string]*schema.Schema{
-			"name": &schema.Schema{
+			"name": {
 				Type:        schema.TypeString,
 				ForceNew:    true,
 				Required:    true,
 				Description: "The hostname of the device.",
 			},
-			"device_type": &schema.Schema{
+			"device_type": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "virtual",
 				Description: "The type of the device. " +
 					"Valid values are 'physical', 'virtual', 'blade', 'cluster', or 'other'.",
 			},
-			"custom_fields": &schema.Schema{
+			"custom_fields": {
 				Type:             schema.TypeMap,
 				Optional:         true,
 				Computed:         true,
