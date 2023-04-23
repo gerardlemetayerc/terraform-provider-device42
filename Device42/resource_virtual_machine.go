@@ -81,12 +81,18 @@ func resourceD42Device() *schema.Resource {
 				Required:    true,
 				Description: "The hostname of the device.",
 			},
-			"device_type": {
+			"type": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "virtual",
 				Description: "The type of the device. " +
-					"Valid values are 'physical', 'virtual', 'blade', 'cluster', or 'other'.",
+					"Valid values are 'physical', 'virtual', 'unknown', 'cluster' (default is virtual)",
+			},
+			"service_level": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     "d42null",
+				Description: "Service Level of the device (default is d42null).",
 			},
 			"custom_fields": {
 				Type:             schema.TypeMap,
@@ -105,15 +111,17 @@ func resourceD42Device() *schema.Resource {
 func resourceDevice42DeviceCreate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 	name := d.Get("name").(string)
-	deviceType := d.Get("device_type").(string)
+	deviceType := d.Get("type").(string)
+	serviceLevel := d.Get("service_level").(string)
 
 	resp, err := client.R().
 		SetFormData(map[string]string{
-			"name": name,
-			"type": deviceType,
+			"name":          name,
+			"type":          deviceType,
+			"service_level": serviceLevel,
 		}).
 		SetResult(apiResponse{}).
-		Post("/device/")
+		Post("/2.0/devices/")
 
 	if err != nil {
 		return err
