@@ -49,6 +49,29 @@ func (c *Client) CreateVirtualMachine(vm *VirtualMachine) error {
 	return nil
 }
 
+func (c *Client) GetVirtualMachineByID(id int) (*VirtualMachine, error) {
+	url := c.BaseURL + "/device/" + strconv.Itoa(id)
+
+	resp, err := c.HttpClient.Get(url)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("ReadVirtualMachine failed with status code: %d", resp.StatusCode)
+	}
+
+	var vm VirtualMachine
+	err = json.NewDecoder(resp.Body).Decode(&vm)
+	if err != nil {
+		return nil, err
+	}
+
+	return &vm, nil
+}
+
 func (c *Client) ReadVirtualMachine(id int) (*VirtualMachine, error) {
 	url := c.BaseURL + "/device/" + strconv.Itoa(id)
 
