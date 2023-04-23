@@ -11,11 +11,11 @@ import (
 // Environment variables the provider recognizes for configuration
 const (
 	// Environment variable to configure the device42 api host
-	HostEnv string = "D42_HOST"
+	HostEnv string = "d42Host"
 	// Environment variable to configure the device42 api username attribute
-	UsernameEnv string = "D42_USER"
+	UsernameEnv string = "d42Username"
 	// Environment variable to configure the device42 api password attribute
-	PasswordEnv string = "D42_PASS"
+	PasswordEnv string = "d42Password"
 )
 
 // Provider -- main device42 provider structure
@@ -23,7 +23,7 @@ func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			// -- API Interaction Definitions --
-			"D42_HOST": {
+			"d42Host": {
 				Type:     schema.TypeString,
 				Required: true,
 				DefaultFunc: schema.EnvDefaultFunc(
@@ -32,7 +32,7 @@ func Provider() *schema.Provider {
 				),
 				Description: "The device42 server to interact with.",
 			},
-			"D42_PASSWORD": {
+			"d42Password": {
 				Type:     schema.TypeString,
 				Optional: true,
 				DefaultFunc: schema.EnvDefaultFunc(
@@ -41,7 +41,7 @@ func Provider() *schema.Provider {
 				),
 				Description: "The password to authenticate with Device42.",
 			},
-			"D42_USERNAME": {
+			"d42Username": {
 				Type:     schema.TypeString,
 				Optional: true,
 				DefaultFunc: schema.EnvDefaultFunc(
@@ -66,9 +66,9 @@ func Provider() *schema.Provider {
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
-	host := d.Get("D42_HOST").(string)
-	username := d.Get("D42_USERNAME").(string)
-	password := d.Get("D42_PASSWORD").(string)
+	host := d.Get("d42Host").(string)
+	username := d.Get("d42UserNAME").(string)
+	password := d.Get("d42PassWORD").(string)
 	tlsInsecure := d.Get("D42_TLS_INSECURE").(bool)
 
 	if host == "" {
