@@ -1,4 +1,4 @@
-package main
+package device42
 
 import (
 	"crypto/tls"
