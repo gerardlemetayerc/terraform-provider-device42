@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     device42 = {
-      source  = "github.com/gerardlemetayerc/terraform-provider-device42"
+      source  = "github.com/gerardlemetayerc/device42"
     }
   }
 }
