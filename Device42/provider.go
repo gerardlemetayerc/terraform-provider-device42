@@ -23,7 +23,7 @@ func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			// -- API Interaction Definitions --
-			"D42_HOST": &schema.Schema{
+			"D42_HOST": {
 				Type:     schema.TypeString,
 				Required: true,
 				DefaultFunc: schema.EnvDefaultFunc(
@@ -32,7 +32,7 @@ func Provider() *schema.Provider {
 				),
 				Description: "The device42 server to interact with.",
 			},
-			"D42_PASSWORD": &schema.Schema{
+			"D42_PASSWORD": {
 				Type:     schema.TypeString,
 				Optional: true,
 				DefaultFunc: schema.EnvDefaultFunc(
@@ -41,7 +41,7 @@ func Provider() *schema.Provider {
 				),
 				Description: "The password to authenticate with Device42.",
 			},
-			"D42_USERNAME": &schema.Schema{
+			"D42_USERNAME": {
 				Type:     schema.TypeString,
 				Optional: true,
 				DefaultFunc: schema.EnvDefaultFunc(
@@ -50,7 +50,7 @@ func Provider() *schema.Provider {
 				),
 				Description: "The username to authenticate with Device42.",
 			},
-			"D42_TLS_INSECURE": &schema.Schema{
+			"D42_TLS_INSECURE": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
