@@ -11,11 +11,11 @@ import (
 // Environment variables the provider recognizes for configuration
 const (
 	// Environment variable to configure the device42 api host
-	HostEnv string = "d42Host"
+	HostEnv string = "d42host"
 	// Environment variable to configure the device42 api username attribute
-	UsernameEnv string = "d42Username"
+	UsernameEnv string = "d42username"
 	// Environment variable to configure the device42 api password attribute
-	PasswordEnv string = "d42Password"
+	PasswordEnv string = "d42password"
 )
 
 // Provider -- main device42 provider structure
@@ -23,7 +23,7 @@ func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			// -- API Interaction Definitions --
-			"d42Host": {
+			"d42_host": {
 				Type:     schema.TypeString,
 				Required: true,
 				DefaultFunc: schema.EnvDefaultFunc(
@@ -32,7 +32,7 @@ func Provider() *schema.Provider {
 				),
 				Description: "The device42 server to interact with.",
 			},
-			"d42Password": {
+			"d42_password": {
 				Type:     schema.TypeString,
 				Optional: true,
 				DefaultFunc: schema.EnvDefaultFunc(
@@ -41,7 +41,7 @@ func Provider() *schema.Provider {
 				),
 				Description: "The password to authenticate with Device42.",
 			},
-			"d42Username": {
+			"d42_username": {
 				Type:     schema.TypeString,
 				Optional: true,
 				DefaultFunc: schema.EnvDefaultFunc(
@@ -50,7 +50,7 @@ func Provider() *schema.Provider {
 				),
 				Description: "The username to authenticate with Device42.",
 			},
-			"D42_TLS_INSECURE": {
+			"d42_tls_unsecure": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
@@ -66,10 +66,10 @@ func Provider() *schema.Provider {
 }
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
-	host := d.Get("d42Host").(string)
-	username := d.Get("d42UserNAME").(string)
-	password := d.Get("d42PassWORD").(string)
-	tlsInsecure := d.Get("D42_TLS_INSECURE").(bool)
+	host := d.Get("d42_host").(string)
+	username := d.Get("d42_username").(string)
+	password := d.Get("d42_password").(string)
+	tlsInsecure := d.Get("d42_tls_unsecure").(bool)
 
 	if host == "" {
 		return nil, fmt.Errorf("no Device42 host was provided")
