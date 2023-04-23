@@ -1,67 +1,84 @@
 package main
 
 import (
-	"context"
+	"crypto/tls"
 	"fmt"
-	"net/http"
-	"time"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/go-resty/resty/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-const defaultBaseURL = "https://device42.example.com"
+// Environment variables the provider recognizes for configuration
+const (
+	// Environment variable to configure the device42 api host
+	HostEnv string = "D42_HOST"
+	// Environment variable to configure the device42 api username attribute
+	UsernameEnv string = "D42_USER"
+	// Environment variable to configure the device42 api password attribute
+	PasswordEnv string = "D42_PASS"
+)
 
-// Provider retourne une instance du provider Terraform pour Device42.
+// Provider -- main device42 provider structure
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"base_url": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     defaultBaseURL,
-				Description: "URL de base de l'API Device42.",
+			// -- API Interaction Definitions --
+			"D42_HOST": &schema.Schema{
+				Type:     schema.TypeString,
+				Required: true,
+				DefaultFunc: schema.EnvDefaultFunc(
+					HostEnv,
+					"",
+				),
+				Description: "The device42 server to interact with.",
 			},
-			"username": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Nom d'utilisateur pour l'authentification.",
+			"D42_PASSWORD": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+				DefaultFunc: schema.EnvDefaultFunc(
+					PasswordEnv,
+					"",
+				),
+				Description: "The password to authenticate with Device42.",
 			},
-			"password": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Mot de passe pour l'authentification.",
+			"D42_USERNAME": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+				DefaultFunc: schema.EnvDefaultFunc(
+					UsernameEnv,
+					"",
+				),
+				Description: "The username to authenticate with Device42.",
+			},
+			"D42_TLS_INSECURE": &schema.Schema{
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+				Description: "Whether to perform TLS cert verification on the server's certificate. " +
+					"Defaults to `false`.",
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"device42_virtual_machine": resourceD42Device(),
+			"device42_device": resourceD42Device(),
 		},
-		ConfigureContextFunc: providerConfigure,
+		ConfigureFunc: providerConfigure,
 	}
 }
 
-// providerConfigure configure le client Device42 à partir des paramètres du provider.
-func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	baseURL := d.Get("base_url").(string)
-	username := d.Get("username").(string)
-	password := d.Get("password").(string)
+func providerConfigure(d *schema.ResourceData) (interface{}, error) {
+	host := d.Get("D42_HOST").(string)
+	username := d.Get("D42_USERNAME").(string)
+	password := d.Get("D42_PASSWORD").(string)
+	tlsInsecure := d.Get("D42_TLS_INSECURE").(bool)
 
-	httpClient := &http.Client{
-		Timeout: 30 * time.Second,
+	if host == "" {
+		return nil, fmt.Errorf("no Device42 host was provided")
 	}
 
-	client := NewClient(baseURL, httpClient)
-
-	// Authentification auprès de Device42.
-	authErr := client.Authenticate(username, password)
-	if authErr != nil {
-		return nil, diag.FromErr(authErr)
-	}
+	client := resty.New()
+	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: tlsInsecure})
+	client.SetBaseURL(fmt.Sprintf("https://%s/api", host))
+	client.SetBasicAuth(username, password)
 
 	return client, nil
-}
-
-// providerError renvoie une erreur formatée pour les erreurs spécifiques au provider.
-func providerError(msg string, args ...interface{}) error {
-	return fmt.Errorf("device42: "+msg, args...)
 }
