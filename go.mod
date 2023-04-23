@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/hashicorp/terraform-plugin-framework v1.2.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.26.1
+    github.com/go-resty/resty/v2 v2.7.0
 )
 
 require (
