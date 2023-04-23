@@ -1,4 +1,4 @@
-package device42
+package main
 
 import (
 	"context"
@@ -34,7 +34,7 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"device42_virtual_machine": resourceVirtualMachine(),
+			"device42_virtual_machine": resourceD42Device(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
