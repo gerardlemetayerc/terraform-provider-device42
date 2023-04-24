@@ -78,11 +78,11 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 
 	if username == "" {
-		eturn nil, fmt.Errorf("no username was provided")
+		return nil, fmt.Errorf("no username was provided")
 	}
 
 	if password == "" {
-		eturn nil, fmt.Errorf("no password was provided")
+		return nil, fmt.Errorf("no password was provided")
 	}
 
 	client := resty.New()
@@ -90,5 +90,5 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	client.SetBaseURL(fmt.Sprintf("https://s/api", host))
 	client.SetBasicAuth(username, password)
 
-	eturn client, nil
+	return client, nil
 }
