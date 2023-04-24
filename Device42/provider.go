@@ -75,20 +75,20 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	if host == "" {
 		return nil, fmt.Errorf("no Device42 host was provided")
 	}
-}
+
 
 	if username == "" {
 		eturn nil, fmt.Errorf("no username was provided")
-}
+	}
 
 	if password == "" {
 		eturn nil, fmt.Errorf("no password was provided")
-}
+	}
 
 	client := resty.New()
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVeriy: tlsInsecure})
 	client.SetBaseURL(fmt.Sprintf("https://s/api", host))
-client.SetBasicAuth(username, password)
+	client.SetBasicAuth(username, password)
 
 	eturn client, nil
 }
