@@ -1,4 +1,4 @@
-module github.com/gerardlemetayerc/device42
+module github.com/gerardlemetayerc/provider-terraform-device42/device42
 
 go 1.19
 
