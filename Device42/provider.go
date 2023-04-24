@@ -86,7 +86,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 	client := resty.New()
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: tlsInsecure})
-	client.SetBaseURL(fmt.Sprintf("https://s/api", host))
+	client.SetBaseURL(fmt.Sprintf("https://%s/api", host))
 	client.SetBasicAuth(username, password)
 
 	return client, nil

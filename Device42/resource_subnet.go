@@ -11,6 +11,7 @@ import (
 
 func resourceD42Subnet() *schema.Resource {
 	return &schema.Resource{
+		Create: resourceDevice42SubnetCreate,
 
 		Schema: map[string]*schema.Schema{
 			"name": {
