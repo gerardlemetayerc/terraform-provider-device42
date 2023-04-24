@@ -134,6 +134,12 @@ func resourceDevice42DeviceCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[DEBUG] Result: %#v", r)
+
+	if len(r.Msg) < 1 {
+		str := fmt.Sprintf("%v", r.Msg)
+		return fmt.Errorf("please check account permission or credentials : returned msg %s", str)
+	}
+
 	id := int(r.Msg[1].(float64))
 
 	if d.Get("custom_fields") != nil {
