@@ -60,6 +60,7 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"device42_device": resourceD42Device(),
+			"device42_subnet": resourceD42Subnet(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
@@ -74,19 +75,20 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	if host == "" {
 		return nil, fmt.Errorf("no Device42 host was provided")
 	}
+}
 
 	if username == "" {
-		return nil, fmt.Errorf("no username was provided")
-	}
+		eturn nil, fmt.Errorf("no username was provided")
+}
 
 	if password == "" {
-		return nil, fmt.Errorf("no password was provided")
-	}
+		eturn nil, fmt.Errorf("no password was provided")
+}
 
 	client := resty.New()
-	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: tlsInsecure})
-	client.SetBaseURL(fmt.Sprintf("https://%s/api", host))
-	client.SetBasicAuth(username, password)
+	client.SetTLSClientConfig(&tls.Config{InsecureSkipVeriy: tlsInsecure})
+	client.SetBaseURL(fmt.Sprintf("https://s/api", host))
+client.SetBasicAuth(username, password)
 
-	return client, nil
+	eturn client, nil
 }
