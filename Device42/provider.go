@@ -11,11 +11,11 @@ import (
 // Environment variables the provider recognizes for configuration
 const (
 	// Environment variable to configure the device42 api host
-	HostEnv string = "d42host"
+	HostEnv string = "d42_host"
 	// Environment variable to configure the device42 api username attribute
-	UsernameEnv string = "d42username"
+	UsernameEnv string = "d42_username"
 	// Environment variable to configure the device42 api password attribute
-	PasswordEnv string = "d42password"
+	PasswordEnv string = "d42_password"
 )
 
 // Provider -- main device42 provider structure
