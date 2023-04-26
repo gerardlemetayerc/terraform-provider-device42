@@ -105,9 +105,6 @@ func resourceD42Device() *schema.Resource {
 	}
 }
 
-// -----------------------------------------------------------------------------
-// Resource CRUD Operations
-// -----------------------------------------------------------------------------
 func resourceDevice42DeviceCreate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 	name := d.Get("name").(string)
