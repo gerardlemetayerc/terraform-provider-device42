@@ -1,7 +1,7 @@
 package main
 
 import (
-	device42 "github.com/gerardlemetayerc/provider-terraform-device42/device42/device42"
+	"github.com/gerardlemetayerc/provider-terraform-device42/device42"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )
 
