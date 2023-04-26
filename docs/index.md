@@ -6,6 +6,8 @@ description: |-
   This provider manage Device42 application. Currently, are implemented :
   - Subnet creation
   - Device creation
+
+  Do not hesitate to report issues.
 ---
 
 # device42 Provider
