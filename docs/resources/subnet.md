@@ -3,12 +3,21 @@
 page_title: "device42_subnet Resource - terraform-provider-device42"
 subcategory: "network"
 description: |-
-    This resource manage subnets. Current implementation allow creation using name, network, mask and vrf_group.
 ---
 
 # device42_subnet (Resource)
 
 
+## Exemple 
+
+```
+resource "device42_subnet" "myNewNetwork" {
+    name        = "myNewNetwork"
+    mask_bits   = 24
+    network     = "192.168.100.0"
+    vrf_group   = "Chicago Data Center"
+}
+```
 
 
 
