@@ -37,9 +37,9 @@ terraform {
 }
 
 provider "device42" {
-  d42_username = "${var.d42_username}" # CAN BE SET AS ENV VARIABLE (uppercase)
-  d42_password = "${var.d42_password}" # CAN BE SET AS ENV VARIABLE (uppercase)
-  d42_host     = "${var.d42_host}"     # CAN BE SET AS ENV VARIABLE (uppercase)
+  d42_username = "${var.d42_username}" # CAN BE SET AS ENV VARIABLE
+  d42_password = "${var.d42_password}" # CAN BE SET AS ENV VARIABLE
+  d42_host     = "${var.d42_host}"     # CAN BE SET AS ENV VARIABLE
 
   # Optionnal, if TLS certificate not trusted by your system, set following value to true
   d42_tls_unsecure = true
@@ -59,11 +59,11 @@ terraform {
 }
 ```
 
-Followed by :
+* In your favorite shell :
 ```
-export d42_username="changeit" (next version will be uppercase)
-export d42_password="changeit" (next version will be uppercase)
-export d42_host="changeit"     (next version will be uppercase)
+export D42_USERNAME="changeit"
+export D42_PASSWORD="changeit"
+export D42_HOST="changeit"
 terraform init && terraform plan && terraform apply
 ```
 
