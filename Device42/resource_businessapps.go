@@ -160,7 +160,7 @@ func resourceDevice42BusinessAppsCreate(d *schema.ResourceData, m interface{}) e
 	log.Printf("[DEBUG] Result: %#v", r)
 	id := int(r.Msg[1].(float64))
 
-	// Set ID after subnet creation
+	// Set ID after Business App creation
 	d.SetId(strconv.Itoa(id))
 
 	return resourceDevice42DeviceRead(d, m)
@@ -221,5 +221,5 @@ func resourceDevice42BusinessAppsUpdate(d *schema.ResourceData, m interface{}) e
 		log.Printf("[DEBUG] Result: %#v", r)
 	}
 
-	return resourceDevice42SubnetRead(d, m)
+	return resourceDevice42BusinessAppsRead(d, m)
 }

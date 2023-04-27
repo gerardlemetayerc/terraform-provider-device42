@@ -152,7 +152,7 @@ func resourceDevice42SubnetUpdate(d *schema.ResourceData, m interface{}) error {
 		name := d.Get("name").(string)
 		maskBits := d.Get("mask_bits").(string)
 		vrfGroup := d.Get("vrf_group").(string)
-		url := fmt.Sprintf("/1.0/subnets/")
+		url := "/1.0/subnets/"
 
 		resp, err := client.R().
 			SetFormData(map[string]string{
