@@ -19,8 +19,8 @@ type apiBusinessAppsReadResponse struct {
 	CustOwner            string `json:"cust_owner"`
 	CustOwnerId          int64  `json:"cust_owner_id"`
 	Description          string `json:"description"`
-	IsContainsPII        string `json:"is_contains_pii"`
-	IsInternetAccessible string `json:"is_internet_accessible"`
+	IsContainsPII        bool   `json:"is_contains_pii"`
+	IsInternetAccessible bool   `json:"is_internet_accessible"`
 	LastChanged          string `json:"last_changed"`
 	MigrationGroup       string `json:"migration_group"`
 	MigrationGroupId     int64  `json:"migration_group_id"`
@@ -48,34 +48,42 @@ func resourceD42BusinessApps() *schema.Resource {
 			},
 			"description": {
 				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "Description of the Business Application.",
 			},
 			"business_app_owner_id": {
 				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "Business application owner ID.",
 			},
 			"technical_app_owner_id": {
 				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "Technical application owner ID.",
 			},
 			"cust_owner_id": {
 				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "Customer owner ID.",
 			},
 			"service_level_id": {
 				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "D42 ID of service level name (do not use with service_level).",
 			},
 			"service_level": {
 				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "Service Level name (do not use with service_level_id)",
 			},
 			"migration_group": {
 				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "Business application Migration Group name (do not use with migration_group_id)",
 			},
 			"migration_group_id": {
 				Type:        schema.TypeString,
+				Optional:    true,
 				Description: "D42 ID of business application Migration Group (do not use with migration_group)",
 			},
 		},
@@ -132,18 +140,37 @@ func resourceDevice42BusinessAppsCreate(d *schema.ResourceData, m interface{}) e
 	migration_group := d.Get("migration_group").(string)
 	migration_group_id := d.Get("migration_group_id").(string)
 
+	mapData := map[string]string{
+		"id":          d.Id(),
+		"name":        name,
+		"description": description,
+	}
+
+	if business_app_owner_id != "" {
+		mapData["business_app_owner_id"] = business_app_owner_id
+	}
+
+	if technical_app_owner_id != "" {
+		mapData["technical_app_owner_id"] = technical_app_owner_id
+	}
+	if cust_owner_id != "" {
+		mapData["cust_owner_id"] = cust_owner_id
+	}
+	if service_level_id != "" {
+		mapData["service_level_id"] = service_level_id
+	}
+	if service_level != "" {
+		mapData["service_level"] = service_level
+	}
+	if migration_group != "" {
+		mapData["migration_group"] = migration_group
+	}
+	if migration_group_id != "" {
+		mapData["migration_group_id"] = migration_group_id
+	}
+
 	resp, err := client.R().
-		SetFormData(map[string]string{
-			"name":                   name,
-			"description":            description,
-			"business_app_owner_id":  business_app_owner_id,
-			"technical_app_owner_id": technical_app_owner_id,
-			"cust_owner_id":          cust_owner_id,
-			"service_level_id":       service_level_id,
-			"service_level":          service_level,
-			"migration_group":        migration_group,
-			"migration_group_id":     migration_group_id,
-		}).
+		SetFormData(mapData).
 		SetResult(apiResponse{}).
 		Post("/1.0/businessapps/")
 
@@ -155,6 +182,11 @@ func resourceDevice42BusinessAppsCreate(d *schema.ResourceData, m interface{}) e
 
 	if r.Code != 0 {
 		return fmt.Errorf("API returned code %d", r.Code)
+	}
+
+	if len(r.Msg) < 1 {
+		str := fmt.Sprintf("%v", r)
+		return fmt.Errorf("please check account permission or credentials - api returned :  %s", str)
 	}
 
 	log.Printf("[DEBUG] Result: %#v", r)
@@ -188,29 +220,44 @@ func resourceDevice42BusinessAppsDelete(d *schema.ResourceData, m interface{}) e
 func resourceDevice42BusinessAppsUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 
-	if d.HasChange("name") || d.HasChange("description") {
-		name := d.Get("name").(string)
-		description := d.Get("description").(string)
-		business_app_owner_id := d.Get("business_app_owner_id").(string)
-		technical_app_owner_id := d.Get("technical_app_owner_id").(string)
-		cust_owner_id := d.Get("cust_owner_id").(string)
-		service_level_id := d.Get("service_level_id").(string)
-		service_level := d.Get("service_level").(string)
-		migration_group := d.Get("migration_group").(string)
-		migration_group_id := d.Get("migration_group_id").(string)
+	formData := map[string]string{
+		"id": d.Id(),
+	}
 
+	if d.HasChange("name") {
+		formData["name"] = d.Get("name").(string)
+	}
+	if d.HasChange("description") {
+		formData["description"] = d.Get("description").(string)
+	}
+	if d.HasChange("business_app_owner_id") {
+		formData["business_app_owner_id"] = d.Get("business_app_owner_id").(string)
+	}
+	if d.HasChange("technical_app_owner_id") {
+		formData["technical_app_owner_id"] = d.Get("technical_app_owner_id").(string)
+	}
+	if d.HasChange("cust_owner_id") {
+		formData["cust_owner_id"] = d.Get("cust_owner_id").(string)
+	}
+	if d.HasChange("cust_owner_id") {
+		formData["cust_owner_id"] = d.Get("cust_owner_id").(string)
+	}
+	if d.HasChange("service_level_id") {
+		formData["service_level_id"] = d.Get("service_level_id").(string)
+	}
+	if d.HasChange("service_level") {
+		formData["service_level"] = d.Get("service_level").(string)
+	}
+	if d.HasChange("migration_group") {
+		formData["migration_group"] = d.Get("migration_group").(string)
+	}
+	if d.HasChange("migration_group_id") {
+		formData["migration_group_id"] = d.Get("migration_group_id").(string)
+	}
+
+	if len(formData) > 1 {
 		resp, err := client.R().
-			SetFormData(map[string]string{
-				"name":                   name,
-				"description":            description,
-				"business_app_owner_id":  business_app_owner_id,
-				"technical_app_owner_id": technical_app_owner_id,
-				"cust_owner_id":          cust_owner_id,
-				"service_level_id":       service_level_id,
-				"service_level":          service_level,
-				"migration_group":        migration_group,
-				"migration_group_id":     migration_group_id,
-			}).
+			SetFormData(formData).
 			SetResult(apiResponse{}).
 			Post("/1.0/businessapps/")
 
