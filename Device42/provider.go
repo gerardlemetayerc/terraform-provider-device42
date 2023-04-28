@@ -11,11 +11,11 @@ import (
 // Environment variables the provider recognizes for configuration
 const (
 	// Environment variable to configure the device42 api host
-	HostEnv string = "d42_host"
+	HostEnv string = "D42_HOST"
 	// Environment variable to configure the device42 api username attribute
-	UsernameEnv string = "d42_username"
+	UsernameEnv string = "D42_USERNAME"
 	// Environment variable to configure the device42 api password attribute
-	PasswordEnv string = "d42_password"
+	PasswordEnv string = "D42_PASSWORD"
 )
 
 // Provider -- main device42 provider structure
@@ -59,8 +59,9 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"device42_device": resourceD42Device(),
-			"device42_subnet": resourceD42Subnet(),
+			"device42_device":      resourceD42Device(),
+			"device42_subnet":      resourceD42Subnet(),
+			"device42_businessapp": resourceD42BusinessApps(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

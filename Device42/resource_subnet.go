@@ -9,20 +9,17 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-
 type apiSubnetReadResponse struct {
-	Allocated               string        `json:"allocated"`
-	Description             string        `json:"description"`
-	Gateway                 string        `json:"gateway"`
-	MaskBits                int64         `json:"mask_bits"`
-	Name                    string        `json:"name"`
-	Network                 string 	      `json:"network"`	
-	RangeBegin              string        `json:"range_begin"`
-	RangeEnd                string        `json:"range_end"`
-	VrfGroupName            string        `json:"vrf_group_name"`
+	Allocated    string `json:"allocated"`
+	Description  string `json:"description"`
+	Gateway      string `json:"gateway"`
+	MaskBits     int64  `json:"mask_bits"`
+	Name         string `json:"name"`
+	Network      string `json:"network"`
+	RangeBegin   string `json:"range_begin"`
+	RangeEnd     string `json:"range_end"`
+	VrfGroupName string `json:"vrf_group_name"`
 }
-
-
 
 func resourceD42Subnet() *schema.Resource {
 	return &schema.Resource{
@@ -93,13 +90,13 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 	network := d.Get("network").(string)
 	maskBits := d.Get("mask_bits").(string)
 	vrfGroup := d.Get("vrf_group").(string)
-	log.Printf("[DEBUG] vrf_group: %#s", d.Get("vrf_group").(string))
+	log.Printf("[DEBUG] vrf_group: %s", d.Get("vrf_group").(string))
 	resp, err := client.R().
 		SetFormData(map[string]string{
 			"name":      name,
 			"network":   network,
 			"mask_bits": maskBits,
-			"vrf_group" : vrfGroup,
+			"vrf_group": vrfGroup,
 		}).
 		SetResult(apiResponse{}).
 		Post("/1.0/subnets/")
@@ -138,7 +135,7 @@ func resourceDevice42SubnetRead(d *schema.ResourceData, m interface{}) error {
 
 	r := resp.Result().(*apiSubnetReadResponse)
 	str := fmt.Sprintf("%v", r)
-	log.Printf("[DEBUG] resourceDevice42SubnetRead - API data %#s", str)
+	log.Printf("[DEBUG] resourceDevice42SubnetRead - API data %s", str)
 	d.Set("name", r.Name)
 	d.Set("network", r.Network)
 	d.Set("mask_bits", r.MaskBits)
@@ -150,20 +147,19 @@ func resourceDevice42SubnetRead(d *schema.ResourceData, m interface{}) error {
 func resourceDevice42SubnetUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 
-	if(d.HasChange("name") || d.HasChange("mask_bits") || d.HasChange("vrf_group")){
-		log.Printf("[DEBUG] vrf_group: %#s", d.Get("vrf_group").(string))
+	if d.HasChange("name") || d.HasChange("mask_bits") || d.HasChange("vrf_group") {
+		log.Printf("[DEBUG] vrf_group: %s", d.Get("vrf_group").(string))
 		name := d.Get("name").(string)
 		maskBits := d.Get("mask_bits").(string)
 		vrfGroup := d.Get("vrf_group").(string)
-		url := fmt.Sprintf("/1.0/subnets/")
-
+		url := "/1.0/subnets/"
 
 		resp, err := client.R().
 			SetFormData(map[string]string{
-				"name":        name,
-				"mask_bits":   maskBits,
-				"vrf_group":   vrfGroup,
-				"id":          d.Id(),
+				"name":      name,
+				"mask_bits": maskBits,
+				"vrf_group": vrfGroup,
+				"id":        d.Id(),
 			}).
 			SetResult(apiResponse{}).
 			Put(url)
@@ -174,7 +170,6 @@ func resourceDevice42SubnetUpdate(d *schema.ResourceData, m interface{}) error {
 		r := resp.Result().(*apiResponse)
 		log.Printf("[DEBUG] Result: %#v", r)
 	}
-
 
 	return resourceDevice42SubnetRead(d, m)
 }
