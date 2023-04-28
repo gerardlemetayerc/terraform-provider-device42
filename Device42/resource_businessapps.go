@@ -9,9 +9,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+type apiBusinessAppsSearchResponse struct {
+	businessapps []interface{} `json:"businessapps"`
+}
+
 type apiBusinessAppsReadResponse struct {
 	AppType              string `json:"app_type"`
 	AppTypeId            int64  `json:"app_type_id"`
+	BusinessAppId        int64  `json:"businessapp_id"`
 	BusinessAppOwner     string `json:"business_app_owner"`
 	BusinessAppOwerId    int64  `json:"business_app_owner_id"`
 	Created              string `json:"created"`
@@ -35,10 +40,11 @@ type apiBusinessAppsReadResponse struct {
 
 func resourceD42BusinessApps() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDevice42BusinessAppsCreate,
-		Update: resourceDevice42BusinessAppsUpdate,
-		Delete: resourceDevice42BusinessAppsDelete,
-		Read:   resourceDevice42BusinessAppsRead,
+		Description: "device42_businessapp can be use to manage Business Applications",
+		Create:      resourceDevice42BusinessAppsCreate,
+		Update:      resourceDevice42BusinessAppsUpdate,
+		Delete:      resourceDevice42BusinessAppsDelete,
+		Read:        resourceDevice42BusinessAppsRead,
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -46,15 +52,35 @@ func resourceD42BusinessApps() *schema.Resource {
 				Required:    true,
 				Description: "Name of the Business Application. REQUIRED to create a new application.",
 			},
+			"app_type": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Business App type.",
+			},
+			"app_type_id": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Business App type.",
+			},
 			"description": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Description of the Business Application.",
 			},
+			"business_app_owner": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Business application owner name.",
+			},
 			"business_app_owner_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Business application owner ID.",
+			},
+			"technical_app_owner": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Technical application owner name.",
 			},
 			"technical_app_owner_id": {
 				Type:        schema.TypeString,
@@ -85,6 +111,11 @@ func resourceD42BusinessApps() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "D42 ID of business application Migration Group (do not use with migration_group)",
+			},
+			"vendor": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Business Application vendor",
 			},
 		},
 	}
@@ -121,8 +152,8 @@ func resourceDevice42BusinessAppsRead(d *schema.ResourceData, m interface{}) err
 	d.Set("notes", r.Notes)
 	d.Set("service_level", r.ServiceLevel)
 	d.Set("service_level_id", r.ServiceLevelId)
-	d.Set("techincal_app_owner", r.TechnicalAppOwner)
-	d.Set("techincal_app_owner_id", r.TechnicalAppOwnerId)
+	d.Set("technical_app_owner", r.TechnicalAppOwner)
+	d.Set("technical_app_owner_id", r.TechnicalAppOwnerId)
 	d.Set("vendor", r.VendorId)
 	return nil
 }
@@ -141,7 +172,6 @@ func resourceDevice42BusinessAppsCreate(d *schema.ResourceData, m interface{}) e
 	migration_group_id := d.Get("migration_group_id").(string)
 
 	mapData := map[string]string{
-		"id":          d.Id(),
 		"name":        name,
 		"description": description,
 	}
