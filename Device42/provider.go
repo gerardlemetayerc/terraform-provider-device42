@@ -62,6 +62,7 @@ func Provider() *schema.Provider {
 			"device42_device":      resourceD42Device(),
 			"device42_subnet":      resourceD42Subnet(),
 			"device42_businessapp": resourceD42BusinessApps(),
+			"device42_vlan":        resourceD42Vlans(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

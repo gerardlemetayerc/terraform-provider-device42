@@ -197,7 +197,17 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 
 func resourceDevice42DeviceUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
+	formData := map[string]string{}
 	name := d.Get("name").(string)
+
+	if d.HasChange("name") {
+		formData["name"] = d.Get("name").(string)
+	}
+
+	if d.HasChange("type") {
+		formData["type"] = d.Get("type").(string)
+	}
+
 	if d.HasChange("custom_fields") {
 		updateList := setCustomFields(d)
 		for k, v := range updateList {
