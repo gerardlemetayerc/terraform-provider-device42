@@ -172,8 +172,11 @@ func resourceDevice42BusinessAppsCreate(d *schema.ResourceData, m interface{}) e
 	migration_group_id := d.Get("migration_group_id").(string)
 
 	mapData := map[string]string{
-		"name":        name,
-		"description": description,
+		"name": name,
+	}
+
+	if description != "" {
+		mapData["description"] = description
 	}
 
 	if business_app_owner_id != "" {
