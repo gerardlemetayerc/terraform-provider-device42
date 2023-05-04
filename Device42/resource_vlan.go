@@ -160,7 +160,7 @@ func resourceDevice42VlanCreate(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] Result: %#v", r)
 	id := int(r.Msg[1].(float64))
 
-	// Set ID after subnet creation
+	// Set ID after vlan creation
 	d.SetId(strconv.Itoa(id))
 
 	return resourceDevice42VlanRead(d, m)
