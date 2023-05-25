@@ -67,6 +67,10 @@ type apiResponse struct {
 	Msg  []interface{} `json:"msg"`
 }
 
+type apiArchiveResponse struct {
+	Code int64         `json:"code"`
+}
+
 func resourceD42Device() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceDevice42DeviceCreate,
@@ -100,6 +104,12 @@ func resourceD42Device() *schema.Resource {
 				Computed:         true,
 				Description:      "Any custom fields that will be used in device42.",
 				DiffSuppressFunc: suppressCustomFieldsDiffs,
+			},
+			"archive_on_destroy": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     "false",
+				Description: "Archive device on destroy action",
 			},
 		},
 	}
@@ -233,20 +243,33 @@ func resourceDevice42DeviceUpdate(d *schema.ResourceData, m interface{}) error {
 
 func resourceDevice42DeviceDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
+	archiveOnDetroy, _ := strconv.ParseBool(d.Get("archive_on_destroy").(string))
 	log.Printf("Deleting device %s (UUID: %s)", d.Get("name"), d.Id())
 
 	url := fmt.Sprintf("/1.0/devices/%s/", d.Id())
 
-	resp, err := client.R().
-		SetResult(apiResponse{}).
-		Delete(url)
+	if archiveOnDetroy {
+		url := fmt.Sprintf("/2.0/devices/%s/archive/", d.Id())
+		resp1, err := client.R().
+			SetResult(apiArchiveResponse{}).
+			Post(url)
+		r1 := resp1.Result().(*apiArchiveResponse)
+		log.Printf("[DEBUG] Result: %#v", r1)
+		if err != nil {
 
-	if err != nil {
-		return err
+		}
+		return nil
+	} else {
+		resp2, err := client.R().
+			SetResult(apiResponse{}).
+			Delete(url)
+		r2 := resp2.Result().(*apiResponse)
+		log.Printf("[DEBUG] Result: %#v", r2)
+		if err != nil {
+			return err
+		}
+		return nil
 	}
-
-	r := resp.Result().(*apiResponse)
-	log.Printf("[DEBUG] Result: %#v", r)
 	return nil
 }
 
