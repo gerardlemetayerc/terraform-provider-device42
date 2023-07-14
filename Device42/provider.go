@@ -64,6 +64,9 @@ func Provider() *schema.Provider {
 			"device42_businessapp": resourceD42BusinessApps(),
 			"device42_vlan":        resourceD42Vlans(),
 		},
+		DataSourcesMap: map[string]*schema.Resource{
+			"device42_device": datasourceD42Device(),
+		},
 		ConfigureFunc: providerConfigure,
 	}
 }
