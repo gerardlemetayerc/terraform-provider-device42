@@ -16,7 +16,7 @@ type datasourceD42SuggestedIpResponse struct {
 func datasourceD42SuggestedIp() *schema.Resource {
 	return &schema.Resource{
 		Read:        datasourceD42SuggestedIpRead,
-		Description: "Read Device.",
+		Description: "Read suggested IP.",
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -47,9 +47,11 @@ func datasourceD42SuggestedIpRead(d *schema.ResourceData, m interface{}) error {
 	if name != "" {
 		queryString = fmt.Sprintf("name=%s", name)
 		separator = "&"
+		d.Set("name", name)
 	}
 	if subnet_id > 0 {
 		queryString = queryString + separator + fmt.Sprintf("subnet_id=%s", strconv.Itoa(subnet_id))
+		d.Set("subnet_id", subnet_id)
 	}
 
 	resp, err := client.R().
@@ -64,6 +66,7 @@ func datasourceD42SuggestedIpRead(d *schema.ResourceData, m interface{}) error {
 
 	r := resp.Result().(*datasourceD42SuggestedIpResponse)
 	log.Printf("[DEBUG] Result: %#v", resp.Result())
-	d.Set("ip", (r.Ip))
+	d.Set("ip", r.Ip)
+	d.SetId(r.Ip)
 	return nil
 }
