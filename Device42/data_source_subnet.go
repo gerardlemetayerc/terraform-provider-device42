@@ -21,8 +21,7 @@ func datasourceD42Subnet() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
-				ForceNew:    true,
-				Required:    true,
+				Optional:    true,
 				Default:     "",
 				Description: "The name of the subnet.",
 			},
@@ -34,12 +33,10 @@ func datasourceD42Subnet() *schema.Resource {
 			},
 			"range_begin": {
 				Type:     schema.TypeString,
-				Optional: true,
 				Computed: true,
 			},
 			"range_end": {
 				Type:     schema.TypeString,
-				Optional: true,
 				Computed: true,
 			},
 		},
@@ -50,20 +47,20 @@ func datasourceD42SubnetRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 
 	name := d.Get("name").(string)
-	subnet_id := d.Get("subnet_id").(int32)
+	subnet_id := d.Get("subnet_id").(int)
 	queryString := ""
 	separator := ""
-	if name == "" {
+	if name != "" {
 		queryString = fmt.Sprintf("name=%s", name)
 		separator = "&"
 	}
-	if subnet_id == 0 {
-		queryString = queryString + separator + fmt.Sprintf("subnet_id=%s", strconv.Itoa(int(subnet_id)))
+	if subnet_id > 0 {
+		queryString = queryString + separator + fmt.Sprintf("subnet_id=%s", strconv.Itoa(subnet_id))
 	}
 
 	resp, err := client.R().
 		SetResult(datasourceD42SubnetResponse{}).
-		Get(fmt.Sprintf("/2.0/subnets/?%s", queryString))
+		Get(fmt.Sprintf("/1.0/subnets/?%s", queryString))
 	log.Printf("[DEBUG] targetURl: %s", fmt.Sprintf("/2.0/devices/?name=%s", d.Get("name").(string)))
 	if err != nil {
 		log.Printf("[WARN] No subnet found: %s", d.Id())
@@ -73,7 +70,7 @@ func datasourceD42SubnetRead(d *schema.ResourceData, m interface{}) error {
 
 	r := resp.Result().(*datasourceD42SubnetResponse)
 	log.Printf("[DEBUG] Result: %#v", resp.Result())
-	if r.TotalCount == 1 {
+	if len(r.Subnets) == 1 {
 		d.SetId(strconv.Itoa(int((r.Subnets[0]).Subnet_id)))
 		d.Set("subnet_id", (r.Subnets[0]).Subnet_id)
 		d.Set("name", r.Subnets[0].Name)
