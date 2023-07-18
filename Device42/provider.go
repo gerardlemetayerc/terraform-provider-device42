@@ -66,6 +66,7 @@ func Provider() *schema.Provider {
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"device42_device": datasourceD42Device(),
+			"device42_subnet": datasourceD42Subnet(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

@@ -10,6 +10,7 @@ import (
 )
 
 type apiSubnetReadResponse struct {
+	Subnet_id    int64  `json:"subnet_id"`
 	Allocated    string `json:"allocated"`
 	Description  string `json:"description"`
 	Gateway      string `json:"gateway"`
@@ -61,23 +62,23 @@ func resourceD42Subnet() *schema.Resource {
 				Description: "Any custom fields that will be used in device42.",
 			},
 			"description": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"gateway": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"service_level": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"category": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"vlan": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 		},
