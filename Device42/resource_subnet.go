@@ -93,14 +93,14 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 	name := d.Get("name").(string)
 	network := d.Get("network").(string)
-	maskBits := d.Get("mask_bits").(string)
+	maskBits := d.Get("mask_bits").(int)
 	vrfGroup := d.Get("vrf_group").(string)
 	log.Printf("[DEBUG] vrf_group: %s", d.Get("vrf_group").(string))
 	resp, err := client.R().
 		SetFormData(map[string]string{
 			"name":      name,
 			"network":   network,
-			"mask_bits": maskBits,
+			"mask_bits": strconv.Itoa(maskBits),
 			"vrf_group": vrfGroup,
 		}).
 		SetResult(apiResponse{}).
@@ -117,12 +117,15 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[DEBUG] Result: %#v", r)
-	id := int(r.Msg[1].(float64))
+	if len(r.Msg) > 0 {
+		id := int(r.Msg[1].(float64))
+		// Set ID after subnet creation
+		d.SetId(strconv.Itoa(id))
+		return resourceDevice42DeviceRead(d, m)
+	} else {
+		return fmt.Errorf("incorrect response to query")
+	}
 
-	// Set ID after subnet creation
-	d.SetId(strconv.Itoa(id))
-
-	return resourceDevice42DeviceRead(d, m)
 }
 
 func resourceDevice42SubnetRead(d *schema.ResourceData, m interface{}) error {

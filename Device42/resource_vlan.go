@@ -138,11 +138,13 @@ func resourceDevice42VlanCreate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 	name := d.Get("name").(string)
 	number := d.Get("number").(string)
+	description := d.Get("description").(string)
 
 	resp, err := client.R().
 		SetFormData(map[string]string{
-			"name":   name,
-			"number": number,
+			"name":        name,
+			"number":      number,
+			"description": description,
 		}).
 		SetResult(apiResponse{}).
 		Post("/1.0/vlans/")
