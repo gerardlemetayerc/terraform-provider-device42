@@ -9,10 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-type apiBusinessAppsSearchResponse struct {
-	businessapps []interface{} `json:"businessapps"`
-}
-
 type apiBusinessAppsReadResponse struct {
 	AppType              string `json:"app_type"`
 	AppTypeId            int64  `json:"app_type_id"`

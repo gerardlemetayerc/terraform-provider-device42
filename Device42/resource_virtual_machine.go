@@ -68,7 +68,7 @@ type apiResponse struct {
 }
 
 type apiArchiveResponse struct {
-	Code int64         `json:"code"`
+	Code int64 `json:"code"`
 }
 
 func resourceD42Device() *schema.Resource {
@@ -256,7 +256,8 @@ func resourceDevice42DeviceDelete(d *schema.ResourceData, m interface{}) error {
 		r1 := resp1.Result().(*apiArchiveResponse)
 		log.Printf("[DEBUG] Result: %#v", r1)
 		if err != nil {
-
+			log.Printf("[ERROR] Failed to archive Device ID %s", d.Id())
+			return err
 		}
 		return nil
 	} else {
@@ -270,7 +271,6 @@ func resourceDevice42DeviceDelete(d *schema.ResourceData, m interface{}) error {
 		}
 		return nil
 	}
-	return nil
 }
 
 func setCustomFields(d *schema.ResourceData) map[string]interface{} {

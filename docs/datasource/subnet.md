@@ -6,12 +6,12 @@ description: |-
   
 ---
 
-# device42_ip_suggested (Datasource)
+# device42_subnet (Datasource)
 
 ## Exemple 
 
 ```
-datasource "device42_ip_suggested" "searchSubnet" {
+datasource "device42_subnet" "searchSubnet" {
   subnet_id    = 1
 }
 ```

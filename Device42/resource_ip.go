@@ -73,7 +73,6 @@ func resourceDevice42IpRead(d *schema.ResourceData, m interface{}) error {
 
 	if err != nil {
 		log.Printf("[WARN] No ip found for id %s", d.Id())
-		//d.SetId("")
 		return err
 	}
 
