@@ -39,6 +39,14 @@ func datasourceD42Subnet() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"vrf_group_id": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
+			"vrf_group_name": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 		},
 	}
 }
@@ -61,9 +69,10 @@ func datasourceD42SubnetRead(d *schema.ResourceData, m interface{}) error {
 	resp, err := client.R().
 		SetResult(datasourceD42SubnetResponse{}).
 		Get(fmt.Sprintf("/1.0/subnets/?%s", queryString))
-	log.Printf("[DEBUG] targetURl: %s", fmt.Sprintf("/2.0/devices/?name=%s", d.Get("name").(string)))
+	log.Printf("[DEBUG] targetURl: %s", fmt.Sprintf("/1.0/subnets/?%s", queryString))
 	if err != nil {
 		log.Printf("[WARN] No subnet found: %s", d.Id())
+		log.Printf("[WARN] No subnet found: %v", err)
 		d.SetId("")
 		return nil
 	}
@@ -76,6 +85,8 @@ func datasourceD42SubnetRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("name", r.Subnets[0].Name)
 		d.Set("range_begin", r.Subnets[0].RangeBegin)
 		d.Set("range_end", r.Subnets[0].RangeEnd)
+		d.Set("vrf_group_id", r.Subnets[0].VrfGroupId)
+		d.Set("vrf_group_name", r.Subnets[0].VrfGroupName)
 	}
 	return nil
 }

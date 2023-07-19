@@ -18,6 +18,11 @@ func datasourceD42SuggestedIp() *schema.Resource {
 		Read:        datasourceD42SuggestedIpRead,
 		Description: "Read suggested IP.",
 		Schema: map[string]*schema.Schema{
+			"id": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "IP as an ID.",
+			},
 			"name": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -53,14 +58,15 @@ func datasourceD42SuggestedIpRead(d *schema.ResourceData, m interface{}) error {
 		queryString = queryString + separator + fmt.Sprintf("subnet_id=%s", strconv.Itoa(subnet_id))
 		d.Set("subnet_id", subnet_id)
 	}
-
+	state := d.State()
+	log.Printf("[DEBUG] Current ID: %#v", state)
 	resp, err := client.R().
 		SetResult(datasourceD42SuggestedIpResponse{}).
 		Get(fmt.Sprintf("/1.0/suggest_ip/?%s", queryString))
 	log.Printf("[DEBUG] targetURl: %s", fmt.Sprintf("/1.0/suggest_ip/?%s", queryString))
 	if err != nil {
 		log.Printf("[WARN] No ip found: %s", d.Id())
-		d.SetId("")
+
 		return nil
 	}
 

@@ -33,12 +33,11 @@ func resourceD42Subnet() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"network": {
 				Type:        schema.TypeString,
-				ForceNew:    true,
 				Required:    true,
 				Description: "Network of the subnet. Required for creation, cannot be modified after subnet creation.",
 			},
 			"mask_bits": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeInt,
 				Required:    true,
 				Description: "Mask bits of the subnet. Required for creation, can be modified after subnet creation.",
 			},
