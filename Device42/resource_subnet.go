@@ -20,6 +20,7 @@ type apiSubnetReadResponse struct {
 	RangeBegin   string `json:"range_begin"`
 	RangeEnd     string `json:"range_end"`
 	VrfGroupName string `json:"vrf_group_name"`
+	VrfGroupId   int32  `json:"vrf_group_id"`
 }
 
 func resourceD42Subnet() *schema.Resource {
@@ -79,6 +80,10 @@ func resourceD42Subnet() *schema.Resource {
 			},
 			"vlan": {
 				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"vrf_group_id": {
+				Type:     schema.TypeInt,
 				Optional: true,
 			},
 		},
@@ -141,6 +146,7 @@ func resourceDevice42SubnetRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("network", r.Network)
 	d.Set("mask_bits", r.MaskBits)
 	d.Set("vrf_group", r.VrfGroupName)
+	d.Set("vrf_group_id", r.VrfGroupId)
 
 	return nil
 }
