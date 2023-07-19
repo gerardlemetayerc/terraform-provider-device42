@@ -21,8 +21,7 @@ func datasourceD42Device() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
-				ForceNew:    true,
-				Required:    true,
+				Optional:    true,
 				Description: "The hostname of the device.",
 			},
 			"device_id": {

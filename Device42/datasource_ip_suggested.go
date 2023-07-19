@@ -23,7 +23,7 @@ func datasourceD42SuggestedIp() *schema.Resource {
 				Computed:    true,
 				Description: "IP as an ID.",
 			},
-			"name": {
+			"subnet_name": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "The name of the subnet.",
@@ -45,7 +45,7 @@ func datasourceD42SuggestedIp() *schema.Resource {
 func datasourceD42SuggestedIpRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 
-	name := d.Get("name").(string)
+	name := d.Get("subnet_name").(string)
 	subnet_id := d.Get("subnet_id").(int)
 	queryString := ""
 	separator := ""
