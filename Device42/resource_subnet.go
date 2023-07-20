@@ -10,6 +10,7 @@ import (
 )
 
 type apiSubnetReadResponse struct {
+	Subnet_id    int64  `json:"subnet_id"`
 	Allocated    string `json:"allocated"`
 	Description  string `json:"description"`
 	Gateway      string `json:"gateway"`
@@ -19,6 +20,7 @@ type apiSubnetReadResponse struct {
 	RangeBegin   string `json:"range_begin"`
 	RangeEnd     string `json:"range_end"`
 	VrfGroupName string `json:"vrf_group_name"`
+	VrfGroupId   int32  `json:"vrf_group_id"`
 }
 
 func resourceD42Subnet() *schema.Resource {
@@ -31,12 +33,11 @@ func resourceD42Subnet() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"network": {
 				Type:        schema.TypeString,
-				ForceNew:    true,
 				Required:    true,
 				Description: "Network of the subnet. Required for creation, cannot be modified after subnet creation.",
 			},
 			"mask_bits": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeInt,
 				Required:    true,
 				Description: "Mask bits of the subnet. Required for creation, can be modified after subnet creation.",
 			},
@@ -61,23 +62,27 @@ func resourceD42Subnet() *schema.Resource {
 				Description: "Any custom fields that will be used in device42.",
 			},
 			"description": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"gateway": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"service_level": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"category": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"vlan": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"vrf_group_id": {
+				Type:     schema.TypeInt,
 				Optional: true,
 			},
 		},
@@ -88,14 +93,14 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 	name := d.Get("name").(string)
 	network := d.Get("network").(string)
-	maskBits := d.Get("mask_bits").(string)
+	maskBits := d.Get("mask_bits").(int)
 	vrfGroup := d.Get("vrf_group").(string)
 	log.Printf("[DEBUG] vrf_group: %s", d.Get("vrf_group").(string))
 	resp, err := client.R().
 		SetFormData(map[string]string{
 			"name":      name,
 			"network":   network,
-			"mask_bits": maskBits,
+			"mask_bits": strconv.Itoa(maskBits),
 			"vrf_group": vrfGroup,
 		}).
 		SetResult(apiResponse{}).
@@ -112,12 +117,15 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[DEBUG] Result: %#v", r)
-	id := int(r.Msg[1].(float64))
+	if len(r.Msg) > 0 {
+		id := int(r.Msg[1].(float64))
+		// Set ID after subnet creation
+		d.SetId(strconv.Itoa(id))
+		return resourceDevice42DeviceRead(d, m)
+	} else {
+		return fmt.Errorf("incorrect response to query")
+	}
 
-	// Set ID after subnet creation
-	d.SetId(strconv.Itoa(id))
-
-	return resourceDevice42DeviceRead(d, m)
 }
 
 func resourceDevice42SubnetRead(d *schema.ResourceData, m interface{}) error {
@@ -140,6 +148,7 @@ func resourceDevice42SubnetRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("network", r.Network)
 	d.Set("mask_bits", r.MaskBits)
 	d.Set("vrf_group", r.VrfGroupName)
+	d.Set("vrf_group_id", r.VrfGroupId)
 
 	return nil
 }

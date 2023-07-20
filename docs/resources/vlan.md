@@ -11,7 +11,7 @@ description: |-
 ## Exemple 
 
 ```
-resource "device42_subnet" "myNewNetwork" {
+resource "device42_vlan" "myBrandNewVlan" {
     name            = "myNewVlan"
     number          = 16
     description     = "This is the new vlan description"
