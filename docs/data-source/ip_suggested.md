@@ -10,7 +10,7 @@ description: |-
 
 ## Exemple 
 
-```
+```hcl
 datasource "device42_ip_suggested" "searchIP" {
   subnet_id    = 1
 }

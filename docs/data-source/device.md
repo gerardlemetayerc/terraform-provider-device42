@@ -10,7 +10,7 @@ description: |-
 
 ## Exemple 
 
-```
+```hcl
 datasource "device42_device" "searchVM" {
   name    = "myNewVMName"
 }

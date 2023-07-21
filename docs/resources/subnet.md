@@ -10,7 +10,7 @@ description: |-
 
 ## Exemple 
 
-```
+```hcl
 resource "device42_subnet" "myNewNetwork" {
     name        = "myNewNetwork"
     mask_bits   = 24
