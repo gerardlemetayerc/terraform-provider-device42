@@ -6,7 +6,9 @@ description: |-
   
 ---
 
-# device42_device (Datasource)
+# device42_device (Data Source)
+
+Allow to query data about a device in Device42
 
 ## Exemple 
 
