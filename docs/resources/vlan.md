@@ -10,7 +10,7 @@ description: |-
 
 ## Exemple 
 
-```
+```hcl
 resource "device42_vlan" "myBrandNewVlan" {
     name            = "myNewVlan"
     number          = 16

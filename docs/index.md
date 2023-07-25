@@ -27,7 +27,7 @@ Current development are available at [Github](https://github.com/gerardlemetayer
 
 * Without env variable
 
-```
+```hcl
 terraform {
   required_providers {
     device42 = {
@@ -48,7 +48,7 @@ provider "device42" {
 
 * With env variable and all default value
 
-```
+```hcl
 file : providers.tf
 terraform {
   required_providers {
@@ -60,7 +60,7 @@ terraform {
 ```
 
 * In your favorite shell :
-```
+```bash
 export D42_USERNAME="changeit"
 export D42_PASSWORD="changeit"
 export D42_HOST="changeit"

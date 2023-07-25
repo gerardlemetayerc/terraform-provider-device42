@@ -10,7 +10,7 @@ description: |-
 
 ## Exemple 
 
-```
+```hcl
 data "device42_subnet" "subnet" {
   name    = "Infra"
 }
