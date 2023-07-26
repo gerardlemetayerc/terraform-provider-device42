@@ -22,8 +22,12 @@ func datasourceD42Subnet() *schema.Resource {
 			"name": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     "",
 				Description: "The name of the subnet.",
+			},
+			"mask_bits": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Mask CIDR of the subnet.",
 			},
 			"subnet_id": {
 				Type:        schema.TypeInt,
@@ -39,13 +43,9 @@ func datasourceD42Subnet() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"vrf_group_id": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
 			"vrf_group_name": {
 				Type:     schema.TypeString,
-				Computed: true,
+				Optional: true,
 			},
 		},
 	}
@@ -55,7 +55,9 @@ func datasourceD42SubnetRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 
 	name := d.Get("name").(string)
+	vrf_group_name := d.Get("vrf_group_name").(string)
 	subnet_id := d.Get("subnet_id").(int)
+	mask_bits := d.Get("mask_bits").(int)
 	queryString := ""
 	separator := ""
 	if name != "" {
@@ -64,6 +66,12 @@ func datasourceD42SubnetRead(d *schema.ResourceData, m interface{}) error {
 	}
 	if subnet_id > 0 {
 		queryString = queryString + separator + fmt.Sprintf("subnet_id=%s", strconv.Itoa(subnet_id))
+	}
+	if mask_bits > 0 {
+		queryString = queryString + separator + fmt.Sprintf("mask_bits=%s", strconv.Itoa(mask_bits))
+	}
+	if vrf_group_name != "" {
+		queryString = queryString + separator + fmt.Sprintf("vrf_group=%s", vrf_group_name)
 	}
 
 	resp, err := client.R().
