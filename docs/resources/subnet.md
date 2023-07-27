@@ -33,7 +33,6 @@ resource "device42_subnet" "myNewNetwork" {
 ### Optional
 
 - `vrf_group` (String) Subnet VRF Group
-- `customer` (String) Customer name linked to network
 - `description` (String) Subnet description
 
 

@@ -10,19 +10,20 @@ import (
 )
 
 type apiSubnetReadResponse struct {
-	Subnet_id      int64  `json:"subnet_id"`
-	Allocated      string `json:"allocated"`
-	Description    string `json:"description"`
-	Gateway        string `json:"gateway"`
-	MaskBits       int64  `json:"mask_bits"`
-	Name           string `json:"name"`
-	Network        string `json:"network"`
-	RangeBegin     string `json:"range_begin"`
-	RangeEnd       string `json:"range_end"`
-	VrfGroupName   string `json:"vrf_group_name"`
-	VrfGroupId     int32  `json:"vrf_group_id"`
-	ParentSubnetId int32  `json:"parent_subnet_id"`
-	Customer       string `json:"Customer"`
+	Subnet_id      int64         `json:"subnet_id"`
+	Allocated      string        `json:"allocated"`
+	Description    string        `json:"description"`
+	Gateway        string        `json:"gateway"`
+	MaskBits       int64         `json:"mask_bits"`
+	Name           string        `json:"name"`
+	Network        string        `json:"network"`
+	RangeBegin     string        `json:"range_begin"`
+	RangeEnd       string        `json:"range_end"`
+	VrfGroupName   string        `json:"vrf_group_name"`
+	VrfGroupId     int32         `json:"vrf_group_id"`
+	ParentSubnetId int32         `json:"parent_subnet_id"`
+	Customer       string        `json:"Customer"`
+	CustomFields   []customField `json:"custom_fields"`
 }
 
 func resourceD42Subnet() *schema.Resource {
