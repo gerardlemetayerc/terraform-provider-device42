@@ -141,7 +141,7 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 		id := int(r.Msg[1].(float64))
 		// Set ID after subnet creation
 		d.SetId(strconv.Itoa(id))
-		return resourceDevice42DeviceRead(d, m)
+		return resourceDevice42SubnetRead(d, m)
 	} else {
 		return fmt.Errorf("incorrect response to query")
 	}

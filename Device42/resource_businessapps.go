@@ -224,7 +224,7 @@ func resourceDevice42BusinessAppsCreate(d *schema.ResourceData, m interface{}) e
 	// Set ID after Business App creation
 	d.SetId(strconv.Itoa(id))
 
-	return resourceDevice42DeviceRead(d, m)
+	return resourceDevice42BusinessAppsRead(d, m)
 }
 
 func resourceDevice42BusinessAppsDelete(d *schema.ResourceData, m interface{}) error {
