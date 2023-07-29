@@ -44,8 +44,9 @@ resource "device42_ip" "ip" {
 ### Optional
 
 - `subnet_name` (String) Device42 Subnet name (used instead of subnet_id)..
-- `subnet_id` (int) ID of the subnet (used instead of subnet_name).
+- `subnet_id` (Int) ID of the subnet (used instead of subnet_name).
 - `vrf_group_id` (String) Subnet VRF Group
+- `device_id` (Int) ID of the device to attach the IP
 
 ### Read-Only
 

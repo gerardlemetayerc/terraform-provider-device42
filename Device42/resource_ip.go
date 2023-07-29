@@ -14,16 +14,22 @@ type apiReadData struct {
 	Ips        []apiIPReadResponse `json:"ips"`
 }
 
+type apiIPReadDevice struct {
+	DeviceID int32  `json:"device_id"`
+	Name     string `json:"name"`
+}
+
 type apiIPReadResponse struct {
-	Available    string `json:"available"`
-	Id           int32  `json:"id"`
-	Ip           string `json:"ip"`
-	Label        string `json:"label"`
-	Mac_Address  int64  `json:"mac_address"`
-	Notes        string `json:"notes"`
-	Subnet       string `json:"subnet"`
-	Subnet_id    int32  `json:"subnet_id"`
-	VrfGroupName string `json:"vrf_group_name"`
+	Available    string            `json:"available"`
+	Id           int32             `json:"id"`
+	Ip           string            `json:"ip"`
+	Label        string            `json:"label"`
+	Mac_Address  int64             `json:"mac_address"`
+	Notes        string            `json:"notes"`
+	Subnet       string            `json:"subnet"`
+	Subnet_id    int32             `json:"subnet_id"`
+	VrfGroupName string            `json:"vrf_group_name"`
+	Devices      []apiIPReadDevice `json:"devices"`
 }
 
 func resourceD42Ip() *schema.Resource {
@@ -60,6 +66,11 @@ func resourceD42Ip() *schema.Resource {
 				Optional:    true,
 				Description: "Subnet VRF Group ID",
 			},
+			"device_id": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Subnet VRF Group ID",
+			},
 		},
 	}
 }
@@ -79,6 +90,9 @@ func resourceDevice42IpRead(d *schema.ResourceData, m interface{}) error {
 	r := resp.Result().(*apiReadData)
 	str := fmt.Sprintf("%v", r)
 	log.Printf("[DEBUG] resourceDevice42IpRead - API data %s", str)
+	if len(r.Ips[0].Devices) > 0 {
+		d.Set("device_id", r.Ips[0].Devices[0].DeviceID)
+	}
 	d.Set("available", r.Ips[0].Available)
 	d.Set("ip", r.Ips[0].Ip)
 	d.Set("subnet", r.Ips[0].Subnet)
@@ -92,6 +106,7 @@ func resourceDevice42IpCreate(d *schema.ResourceData, m interface{}) error {
 	subnet := d.Get("subnet").(string)
 	available := d.Get("available").(string)
 	vrf_group_id := d.Get("vrf_group_id").(int)
+	device_id := d.Get("device_id").(int)
 
 	mapData := map[string]string{
 		"ipaddress": ip,
@@ -107,6 +122,10 @@ func resourceDevice42IpCreate(d *schema.ResourceData, m interface{}) error {
 
 	if vrf_group_id > 0 {
 		mapData["vrf_group_id"] = strconv.Itoa(int(vrf_group_id))
+	}
+
+	if device_id > 0 {
+		mapData["devices_id"] = strconv.Itoa(int(device_id))
 	}
 
 	resp, err := client.R().
@@ -135,7 +154,7 @@ func resourceDevice42IpCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceDevice42IpDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
-	log.Printf("Deleting vlan %s (UUID: %s)", d.Get("name"), d.Id())
+	log.Printf("Deleting IP %s (UUID: %s)", d.Get("ip"), d.Id())
 
 	url := fmt.Sprintf("/1.0/ips/%s/", d.Id())
 
