@@ -92,11 +92,12 @@ jobs:
     - name: Upload Release Assets
       run: |
         files=$(ls build)
-        for file in $files; do
-          echo "Uploading $file"
-          curl \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: $(file --mime-type -b build/$file)" \
-            --data-binary "@build/$file" \
-            "${{ steps.create_release.outputs.upload_url }}?name=$file"
+        for file in build/*; do
+            basefile=$(basename $file)
+            echo "Uploading $basefile"
+            curl \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -X POST "${{ steps.create_release.outputs.upload_url }}?name=$basefile" \
+              -F "file=@$file"
         done
