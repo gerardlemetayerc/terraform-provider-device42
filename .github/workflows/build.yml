@@ -17,9 +17,16 @@ jobs:
       with:
         go-version: 1.19.1
 
+    - name: Extract tag name
+      run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+    - name: Extract version from tag
+      id: get_version
+      run: echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
+
     - name: Build binaries and package
       env:
-        VERSION: "1.3.3" # Utilisez le run_id comme version pour cet exemple
+        VERSION: ${{ steps.get_version.outputs.version }} # Utilisez le run_id comme version pour cet exemple
       run: |
         version=$VERSION
         echo "Building version $version"
@@ -35,9 +42,13 @@ jobs:
         echo "---- ZIP directory folders"
         cd build
         zip "terraform-provider-device42_${version}_linux_amd64.zip" "terraform-provider-device42_${version}_linux_amd64"
+        rm -f "terraform-provider-device42_${version}_linux_amd64"
         zip "terraform-provider-device42_${version}_linux_386.zip" "terraform-provider-device42_${version}_linux_386"
+        rm -f "terraform-provider-device42_${version}_linux_386"
         zip "terraform-provider-device42_${version}_windows_amd64.zip" "terraform-provider-device42_${version}_windows_amd64.exe"
+        rm -f "terraform-provider-device42_${version}_windows_amd64.exe"
         zip "terraform-provider-device42_${version}_windows_386.zip" "terraform-provider-device42_${version}_windows_386.exe"
+        rm "terraform-provider-device42_${version}_windows_386.exe"
 
         echo "---- Signing documents"
         echo '{
@@ -56,7 +67,7 @@ jobs:
 
     - name: Setup GPG and sign
       env:
-        VERSION: "1.3.3"
+        VERSION: ${{ steps.get_version.outputs.version }}
       run: |
         version=$VERSION
         mkdir -p ~/.gnupg
@@ -67,9 +78,25 @@ jobs:
         echo "36AB0929E76749F8C9FE82B3C50AB7CBE7A52C36:6:" | gpg --import-ownertrust
         gpg --yes --passphrase "${{ secrets.GPG_PASSPHRASE }}" --batch --no-tty --pinentry-mode loopback --output "build/terraform-provider-device42_${version}_SHA256SUMS.sig" --detach-sig "build/terraform-provider-device42_${version}_SHA256SUMS"
         
-
-    - name: Upload package as artifact
-      uses: actions/upload-artifact@v2
+    - name: Create Release
+      id: create_release
+      uses: gh-actions/create-release@v1
       with:
-        name: myapp-package
-        path: build/*
+        tag_name: ${{ env.TAG_NAME }}
+        release_name: ${{ env.TAG_NAME }}
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Release Assets
+      run: |
+        files=$(ls build)
+        for file in $files; do
+          echo "Uploading $file"
+          curl \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: $(file --mime-type -b build/$file)" \
+            --data-binary "@build/$file" \
+            "${{ steps.create_release.outputs.upload_url }}?name=$file"
+        done
