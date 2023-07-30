@@ -10,20 +10,17 @@ import (
 )
 
 type apiSubnetReadResponse struct {
-	Subnet_id      int64         `json:"subnet_id"`
-	Allocated      string        `json:"allocated"`
-	Description    string        `json:"description"`
-	Gateway        string        `json:"gateway"`
-	MaskBits       int64         `json:"mask_bits"`
-	Name           string        `json:"name"`
-	Network        string        `json:"network"`
-	RangeBegin     string        `json:"range_begin"`
-	RangeEnd       string        `json:"range_end"`
-	VrfGroupName   string        `json:"vrf_group_name"`
-	VrfGroupId     int32         `json:"vrf_group_id"`
-	ParentSubnetId int32         `json:"parent_subnet_id"`
-	Customer       string        `json:"Customer"`
-	CustomFields   []customField `json:"custom_fields"`
+	Subnet_id    int64  `json:"subnet_id"`
+	Allocated    string `json:"allocated"`
+	Description  string `json:"description"`
+	Gateway      string `json:"gateway"`
+	MaskBits     int64  `json:"mask_bits"`
+	Name         string `json:"name"`
+	Network      string `json:"network"`
+	RangeBegin   string `json:"range_begin"`
+	RangeEnd     string `json:"range_end"`
+	VrfGroupName string `json:"vrf_group_name"`
+	VrfGroupId   int32  `json:"vrf_group_id"`
 }
 
 func resourceD42Subnet() *schema.Resource {
@@ -36,7 +33,6 @@ func resourceD42Subnet() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"network": {
 				Type:        schema.TypeString,
-				ForceNew:    true,
 				Required:    true,
 				Description: "Network of the subnet. Required for creation, cannot be modified after subnet creation.",
 			},
@@ -48,7 +44,7 @@ func resourceD42Subnet() *schema.Resource {
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "Subnet name.",
+				Description: "The hostname of the device.",
 			},
 			"vrf_group": {
 				Type:        schema.TypeString,
@@ -56,14 +52,14 @@ func resourceD42Subnet() *schema.Resource {
 				Description: "Subnet VRF Group",
 			},
 			"parent_subnet_id": {
-				Type:        schema.TypeInt,
+				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Parent subnet id",
 			},
 			"customer": {
-				Type:        schema.TypeString,
+				Type:        schema.TypeMap,
 				Optional:    true,
-				Description: "Customer attached to this network.",
+				Description: "Any custom fields that will be used in device42.",
 			},
 			"description": {
 				Type:     schema.TypeString,
@@ -87,7 +83,7 @@ func resourceD42Subnet() *schema.Resource {
 			},
 			"vrf_group_id": {
 				Type:     schema.TypeInt,
-				Computed: true,
+				Optional: true,
 			},
 		},
 	}
@@ -95,34 +91,18 @@ func resourceD42Subnet() *schema.Resource {
 
 func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
-	resourceDevice42SubnetCreateForm := map[string]string{}
-	if d.Get("name").(string) != "" {
-		resourceDevice42SubnetCreateForm["name"] = d.Get("name").(string)
-	}
-	if d.Get("network").(string) != "" {
-		resourceDevice42SubnetCreateForm["network"] = d.Get("network").(string)
-	}
-	if d.Get("mask_bits").(string) != "" {
-		resourceDevice42SubnetCreateForm["mask_bits"] = strconv.Itoa(d.Get("mask_bits").(int))
-	}
-	if d.Get("vrf_group").(string) != "" {
-		resourceDevice42SubnetCreateForm["vrf_group"] = d.Get("vrf_group").(string)
-	}
-	if d.Get("gateway").(string) != "" {
-		resourceDevice42SubnetCreateForm["gateway"] = d.Get("gateway").(string)
-	}
-	if d.Get("service_level").(string) != "" {
-		resourceDevice42SubnetCreateForm["service_level"] = d.Get("service_level").(string)
-	}
-	if d.Get("description").(string) != "" {
-		resourceDevice42SubnetCreateForm["description"] = d.Get("description").(string)
-	}
-	if d.Get("customer").(string) != "" {
-		resourceDevice42SubnetCreateForm["customer"] = d.Get("customer").(string)
-	}
+	name := d.Get("name").(string)
+	network := d.Get("network").(string)
+	maskBits := d.Get("mask_bits").(int)
+	vrfGroup := d.Get("vrf_group").(string)
 	log.Printf("[DEBUG] vrf_group: %s", d.Get("vrf_group").(string))
 	resp, err := client.R().
-		SetFormData(resourceDevice42SubnetCreateForm).
+		SetFormData(map[string]string{
+			"name":      name,
+			"network":   network,
+			"mask_bits": strconv.Itoa(maskBits),
+			"vrf_group": vrfGroup,
+		}).
 		SetResult(apiResponse{}).
 		Post("/1.0/subnets/")
 
@@ -133,10 +113,10 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 	r := resp.Result().(*apiResponse)
 
 	if r.Code != 0 {
-		return fmt.Errorf("resourceDevice42SubnetCreate - api returned code %d", r.Code)
+		return fmt.Errorf("API returned code %d", r.Code)
 	}
 
-	log.Printf("[DEBUG] resourceDevice42SubnetCreate - Result: %#v", r)
+	log.Printf("[DEBUG] Result: %#v", r)
 	if len(r.Msg) > 0 {
 		id := int(r.Msg[1].(float64))
 		// Set ID after subnet creation
@@ -169,50 +149,36 @@ func resourceDevice42SubnetRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("mask_bits", r.MaskBits)
 	d.Set("vrf_group", r.VrfGroupName)
 	d.Set("vrf_group_id", r.VrfGroupId)
-	d.Set("parent_subnet_id", r.ParentSubnetId)
-	d.Set("description", r.ParentSubnetId)
-	d.Set("customer", r.Customer)
+
 	return nil
 }
 
 func resourceDevice42SubnetUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
-	url := "/1.0/subnets/"
-	device42SubnetUpdateFormData := map[string]string{}
-	device42SubnetUpdateFormData["id"] = d.Id()
-	if d.HasChange("name") {
-		device42SubnetUpdateFormData["name"] = d.Get("name").(string)
-	}
-	if d.HasChange("mask_bits") {
-		device42SubnetUpdateFormData["mask_bits"] = strconv.Itoa(d.Get("mask_bits").(int))
-	}
-	if d.HasChange("vrf_group") {
-		device42SubnetUpdateFormData["vrf_group"] = d.Get("vrf_group").(string)
-	}
-	if d.HasChange("gateway") {
-		device42SubnetUpdateFormData["gateway"] = d.Get("gateway").(string)
-	}
-	if d.HasChange("parent_subnet_id") {
-		device42SubnetUpdateFormData["parent_subnet_id"] = strconv.Itoa(d.Get("parent_subnet_id").(int))
-	}
-	if d.HasChange("description") {
-		device42SubnetUpdateFormData["description"] = d.Get("description").(string)
-	}
-	if d.HasChange("customer") {
-		device42SubnetUpdateFormData["customer"] = d.Get("customer").(string)
-	}
-	log.Printf("[DEBUG] resourceDevice42SubnetRead - vrf_group: %s", d.Get("vrf_group").(string))
 
-	resp, err := client.R().
-		SetFormData(device42SubnetUpdateFormData).
-		SetResult(apiResponse{}).
-		Put(url)
+	if d.HasChange("name") || d.HasChange("mask_bits") || d.HasChange("vrf_group") {
+		log.Printf("[DEBUG] vrf_group: %s", d.Get("vrf_group").(string))
+		name := d.Get("name").(string)
+		maskBits := d.Get("mask_bits").(string)
+		vrfGroup := d.Get("vrf_group").(string)
+		url := "/1.0/subnets/"
 
-	if err != nil {
-		return err
+		resp, err := client.R().
+			SetFormData(map[string]string{
+				"name":      name,
+				"mask_bits": maskBits,
+				"vrf_group": vrfGroup,
+				"id":        d.Id(),
+			}).
+			SetResult(apiResponse{}).
+			Put(url)
+
+		if err != nil {
+			return err
+		}
+		r := resp.Result().(*apiResponse)
+		log.Printf("[DEBUG] Result: %#v", r)
 	}
-	r := resp.Result().(*apiResponse)
-	log.Printf("[DEBUG] resourceDevice42SubnetRead - Result: %#v", r)
 
 	return resourceDevice42SubnetRead(d, m)
 }
@@ -232,6 +198,6 @@ func resourceDevice42SubnetDelete(d *schema.ResourceData, m interface{}) error {
 	}
 
 	r := resp.Result().(*apiResponse)
-	log.Printf("[DEBUG] resourceDevice42SubnetDelete - Result: %#v", r)
+	log.Printf("[DEBUG] Result: %#v", r)
 	return nil
 }

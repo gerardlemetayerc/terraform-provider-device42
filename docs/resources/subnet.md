@@ -33,14 +33,9 @@ resource "device42_subnet" "myNewNetwork" {
 ### Optional
 
 - `vrf_group` (String) Subnet VRF Group
-- `description` (String) Subnet description
-
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 
-### Computed
-
-- `vrf_group_id` (String) Subnet VRF Group ID
 
