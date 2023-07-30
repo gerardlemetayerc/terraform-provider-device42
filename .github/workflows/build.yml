@@ -56,16 +56,16 @@ jobs:
 
     - name: Setup GPG and sign
       env:
-        VERSION: "1.3.3" 
-    VERSION: "1.3.3"
+        VERSION: "1.3.3"
       run: |
+        version=$VERSION
         mkdir -p ~/.gnupg
         echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
         echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
         chmod 700 ~/.gnupg
         echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --no-tty --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" --import
         echo "36AB0929E76749F8C9FE82B3C50AB7CBE7A52C36:6:" | gpg --import-ownertrust
-        gpg --output "build/terraform-provider-device42_${VERSION}_SHA256SUMS.sig" --detach-sig "build/terraform-provider-device42_${VERSION}_SHA256SUMS"
+        gpg --output "build/terraform-provider-device42_${version}_SHA256SUMS.sig" --detach-sig "build/terraform-provider-device42_${version}_SHA256SUMS"
         
 
     - name: Upload package as artifact
