@@ -101,3 +101,9 @@ jobs:
               -X POST "${{ steps.create_release.outputs.upload_url }}?name=$basefile" \
               -F "file=@$file"
         done
+
+    - name: Upload package as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: myapp-package
+        path: build/*
