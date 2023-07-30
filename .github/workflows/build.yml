@@ -65,7 +65,7 @@ jobs:
 
     - name: Sign files
       run: |
-        gpg --output "build/terraform-provider-device42_${VERSION}_SHA256SUMS.sig" --detach-sig "build/terraform-provider-device42_${VERSION}_SHA256SUMS"
+        gpg --output "build/terraform-provider-device42_${env.VERSION}_SHA256SUMS.sig" --detach-sig "build/terraform-provider-device42_${env.VERSION}_SHA256SUMS"
 
     - name: Upload package as artifact
       uses: actions/upload-artifact@v2
