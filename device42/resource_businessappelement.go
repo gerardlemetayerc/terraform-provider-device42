@@ -23,6 +23,7 @@ func resourceD42BusinessAppsElement() *schema.Resource {
 	return &schema.Resource{
 		Description: "device42_businessappelement can be use to manage Business Applications element",
 		Create:      resourceDevice42BusinessAppsElementCreate,
+		Update:      resourceDevice42BusinessAppsElementCreate,
 		Read:        resourceDevice42BusinessAppsElementRead,
 		Delete:      resourceDevice42BusinessAppsElementDelete,
 		Schema: map[string]*schema.Schema{
@@ -34,6 +35,7 @@ func resourceD42BusinessAppsElement() *schema.Resource {
 			},
 			"device_id": {
 				Type:        schema.TypeInt,
+				ForceNew:    true,
 				Required:    true,
 				Description: "ID of an element (device) to add to the business app.",
 			},
