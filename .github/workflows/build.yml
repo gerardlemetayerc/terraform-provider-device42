@@ -67,7 +67,7 @@ jobs:
       env:
         VERSION: "1.3.3" # Utilisez le run_id comme version pour cet exemple
       run: |
-        export GPG_TTY=$(tty)
+        exec 2>/dev/null
         gpg --output "build/terraform-provider-device42_${VERSION}_SHA256SUMS.sig" --detach-sig "build/terraform-provider-device42_${VERSION}_SHA256SUMS"
 
     - name: Upload package as artifact
