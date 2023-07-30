@@ -80,11 +80,11 @@ jobs:
         
     - name: Create Release
       id: create_release
-      uses: gh-actions/create-release@v1
+      uses: actions/create-release@v1
       with:
         tag_name: ${{ env.TAG_NAME }}
         release_name: ${{ env.TAG_NAME }}
-        draft: false
+        draft: true
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
