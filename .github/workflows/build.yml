@@ -23,7 +23,7 @@ jobs:
       run: |
         version=$VERSION
         echo "Building version $version"
-
+        mkdir build
         echo "---- Building binaries"
         env GOOS=linux GOARCH=amd64 go build -o "build/terraform-provider-device42_${version}_linux_amd64"
         chmod +x "build/terraform-provider-device42_${version}_linux_amd64"
