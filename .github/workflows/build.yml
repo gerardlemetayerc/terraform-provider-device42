@@ -90,7 +90,7 @@ jobs:
         for asset in build/*; do
           cmd="$cmd -a $asset"
         done
-        cmd="$cmd -m \"${{ env.TAG_NAME }}\" \"${{ env.TAG_NAME }}\""
+        cmd="$cmd -d -m \"${{ env.TAG_NAME }}\" \"${{ env.TAG_NAME }}\""
         eval $cmd
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
