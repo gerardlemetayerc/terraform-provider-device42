@@ -56,6 +56,7 @@ jobs:
 
     - name: Setup GPG
       run: |
+        mkdir -p ~/.gnupg
         echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
         echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
         echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --no-tty --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" --import
