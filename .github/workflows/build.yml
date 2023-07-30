@@ -1,0 +1,73 @@
+name: Build and Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Build binaries and package
+      env:
+        VERSION: "1.3.3" # Utilisez le run_id comme version pour cet exemple
+      run: |
+        # Assurez-vous d'ajuster ce qui est nécessaire pour correspondre à votre script
+        version=$VERSION
+        echo "Building version $version"
+        echo "---- Cleaning directory"
+        rm build/terraform-*
+
+        echo "---- Building binaries"
+        env GOOS=linux GOARCH=amd64 go build -o "build/terraform-provider-device42_${version}_linux_amd64"
+        chmod +x "build/terraform-provider-device42_${version}_linux_amd64"
+        env GOOS=linux GOARCH=386 go build -o "build/terraform-provider-device42_${version}_linux_386"
+        chmod +x "build/terraform-provider-device42_${version}_linux_386"
+        env GOOS=windows GOARCH=amd64 go build -o "build/terraform-provider-device42_${version}_windows_amd64.exe"
+        env GOOS=windows GOARCH=386 go build -o "build/terraform-provider-device42_${version}_windows_386.exe"
+
+        echo "---- ZIP directory folders"
+        cd build
+        zip "terraform-provider-device42_${version}_linux_amd64.zip" "terraform-provider-device42_${version}_linux_amd64"
+        zip "terraform-provider-device42_${version}_linux_386.zip" "terraform-provider-device42_${version}_linux_386"
+        zip "terraform-provider-device42_${version}_windows_amd64.zip" "terraform-provider-device42_${version}_windows_amd64.exe"
+        zip "terraform-provider-device42_${version}_windows_386.zip" "terraform-provider-device42_${version}_windows_386.exe"
+
+        echo "---- Signing documents"
+        echo '{
+          "version": 1,
+          "metadata": {
+            "protocol_versions": ["5.0"]
+          }
+        }' > "terraform-provider-device42_${version}_manifest.json"
+
+        for file in `ls *.zip`; do
+            shasum -a 256 $file | sed 's/*//' >> "terraform-provider-device42_${version}_SHA256SUMS"
+        done
+        shasum -a 256 *.json | sed 's/*//' >> "terraform-provider-device42_${version}_SHA256SUMS"
+        
+        cd ..
+
+    - name: Setup GPG
+      run: |
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import
+        echo "5A4888A4" | gpg --import-ownertrust # Remplacez par l'empreinte de votre clé
+
+    - name: Sign files
+      run: |
+        gpg --output "build/terraform-provider-device42_${VERSION}_SHA256SUMS.sig" --detach-sig "build/terraform-provider-device42_${VERSION}_SHA256SUMS"
+
+    - name: Upload package as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: myapp-package
+        path: build/*
