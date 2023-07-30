@@ -24,8 +24,6 @@ jobs:
         # Assurez-vous d'ajuster ce qui est nécessaire pour correspondre à votre script
         version=$VERSION
         echo "Building version $version"
-        echo "---- Cleaning directory"
-        rm build/terraform-*
 
         echo "---- Building binaries"
         env GOOS=linux GOARCH=amd64 go build -o "build/terraform-provider-device42_${version}_linux_amd64"
