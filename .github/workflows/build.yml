@@ -77,17 +77,6 @@ jobs:
         echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --no-tty --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" --import
         echo "36AB0929E76749F8C9FE82B3C50AB7CBE7A52C36:6:" | gpg --import-ownertrust
         gpg --yes --passphrase "${{ secrets.GPG_PASSPHRASE }}" --batch --no-tty --pinentry-mode loopback --output "build/terraform-provider-device42_${version}_SHA256SUMS.sig" --detach-sig "build/terraform-provider-device42_${version}_SHA256SUMS"
-        
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      with:
-        tag_name: ${{ env.TAG_NAME }}
-        release_name: ${{ env.TAG_NAME }}
-        draft: true
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install Hub
       run: |
@@ -101,7 +90,7 @@ jobs:
         for asset in build/*; do
           cmd="$cmd -a $asset"
         done
-        cmd="$cmd -m \"${{ env.TAG_NAME }}\" \"${{ env.TAG_NAME }}\""
+        cmd="$cmd -m --draft=true \"${{ env.TAG_NAME }}\" \"${{ env.TAG_NAME }}\""
         eval $cmd
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
