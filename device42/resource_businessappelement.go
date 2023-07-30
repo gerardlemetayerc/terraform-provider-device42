@@ -35,7 +35,6 @@ func resourceD42BusinessAppsElement() *schema.Resource {
 			},
 			"device_id": {
 				Type:        schema.TypeInt,
-				ForceNew:    true,
 				Required:    true,
 				Description: "ID of an element (device) to add to the business app.",
 			},
