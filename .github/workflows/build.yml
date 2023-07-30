@@ -89,16 +89,20 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Install Hub
+    run: |
+      sudo apt-get update
+      sudo apt-get install -y hub
+
     - name: Upload Release Assets
-      uses: actions/checkout@v2
-    - run: |
+      run: |
         set -x
-        assets=()
+        cmd="hub release create"
         for asset in build/*; do
-          assets+=("-a" "$asset")
+          cmd="$cmd -a $asset"
         done
-        tag_name="${{ env.TAG_NAME }}"
-        hub release create "${assets[@]}" -m "$tag_name" "$tag_name"
+        cmd="$cmd -m \"${{ env.TAG_NAME }}\" \"${{ env.TAG_NAME }}\""
+        eval $cmd
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
