@@ -9,6 +9,7 @@ require (
 )
 
 require (
+    github.com/gerardlemetayerc/provider-terraform-device42/device42 v1.3.2
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/fatih/color v1.15.0 // indirect
