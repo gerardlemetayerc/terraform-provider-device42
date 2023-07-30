@@ -90,18 +90,17 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload Release Assets
-      run: |
-        cd build
-        files=$(ls)
-        for file in files; do
-            basefile=$(basename $file)
-            echo "Uploading $basefile"
-            curl \
-              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              -H "Accept: application/vnd.github.v3+json" \
-              -X POST "${{ steps.create_release.outputs.upload_url }}?name=$basefile" \
-              -F "file=@$file"
+      uses: actions/checkout@v2
+    - run: |
+        set -x
+        assets=()
+        for asset in build/*; do
+          assets+=("-a" "$asset")
         done
+        tag_name="${{ env.TAG_NAME }}"
+        hub release create "${assets[@]}" -m "$tag_name" "$tag_name"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload package as artifact
       uses: actions/upload-artifact@v2
