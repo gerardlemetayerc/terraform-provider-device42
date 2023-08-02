@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -89,6 +90,13 @@ func resourceD42Subnet() *schema.Resource {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
+			"custom_fields": {
+				Type:             schema.TypeMap,
+				Optional:         true,
+				Computed:         true,
+				Description:      "Any custom fields that will be used in device42.",
+				DiffSuppressFunc: suppressCustomFieldsDiffs,
+			},
 		},
 	}
 }
@@ -143,6 +151,35 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 		id := int(r.Msg[1].(float64))
 		// Set ID after subnet creation
 		d.SetId(strconv.Itoa(id))
+		if d.Get("custom_fields") != nil {
+			fields := d.Get("custom_fields").(map[string]interface{})
+			bulkFields := []string{}
+
+			for k, v := range fields {
+				bulkFields = append(bulkFields, fmt.Sprintf("%v:%v", k, v))
+			}
+
+			resp, err := client.R().
+				SetFormData(map[string]string{
+					"network":     resourceDevice42SubnetCreateForm["network"],
+					"mask_bits":   resourceDevice42SubnetCreateForm["mask_bits"],
+					"vrf_group":   resourceDevice42SubnetCreateForm["vrf_group"],
+					"bulk_fields": strings.Join(bulkFields, ","),
+				}).
+				SetResult(apiResponse{}).
+				Put("/1.0/subnet/custom_fields/")
+
+			if err != nil {
+				return err
+			}
+
+			r := resp.Result().(*apiResponse)
+
+			if r.Code != 0 {
+				return fmt.Errorf("API returned code %d", r.Code)
+			}
+		}
+
 		return resourceDevice42DeviceRead(d, m)
 	} else {
 		return fmt.Errorf("incorrect response to query")
@@ -172,6 +209,8 @@ func resourceDevice42SubnetRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("parent_subnet_id", r.ParentSubnetId)
 	d.Set("description", r.Description)
 	d.Set("customer", r.Customer)
+	fields := flattenCustomFields(r.CustomFields)
+	d.Set("custom_fields", fields)
 	return nil
 }
 
@@ -207,6 +246,32 @@ func resourceDevice42SubnetUpdate(d *schema.ResourceData, m interface{}) error {
 		SetFormData(device42SubnetUpdateFormData).
 		SetResult(apiResponse{}).
 		Put(url)
+
+	if d.HasChange("custom_fields") {
+		updateList := setCustomFields(d)
+		network := d.Get("network").(string)
+		mask_bits := strconv.Itoa(d.Get("mask_bits").(int))
+		vrf_group := d.Get("vrf_group").(string)
+		for k, v := range updateList {
+			resp, err := client.R().
+				SetFormData(map[string]string{
+					"network":   network,
+					"mask_bits": mask_bits,
+					"vrf_group": vrf_group,
+					"key":       k,
+					"value":     v.(string),
+				}).
+				SetResult(apiResponse{}).
+				Put("/1.0/subnet/custom_fields/")
+
+			if err != nil {
+				return err
+			}
+
+			r := resp.Result().(*apiResponse)
+			log.Printf("[DEBUG] Result: %#v", r)
+		}
+	}
 
 	if err != nil {
 		return err

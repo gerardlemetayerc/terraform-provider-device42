@@ -51,6 +51,10 @@ func datasourceD42Subnet() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"custom_fields": {
+				Type:     schema.TypeMap,
+				Computed: true,
+			},
 		},
 	}
 }
@@ -106,6 +110,8 @@ func datasourceD42SubnetRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("vrf_group_id", r.Subnets[0].VrfGroupId)
 		d.Set("vrf_group_name", r.Subnets[0].VrfGroupName)
 		d.Set("network", r.Subnets[0].Network)
+		fields := flattenCustomFields(r.Subnets[0].CustomFields)
+		d.Set("custom_fields", fields)
 	} else {
 		log.Printf("[ERROR] More than one subnet found: %d", len(r.Subnets))
 		d.SetId("")

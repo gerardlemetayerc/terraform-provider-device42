@@ -33,6 +33,7 @@ resource "device42_subnet" "myNewNetwork" {
 ### Optional
 
 - `vrf_group` (String) Subnet VRF Group
+- `custom_fields` (Map of String) Any custom fields that will be used in device42.
 
 ### Read-Only
 
