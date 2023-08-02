@@ -53,7 +53,7 @@ func resourceD42Ip() *schema.Resource {
 				Type:         schema.TypeString,
 				ValidateFunc: IsIPAddress,
 				ForceNew:     true,
-				Required:     true,
+				Optional:     true,
 				Description:  "Network of the subnet. Required for creation, cannot be modified after subnet creation.",
 			},
 			"subnet": {
@@ -80,6 +80,12 @@ func resourceD42Ip() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "ID of device to attach to network",
+			},
+			"suggest_ip": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Use device42 IP suggestion functionnality to retrieve available IP.",
+				Default:     false,
 			},
 		},
 	}
@@ -115,6 +121,15 @@ func resourceDevice42IpCreate(d *schema.ResourceData, m interface{}) error {
 	vrf_group_id := d.Get("vrf_group_id").(int)
 	device_id := d.Get("device_id").(int)
 
+	if d.Get("suggest_ip").(bool) && d.Get("ip").(string) == "" {
+		// Call the function to get a suggested IP (this function would be similar to the datasourceD42SuggestedIpRead)
+		suggestedIp, err := getSuggestedIP(d, m)
+		if err != nil {
+			return err
+		}
+		ip = suggestedIp
+	}
+
 	mapData := map[string]string{
 		"ipaddress": ip,
 	}
@@ -144,14 +159,19 @@ func resourceDevice42IpCreate(d *schema.ResourceData, m interface{}) error {
 	r := resp.Result().(*apiResponse)
 
 	if r.Code != 0 {
-		return fmt.Errorf("API returned code %d", r.Code)
+		return fmt.Errorf("resourceDevice42IpCreate - API returned code %d", r.Code)
 	}
 
-	log.Printf("[DEBUG] Result: %#v", r)
-	id := int(r.Msg[1].(float64))
+	log.Printf("[DEBUG] resourceDevice42IpCreate - Result: %#v", r)
 
-	// Set ID after subnet creation
-	d.SetId(strconv.Itoa(id))
+	// Check if Device42 has answer correct response length
+	if len(r.Msg) > 1 {
+		id := int(r.Msg[1].(float64))
+		// Set ID after subnet creation
+		d.SetId(strconv.Itoa(id))
+	} else {
+		return fmt.Errorf("resourceDevice42IpCreate - API response incorrect: %v", r.Msg)
+	}
 
 	return nil
 }
@@ -166,4 +186,37 @@ func resourceDevice42IpDelete(d *schema.ResourceData, m interface{}) error {
 	r := resp.Result().(*apiResponse)
 	log.Printf("[DEBUG] Result: %#v", r)
 	return nil
+}
+
+// This function will query Device42 API to retrieve available IP.
+func getSuggestedIP(d *schema.ResourceData, m interface{}) (string, error) {
+	client := m.(*resty.Client)
+
+	name := d.Get("subnet_name").(string)
+	subnet_id := d.Get("subnet_id").(int)
+	queryString := ""
+	separator := ""
+
+	if name != "" {
+		queryString = fmt.Sprintf("name=%s", name)
+		separator = "&"
+	}
+	if subnet_id > 0 {
+		queryString = queryString + separator + fmt.Sprintf("subnet_id=%s", strconv.Itoa(subnet_id))
+	}
+
+	resp, err := client.R().
+		SetResult(datasourceD42SuggestedIpResponse{}).
+		Get(fmt.Sprintf("/1.0/suggest_ip/?%s", queryString))
+
+	if err != nil {
+		return "", fmt.Errorf("getSuggestedIP - failed to fetch suggested IP: %s", err)
+	}
+
+	r := resp.Result().(*datasourceD42SuggestedIpResponse)
+	if r.Ip == "" {
+		return "", fmt.Errorf("getSuggestedIP -no suggested IP returned from API")
+	}
+
+	return r.Ip, nil
 }
