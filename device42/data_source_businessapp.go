@@ -38,14 +38,14 @@ func datasourceD42BusinessAppRead(d *schema.ResourceData, m interface{}) error {
 	resp, err := apiDevice42Get(m.(*resty.Client), url, datasourceD42BusinessAppApi{})
 
 	if err != nil {
-		log.Printf("[WARN] No device found: %s", d.Id())
+		log.Printf("[WARN] No businessapps found: %s", d.Get("name").(string))
 		d.SetId("")
 		return nil
 	}
 
 	r := resp.Result().(*datasourceD42BusinessAppApi)
-	log.Printf("[DEBUG] Result: %#v", resp.Result())
-	if r.TotalCount == 1 {
+	log.Printf("[DEBUG] datasourceD42BusinessAppRead - Result: %#v", resp.Result())
+	if len(r.Businessapps) == 1 {
 		d.SetId(strconv.Itoa(int((r.Businessapps[0]).BusinessAppId)))
 		fields := flattenCustomFields((r.Businessapps[0]).CustomFields)
 		d.Set("custom_fields", fields)

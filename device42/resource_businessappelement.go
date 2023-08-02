@@ -75,7 +75,7 @@ func resourceDevice42BusinessAppsElementCreate(d *schema.ResourceData, m interfa
 
 	log.Printf("[DEBUG] resourceDevice42BusinessAppsElementCreate - Starting reading using API for id %s", d.Id())
 	resp, err := client.R().
-		SetResult(apiReadData{}).
+		SetResult(apiResponse{}).
 		SetFormData(formData).
 		Post("/1.0/businessapps/elements/")
 
