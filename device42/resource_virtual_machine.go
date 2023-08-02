@@ -199,7 +199,7 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 
 	d.Set("id", r.ID)
 	d.Set("name", r.Name)
-	d.Set("device_type", r.Type)
+	d.Set("type", r.Type)
 	d.Set("custom_fields", fields)
 
 	return nil
