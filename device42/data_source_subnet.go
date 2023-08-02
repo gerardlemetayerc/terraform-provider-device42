@@ -47,6 +47,10 @@ func datasourceD42Subnet() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"vrf_group_id": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
 			"network": {
 				Type:     schema.TypeString,
 				Optional: true,
