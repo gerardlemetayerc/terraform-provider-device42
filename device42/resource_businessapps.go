@@ -10,28 +10,29 @@ import (
 )
 
 type apiBusinessAppsReadResponse struct {
-	AppType              string `json:"app_type"`
-	AppTypeId            int64  `json:"app_type_id"`
-	BusinessAppId        int64  `json:"businessapp_id"`
-	BusinessAppOwner     string `json:"business_app_owner"`
-	BusinessAppOwerId    int64  `json:"business_app_owner_id"`
-	Created              string `json:"created"`
-	CriticalityId        int64  `json:"criticality_id"`
-	CustOwner            string `json:"cust_owner"`
-	CustOwnerId          int64  `json:"cust_owner_id"`
-	Description          string `json:"description"`
-	IsContainsPII        bool   `json:"is_contains_pii"`
-	IsInternetAccessible bool   `json:"is_internet_accessible"`
-	LastChanged          string `json:"last_changed"`
-	MigrationGroup       string `json:"migration_group"`
-	MigrationGroupId     int64  `json:"migration_group_id"`
-	Name                 string `json:"name"`
-	Notes                string `json:"notes"`
-	ServiceLevel         string `json:"service_level"`
-	ServiceLevelId       int64  `json:"service_level_id"`
-	TechnicalAppOwnerId  int64  `json:"technical_app_owner_id"`
-	TechnicalAppOwner    string `json:"technical_app_owner"`
-	VendorId             int64  `json:"vendor_id"`
+	AppType              string        `json:"app_type"`
+	AppTypeId            int64         `json:"app_type_id"`
+	BusinessAppId        int64         `json:"businessapp_id"`
+	BusinessAppOwner     string        `json:"business_app_owner"`
+	BusinessAppOwerId    int64         `json:"business_app_owner_id"`
+	Created              string        `json:"created"`
+	CriticalityId        int64         `json:"criticality_id"`
+	CustOwner            string        `json:"cust_owner"`
+	CustOwnerId          int64         `json:"cust_owner_id"`
+	Description          string        `json:"description"`
+	IsContainsPII        bool          `json:"is_contains_pii"`
+	IsInternetAccessible bool          `json:"is_internet_accessible"`
+	LastChanged          string        `json:"last_changed"`
+	MigrationGroup       string        `json:"migration_group"`
+	MigrationGroupId     int64         `json:"migration_group_id"`
+	Name                 string        `json:"name"`
+	Notes                string        `json:"notes"`
+	ServiceLevel         string        `json:"service_level"`
+	ServiceLevelId       int64         `json:"service_level_id"`
+	TechnicalAppOwnerId  int64         `json:"technical_app_owner_id"`
+	TechnicalAppOwner    string        `json:"technical_app_owner"`
+	VendorId             int64         `json:"vendor_id"`
+	CustomFields         []customField `json:"custom_fields"`
 }
 
 func resourceD42BusinessApps() *schema.Resource {
@@ -113,6 +114,11 @@ func resourceD42BusinessApps() *schema.Resource {
 				Optional:    true,
 				Description: "Business Application vendor",
 			},
+			"custom_fields": {
+				Type:        schema.TypeMap,
+				Computed:    true,
+				Description: "Any custom fields that will be used in device42.",
+			},
 		},
 	}
 }
@@ -151,6 +157,8 @@ func resourceDevice42BusinessAppsRead(d *schema.ResourceData, m interface{}) err
 	d.Set("technical_app_owner", r.TechnicalAppOwner)
 	d.Set("technical_app_owner_id", r.TechnicalAppOwnerId)
 	d.Set("vendor", r.VendorId)
+	fields := flattenCustomFields(r.CustomFields)
+	d.Set("custom_fields", fields)
 	return nil
 }
 
