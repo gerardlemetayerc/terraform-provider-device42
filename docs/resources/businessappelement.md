@@ -24,11 +24,11 @@ resource "device42_businessappelement" "example" {
 
 The following arguments are supported:
 
-- businessapp_id (Int - Required) - The ID of an existing Business Application to add elements (devices) to.
-- device_id (Int - Required) - ID of an element (device) to add to the business app.
+- `businessapp_id` (Int - Required) - The ID of an existing Business Application to add elements (devices) to.
+- `device_id` (Int - Required) - ID of an element (device) to add to the business app.
 
 ## Computed
 
 In addition to all arguments above, the following attributes are exported:
 
-- id - The ID of the device association with the Business Application in Device42.
+- `id` - The ID of the device association with the Business Application in Device42.

@@ -28,7 +28,6 @@ resource "device42_subnet" "myNewNetwork" {
 
 - `network` (String) Network of the subnet. Required for creation, cannot be modified after subnet creation.
 - `mask_bits` (String) Mask bits of the subnet. Required for creation, can be modified after subnet creation.
-- `name` (String) The name of the subnet.
 
 ### Optional
 

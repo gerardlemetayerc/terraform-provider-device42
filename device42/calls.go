@@ -1,7 +1,6 @@
 package device42
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/go-resty/resty/v2"
@@ -32,11 +31,6 @@ func apiDevice42Post(client *resty.Client, path string, formData map[string]stri
 
 	if err != nil {
 		return nil, err
-	}
-
-	r := resp.Result().(*apiResponse)
-	if r.Code != 0 {
-		return nil, fmt.Errorf("API returned code %d", r.Code)
 	}
 
 	return resp, nil
