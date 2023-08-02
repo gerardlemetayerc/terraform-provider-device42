@@ -1,11 +1,18 @@
 # Terraform provider - Device42
 
-This provider has the purpose to manage Device42 CMDB application.
+This provider has the purpose to manage Device42 CMDB application. 
+
+It currently provide support for following ressources :
+- Business Application
+- Business Application Element
+- IP
+- VLAN
+- Subnet
+- Device
 
 ## Usage exemples
 
 Usage examples can be found [here](/exemples/)
-
 
 ## How to compile sources from your own side.
 
@@ -18,4 +25,3 @@ go build -o build\terraform-provider-device42.exe
 ```
 go build -o build\terraform-provider-device42
 ```
-
