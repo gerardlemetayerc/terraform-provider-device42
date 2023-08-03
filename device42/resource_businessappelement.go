@@ -10,9 +10,10 @@ import (
 )
 
 type apiBusinessAppsElement struct {
-	BusinessAppId   int    `json:"business_app_id"`
-	BusinessAppName int    `json:"business_app_name"`
-	Element         string `json:"element"`
+	DeviceID               int    `json:"device_id"`
+	BusinessAppElementUUID string `json:"businessapp_element_uuid"`
+	Name                   string `json:"name"`
+	BusinessAppId          int    `json:"businessapp_id"`
 }
 
 type apiBusinessAppsElementApiResponse struct {
@@ -38,27 +39,34 @@ func resourceD42BusinessAppsElement() *schema.Resource {
 				Required:    true,
 				Description: "ID of an element (device) to add to the business app.",
 			},
+			"device_name": {
+				Type:        schema.TypeInt,
+				Required:    true,
+				Description: "Name of the to add to the business app.",
+			},
 		},
 	}
 }
 
 func resourceDevice42BusinessAppsElementRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
+	name := d.Get("device_name").(string)
+	businessappId := strconv.Itoa(d.Get("businessapp_id").(int))
+	query := "?name=" + name + "&businessapp_id=" + businessappId
 	log.Printf("[DEBUG] resourceDevice42BusinessAppsElementRead - Starting reading using API for id %s", d.Id())
 	resp, err := client.R().
 		SetResult(apiBusinessAppsElementApiResponse{}).
-		Get(fmt.Sprintf("/1.0/businessapps/elements/%s/", d.Id()))
+		Get(fmt.Sprintf("/1.0/businessapps/elements/%s", query))
 
 	if err != nil {
-		log.Printf("[WARN] No data found for id %s", d.Id())
+		log.Printf("[WARN] No data found for query %s", query)
 		return err
 	}
 
 	r := resp.Result().(*apiBusinessAppsElementApiResponse)
 	str := fmt.Sprintf("%v", r)
 	log.Printf("[DEBUG] resourceDevice42BusinessAppsElementRead - API data %s", str)
-	d.Set("businessapp_id", r.BusinessappElements[0].BusinessAppId)
-	d.Set("device_id", r.BusinessappElements[0].Element)
+	d.SetId(r.BusinessappElements[0].BusinessAppElementUUID)
 	return nil
 }
 
@@ -92,10 +100,10 @@ func resourceDevice42BusinessAppsElementCreate(d *schema.ResourceData, m interfa
 	}
 
 	log.Printf("[DEBUG] Result: %#v", r)
-	id := int(r.Msg[1].(float64))
+	//id := int(r.Msg[1].(float64))
 
 	// Set ID after Business App creation
-	d.SetId(strconv.Itoa(id))
+	//d.SetId(strconv.Itoa(id))
 	return resourceDevice42BusinessAppsElementRead(d, m)
 }
 
