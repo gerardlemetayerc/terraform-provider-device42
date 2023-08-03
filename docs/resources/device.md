@@ -14,6 +14,9 @@ description: |-
 resource "device42_device" "myNewVM" {
   name    = "myNewVMName"
   type    = "virtual"
+  custom_fields = {
+    field_name = "field_value"
+  }
 }
 ```
 

@@ -21,6 +21,7 @@ func datasourceD42Subnet() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
+				Computed:    true,
 				Optional:    true,
 				Description: "The name of the subnet.",
 			},
@@ -31,8 +32,8 @@ func datasourceD42Subnet() *schema.Resource {
 			},
 			"subnet_id": {
 				Type:        schema.TypeInt,
+				Computed:    true,
 				Optional:    true,
-				Default:     0,
 				Description: "The subnet id.",
 			},
 			"range_begin": {
@@ -50,6 +51,7 @@ func datasourceD42Subnet() *schema.Resource {
 			"vrf_group_id": {
 				Type:     schema.TypeInt,
 				Optional: true,
+				Computed: true,
 			},
 			"network": {
 				Type:     schema.TypeString,

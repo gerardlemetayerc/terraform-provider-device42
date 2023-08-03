@@ -34,8 +34,12 @@ func datasourceD42BusinessApp() *schema.Resource {
 }
 
 func datasourceD42BusinessAppRead(d *schema.ResourceData, m interface{}) error {
-	url := fmt.Sprintf("/1.0/businessapps/?name=%s", d.Get("name").(string))
-	resp, err := apiDevice42Get(m.(*resty.Client), url, datasourceD42BusinessAppApi{})
+	client := m.(*resty.Client)
+	log.Printf("[DEBUG] datasourceD42BusinessAppRead - Query: %s", fmt.Sprintf("/1.0/businessapps/?name=%s", d.Get("name").(string)))
+	client.SetDebug(true)
+	resp, err := client.R().
+		SetResult(datasourceD42BusinessAppApi{}).
+		Get(fmt.Sprintf("/1.0/businessapps/?name=%s", d.Get("name").(string)))
 
 	if err != nil {
 		log.Printf("[WARN] No businessapps found: %s", d.Get("name").(string))

@@ -40,7 +40,7 @@ func resourceD42BusinessAppsElement() *schema.Resource {
 				Description: "ID of an element (device) to add to the business app.",
 			},
 			"device_name": {
-				Type:        schema.TypeInt,
+				Type:        schema.TypeString,
 				Required:    true,
 				Description: "Name of the to add to the business app.",
 			},

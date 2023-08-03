@@ -88,7 +88,7 @@ func resourceD42Device() *schema.Resource {
 			"type": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default:  "virtual",
+				Computed: true,
 				Description: "The type of the device. " +
 					"Valid values are 'physical', 'virtual', 'unknown', 'cluster' (default is virtual)",
 			},
@@ -108,7 +108,7 @@ func resourceD42Device() *schema.Resource {
 			"archive_on_destroy": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     "false",
+				Computed:    true,
 				Description: "Archive device on destroy action",
 			},
 		},
@@ -121,6 +121,9 @@ func resourceDevice42DeviceCreate(d *schema.ResourceData, m interface{}) error {
 	deviceType := d.Get("type").(string)
 	serviceLevel := d.Get("service_level").(string)
 
+	if deviceType == "" {
+		deviceType = "virtual"
+	}
 	resp, err := client.R().
 		SetFormData(map[string]string{
 			"name":          name,
@@ -182,6 +185,7 @@ func resourceDevice42DeviceCreate(d *schema.ResourceData, m interface{}) error {
 	return resourceDevice42DeviceRead(d, m)
 }
 
+// Permit to read data about device in Device42. It use deviceID to query data.
 func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 	resp, err := client.R().
@@ -191,15 +195,15 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		log.Printf("[WARN] No device found: %s", d.Id())
 		d.SetId("")
-		return nil
+		return err
 	}
 
 	r := resp.Result().(*apiDeviceReadResponse)
 	fields := flattenCustomFields(r.CustomFields)
 
-	d.Set("id", r.ID)
 	d.Set("name", r.Name)
 	d.Set("type", r.Type)
+	d.Set("service_level", r.ServiceLevel)
 	d.Set("custom_fields", fields)
 
 	return nil
@@ -216,6 +220,10 @@ func resourceDevice42DeviceUpdate(d *schema.ResourceData, m interface{}) error {
 
 	if d.HasChange("type") {
 		formData["type"] = d.Get("type").(string)
+	}
+
+	if d.HasChange("service_level") {
+		formData["service_level"] = d.Get("service_level").(string)
 	}
 
 	if d.HasChange("custom_fields") {
@@ -243,7 +251,10 @@ func resourceDevice42DeviceUpdate(d *schema.ResourceData, m interface{}) error {
 
 func resourceDevice42DeviceDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
-	archiveOnDetroy, _ := strconv.ParseBool(d.Get("archive_on_destroy").(string))
+	archiveOnDetroy := false
+	if d.Get("archive_on_destroy").(string) != "" {
+		archiveOnDetroy, _ = strconv.ParseBool(d.Get("archive_on_destroy").(string))
+	}
 	log.Printf("Deleting device %s (UUID: %s)", d.Get("name"), d.Id())
 
 	url := fmt.Sprintf("/1.0/devices/%s/", d.Id())
