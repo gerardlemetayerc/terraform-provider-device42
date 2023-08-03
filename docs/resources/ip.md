@@ -15,20 +15,20 @@ data "device42_subnet" "subnet" {
   name    = "Infra"
 }
 
-data "device42_suggestedIp" "ip" {
-  subnet_id = data.device42_subnet.subnet.subnet_id
+resource "device42_ip" "ip" {
+  subnet 	      = data.device42_subnet.subnet.name
+  suggest_ip    = true
+  available 	  = "no"
+  vrf_group_id 	= data.device42_subnet.subnet.vrf_group_id
+  device_id     = resource.device42_device.newdevice.id
 }
 
-resource "device42_ip" "ip" {
-  subnet 	    = data.device42_subnet.subnet.name
-  ip        	= data.device42_suggestedIp.ip.ip
-  available 	= "no"
+resource "device42_ip" "ip2" {
+  subnet 	      = data.device42_subnet.subnet.name
+  ip            = "192.168.1.100"
+  available 	  = "no"
   vrf_group_id 	= data.device42_subnet.subnet.vrf_group_id
-  lifecycle {
-    ignore_changes = [
-      ip, subnet
-    ]
-  }
+  device_id     = resource.device42_device.newdevice.id
 }
 ```
 

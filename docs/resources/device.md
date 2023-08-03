@@ -12,10 +12,11 @@ description: |-
 
 ```hcl
 resource "device42_device" "myNewVM" {
-  name    = "myNewVMName"
-  type    = "virtual"
+  name          = "myNewVMName"
+  type          = "virtual"
+  service_level = "Production"
   custom_fields = {
-    field_name = "field_value"
+    field_name  = "field_value"
   }
 }
 ```
