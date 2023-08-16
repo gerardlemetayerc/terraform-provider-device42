@@ -46,19 +46,6 @@ provider "device42" {
 }
 ```
 
-* With env variable and all default value
-
-```hcl
-file : providers.tf
-terraform {
-  required_providers {
-    device42 = {
-      source  = "github.com/gerardlemetayerc/terraform-provider-device42"
-    }
-  }
-}
-```
-
 * In your favorite shell :
 ```bash
 export D42_USERNAME="changeit"

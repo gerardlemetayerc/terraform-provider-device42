@@ -167,7 +167,7 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 					"bulk_fields": strings.Join(bulkFields, ","),
 				}).
 				SetResult(apiResponse{}).
-				Put("/1.0/subnet/custom_fields/")
+				Put("/1.0/custom_fields/subnet")
 
 			if err != nil {
 				return err

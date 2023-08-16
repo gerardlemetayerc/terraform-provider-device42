@@ -65,7 +65,7 @@ func resourceD42Ip() *schema.Resource {
 			"available": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "Set",
+				Description: "Set if IP is marked as available",
 			},
 			"vrf_group_id": {
 				Type:        schema.TypeInt,
@@ -184,10 +184,14 @@ func getSuggestedIP(d *schema.ResourceData, m interface{}) (string, error) {
 	client := m.(*resty.Client)
 
 	subnet_id := d.Get("subnet_id").(int)
+	available := d.Get("available").(string)
 	queryString := ""
 
 	if subnet_id > 0 {
 		queryString = fmt.Sprintf("subnet_id=%s", strconv.Itoa(subnet_id))
+	}
+	if available == "no" {
+		queryString = queryString + "&reserve_ip=yes"
 	}
 
 	resp, err := client.R().
