@@ -240,7 +240,7 @@ func resourceDevice42SubnetUpdate(d *schema.ResourceData, m interface{}) error {
 	if d.HasChange("customer") {
 		device42SubnetUpdateFormData["customer"] = d.Get("customer").(string)
 	}
-	log.Printf("[DEBUG] resourceDevice42SubnetUpdate - vrf_group: %s", d.Get("vrf_group").(string))
+	log.Printf("[DEBUG] resourceDevice42SubnetUpdate - subnet : %s", d.Get("name").(string))
 
 	resp, err := client.R().
 		SetFormData(device42SubnetUpdateFormData).
@@ -253,14 +253,16 @@ func resourceDevice42SubnetUpdate(d *schema.ResourceData, m interface{}) error {
 		mask_bits := strconv.Itoa(d.Get("mask_bits").(int))
 		vrf_group := d.Get("vrf_group").(string)
 		for k, v := range updateList {
+			formData := map[string]string{
+				"network":   network,
+				"mask_bits": mask_bits,
+				"vrf_group": vrf_group,
+				"key":       k,
+				"value":     v.(string),
+			}
+			log.Printf("[DEBUG] resourceDevice42SubnetUpdate custom_fields  : %#v", formData)
 			resp, err := client.R().
-				SetFormData(map[string]string{
-					"network":   network,
-					"mask_bits": mask_bits,
-					"vrf_group": vrf_group,
-					"key":       k,
-					"value":     v.(string),
-				}).
+				SetFormData(formData).
 				SetResult(apiResponse{}).
 				Put("/1.0/subnet/custom_fields/")
 
