@@ -112,6 +112,10 @@ func resourceD42Device() *schema.Resource {
 				Description: "Archive device on destroy action",
 			},
 		},
+
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 	}
 }
 

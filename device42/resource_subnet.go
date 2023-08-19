@@ -3,7 +3,6 @@ package device42
 import (
 	"fmt"
 	"log"
-	"net/url"
 	"strconv"
 	"strings"
 
@@ -60,6 +59,7 @@ func resourceD42Subnet() *schema.Resource {
 			"parent_subnet_id": {
 				Type:        schema.TypeInt,
 				Optional:    true,
+				Computed:    true,
 				Description: "Parent subnet id",
 			},
 			"customer": {
@@ -70,6 +70,7 @@ func resourceD42Subnet() *schema.Resource {
 			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
 			},
 			"gateway": {
 				Type:     schema.TypeString,
@@ -159,16 +160,18 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 			for k, v := range fields {
 				bulkFields = append(bulkFields, fmt.Sprintf("%v:%v", k, v))
 			}
-			queryParams := make(url.Values)
-			queryParams.Set("network", resourceDevice42SubnetCreateForm["network"])
-			queryParams.Set("mask_bits", resourceDevice42SubnetCreateForm["mask_bits"])
-			queryParams.Set("vrf_group", resourceDevice42SubnetCreateForm["vrf_group"])
-			queryParams.Set("bulk_fields", strings.Join(bulkFields, ","))
-			log.Printf("[DEBUG] resourceDevice42SubnetCreate - Pushing custom_fields %s", queryParams.Encode())
+			queryParams := map[string]string{}
+			queryParams["network"] = resourceDevice42SubnetCreateForm["network"]
+			queryParams["mask_bits"] = resourceDevice42SubnetCreateForm["mask_bits"]
+			queryParams["vrf_group"] = resourceDevice42SubnetCreateForm["vrf_group"]
+			queryParams["bulk_fields"] = strings.Join(bulkFields, ",")
+			log.Printf("[DEBUG] resourceDevice42SubnetCreate - Pushing custom_fields %s", queryParams)
+			client := m.(*resty.Client)
+			client.SetDebug(true)
 			resp, err := client.R().
-				SetHeader("Accept", "application/json").
+				SetFormData(queryParams).
 				SetResult(apiResponse{}).
-				Put("/1.0/custom_fields/subnet/?" + queryParams.Encode())
+				Put("/1.0/custom_fields/subnet/")
 
 			if err != nil {
 				return err
@@ -181,7 +184,7 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 			}
 		}
 
-		return resourceDevice42DeviceRead(d, m)
+		return resourceDevice42SubnetRead(d, m)
 	} else {
 		return fmt.Errorf("incorrect response to query")
 	}
@@ -254,18 +257,19 @@ func resourceDevice42SubnetUpdate(d *schema.ResourceData, m interface{}) error {
 		mask_bits := strconv.Itoa(d.Get("mask_bits").(int))
 		vrf_group := d.Get("vrf_group").(string)
 		for k, v := range updateList {
-			queryParams := make(url.Values)
-			queryParams.Set("network", network)
-			queryParams.Set("mask_bits", mask_bits)
-			queryParams.Set("vrf_group", vrf_group)
-			queryParams.Set("key", k)
-			queryParams.Set("value", v.(string))
+			queryParams := map[string]string{}
+			queryParams["network"] = network
+			queryParams["mask_bits"] = mask_bits
+			queryParams["vrf_group"] = vrf_group
+			queryParams["key"] = k
+			queryParams["value"] = v.(string)
 
-			log.Printf("[DEBUG] resourceDevice42SubnetUpdate custom_fields  : %#v", queryParams.Encode())
+			log.Printf("[DEBUG] resourceDevice42SubnetUpdate custom_fields  : %#v", queryParams)
+			client.SetDebug(true)
 			resp, err := client.R().
-				SetHeader("Accept", "application/json").
 				SetResult(apiResponse{}).
-				Put("/1.0/custom_fields/subnet/?" + queryParams.Encode())
+				SetFormData(queryParams).
+				Put("/1.0/custom_fields/subnet/")
 
 			if err != nil {
 				return err
