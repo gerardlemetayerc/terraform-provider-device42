@@ -159,16 +159,16 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 			for k, v := range fields {
 				bulkFields = append(bulkFields, fmt.Sprintf("%v:%v", k, v))
 			}
-
+			queryParams := make(url.Values)
+			queryParams.Set("network", resourceDevice42SubnetCreateForm["network"])
+			queryParams.Set("mask_bits", resourceDevice42SubnetCreateForm["mask_bits"])
+			queryParams.Set("vrf_group", resourceDevice42SubnetCreateForm["vrf_group"])
+			queryParams.Set("bulk_fields", strings.Join(bulkFields, ","))
+			log.Printf("[DEBUG] resourceDevice42SubnetCreate - Pushing custom_fields %s", queryParams.Encode())
 			resp, err := client.R().
-				SetFormData(map[string]string{
-					"network":     resourceDevice42SubnetCreateForm["network"],
-					"mask_bits":   resourceDevice42SubnetCreateForm["mask_bits"],
-					"vrf_group":   resourceDevice42SubnetCreateForm["vrf_group"],
-					"bulk_fields": strings.Join(bulkFields, ","),
-				}).
+				SetHeader("Accept", "application/json").
 				SetResult(apiResponse{}).
-				Put("/1.0/custom_fields/subnet/")
+				Put("/1.0/custom_fields/subnet/?" + queryParams.Encode())
 
 			if err != nil {
 				return err
@@ -265,7 +265,7 @@ func resourceDevice42SubnetUpdate(d *schema.ResourceData, m interface{}) error {
 			resp, err := client.R().
 				SetHeader("Accept", "application/json").
 				SetResult(apiResponse{}).
-				Put("/1.0/custom_fields/subnet/" + queryParams.Encode())
+				Put("/1.0/custom_fields/subnet/?" + queryParams.Encode())
 
 			if err != nil {
 				return err
