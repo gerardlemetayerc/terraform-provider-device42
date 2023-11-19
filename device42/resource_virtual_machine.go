@@ -114,7 +114,18 @@ func resourceD42Device() *schema.Resource {
 		},
 
 		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
+		    StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+		        client := m.(*resty.Client)
+		        hostname := d.Id()
+		
+		        deviceId, err := getDeviceIdFromHostname(client, hostname)
+		        if err != nil {
+		            return nil, err
+		        }
+		
+		        d.SetId(deviceId)
+		        return []*schema.ResourceData{d}, nil
+		    },
 		},
 	}
 }
@@ -319,4 +330,28 @@ func suppressCustomFieldsDiffs(k, old, new string, d *schema.ResourceData) bool 
 		return false
 	}
 	return true
+}
+
+func getDeviceIdFromHostname(client *resty.Client, hostname string) (string, error) {
+    var apiResp struct {
+        TotalCount int `json:"total_count"`
+        Devices    []struct {
+            DeviceID int64  `json:"device_id"`
+            Name     string `json:"name"`
+        } `json:"devices"`
+    }
+
+    resp, err := client.R().
+        SetResult(&apiResp).
+        Get(fmt.Sprintf("/api/2.0/devices/?name=%s", url.QueryEscape(hostname)))
+
+    if err != nil {
+        return "", fmt.Errorf("error querying Device42 API: %s", err)
+    }
+
+    if len(apiResp.Devices) == 0 {
+        return "", fmt.Errorf("no device found with hostname: %s", hostname)
+    }
+
+    return strconv.FormatInt(apiResp.Devices[0].DeviceID, 10), nil
 }
