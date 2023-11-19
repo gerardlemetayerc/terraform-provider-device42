@@ -3,6 +3,7 @@ package device42
 import (
 	"crypto/tls"
 	"fmt"
+	"time"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -57,6 +58,12 @@ func Provider() *schema.Provider {
 				Description: "Whether to perform TLS cert verification on the server's certificate. " +
 					"Defaults to `false`.",
 			},
+			"timeout": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  30,
+				Description: "Timeout in seconds for API requests.",
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"device42_device":             resourceD42Device(),
@@ -94,10 +101,13 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		return nil, fmt.Errorf("no password was provided")
 	}
 
+	timeout := d.Get("timeout").(int)
+
 	client := resty.New()
 	client.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: tlsInsecure})
 	client.SetBaseURL(fmt.Sprintf("https://%s/api", host))
 	client.SetBasicAuth(username, password)
+	client.SetTimeout(time.Duration(timeout) * time.Second)
 
 	return client, nil
 }
