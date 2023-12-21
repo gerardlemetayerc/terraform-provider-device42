@@ -10,6 +10,7 @@ import (
 )
 
 type apiVlanReadReponse struct {
+	VlanId      int64         `json:"vlan_id"`
 	Number      int64         `json:"number"`
 	Name        string        `json:"name"`
 	Description string        `json:"description"`
