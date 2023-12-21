@@ -16,7 +16,7 @@ type datasourceD42VlanResponse struct {
 
 func datasourceD42Vlan() *schema.Resource {
 	return &schema.Resource{
-		Read:        datasourceD42SubnetRead,
+		Read:        datasourceD42VlanRead,
 		Description: "Read vlan information.",
 		Schema: map[string]*schema.Schema{
 			"vlan_id": {
@@ -49,7 +49,7 @@ func datasourceD42VlanRead(d *schema.ResourceData, m interface{}) error {
   
 	client.SetDebug(true)
 	resp, err := client.R().
-		SetResult(datasourceD42SubnetResponse{}).
+		SetResult(datasourceD42VlanResponse{}).
 		SetHeader("Accept", "application/json").
 		SetQueryParamsFromValues(queryParams).
 		Get("/1.0/vlans/?" + queryParams.Encode())
@@ -63,13 +63,13 @@ func datasourceD42VlanRead(d *schema.ResourceData, m interface{}) error {
 
 	r := resp.Result().(*datasourceD42VlanResponse)
 	log.Printf("[DEBUG] Result: %#v", resp.Result())
-	log.Printf("[DEBUG] Subnets count: %#v", r.Vlans)
-	if len(r.Subnets) == 1 {
+	log.Printf("[DEBUG] Vlans count: %#v", r.Vlans)
+	if len(r.Vlans) == 1 {
 		d.SetId(strconv.Itoa(int((r.Vlans[0]).VlanId)))
 		d.Set("number", (r.Vlans[0]).Number)
 		d.Set("vlan_id", strconv.Itoa(int((r.Vlans[0]).VlanId)))
 	} else {
-		log.Printf("[ERROR] More than one subnet found: %d", len(r.Subnets))
+		log.Printf("[ERROR] More than one vlan found: %d", len(r.Vlans))
 		d.SetId("")
 		return nil
 	}
