@@ -5,6 +5,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"net/url"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -341,7 +342,7 @@ func getDeviceIdFromHostname(client *resty.Client, hostname string) (string, err
         } `json:"devices"`
     }
 
-    resp, err := client.R().
+    err := client.R().
         SetResult(&apiResp).
         Get(fmt.Sprintf("/api/2.0/devices/?name=%s", url.QueryEscape(hostname)))
 
