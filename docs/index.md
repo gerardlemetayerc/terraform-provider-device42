@@ -8,7 +8,7 @@ description: |-
 
 # device42 Provider
 
-The Device42 provider is used to interact with resources supported by Device42 through the Foreman REST API.
+The Device42 provider is used to interact with resources supported by Device42 through the Device42 REST API.
 
 Current development are available at [Github](https://github.com/gerardlemetayerc/terraform-provider-device42)
 
