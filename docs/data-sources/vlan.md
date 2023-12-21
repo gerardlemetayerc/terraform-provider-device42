@@ -20,9 +20,6 @@ output "vlan_number" {
   value = data.device42_vlan.example.number
 }
 
-output "vlan_description" {
-  value = data.device42_vlan.example.description
-}
 ```
 
 ## Argument Reference
