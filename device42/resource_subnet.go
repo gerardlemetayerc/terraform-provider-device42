@@ -25,7 +25,7 @@ type apiSubnetReadResponse struct {
 	ParentSubnetId int32         `json:"parent_subnet_id"`
 	Customer       string        `json:"customer"`
 	CustomFields   []customField `json:"custom_fields"`
-	VlanId         int			 `json:"vlan_id"`
+	VlanId         int			 `json:"parent_vlan_id"`
 }
 
 func resourceD42Subnet() *schema.Resource {
@@ -118,8 +118,8 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 		resourceDevice42SubnetCreateForm["mask_bits"] = strconv.Itoa(d.Get("mask_bits").(int))
 	}
 
-	if d.Get("vlan_id").(int) > 0 {
-		resourceDevice42SubnetCreateForm["vlan_id"] = strconv.Itoa(d.Get("vlan_id").(int))
+	if d.Get("vlan").(int) > 0 {
+		resourceDevice42SubnetCreateForm["parent_vlan_id"] = strconv.Itoa(d.Get("vlan").(int))
 	}
 
 	if d.Get("vrf_group").(string) != "" {
@@ -220,7 +220,7 @@ func resourceDevice42SubnetRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("customer", r.Customer)
 	fields := flattenCustomFields(r.CustomFields)
 	d.Set("custom_fields", fields)
-	d.Set("vlan_id", r.VlanId)
+	d.Set("vlan", r.VlanId)
 	return nil
 }
 
@@ -238,8 +238,8 @@ func resourceDevice42SubnetUpdate(d *schema.ResourceData, m interface{}) error {
 	if d.HasChange("vrf_group") {
 		device42SubnetUpdateFormData["vrf_group"] = d.Get("vrf_group").(string)
 	}
-	if d.HasChange("vlan_id") {
-		device42SubnetUpdateFormData["vlan_id"] = strconv.Itoa(d.Get("vlan_id").(int))
+	if d.HasChange("vlan") {
+		device42SubnetUpdateFormData["parent_vlan_id"] = strconv.Itoa(d.Get("vlan").(int))
 	}
 	if d.HasChange("gateway") {
 		device42SubnetUpdateFormData["gateway"] = d.Get("gateway").(string)
