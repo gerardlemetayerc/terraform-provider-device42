@@ -33,6 +33,8 @@ resource "device42_subnet" "myNewNetwork" {
 
 - `vrf_group` (String) Subnet VRF Group
 - `custom_fields` (Map of String) Any custom fields that will be used in device42.
+- `parent_vlan_id` (Int) Parent vlan ID of the subnet.
+
 
 ### Read-Only
 
