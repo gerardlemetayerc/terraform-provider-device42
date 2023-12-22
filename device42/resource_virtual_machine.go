@@ -19,49 +19,13 @@ type customField struct {
 }
 
 type apiDeviceReadResponse struct {
-	Aliases                 []interface{} `json:"aliases"`
-	AssetNo                 string        `json:"asset_no"`
-	Category                string        `json:"category"`
-	Cpucore                 interface{}   `json:"cpucore"`
-	Cpucount                interface{}   `json:"cpucount"`
-	Cpuspeed                interface{}   `json:"cpuspeed"`
 	CustomFields            []customField `json:"custom_fields"`
-	Customer                interface{}   `json:"customer"`
-	Datastores              []interface{} `json:"datastores"`
-	DeviceExternalLinks     []interface{} `json:"device_external_links"`
 	DeviceID                int64         `json:"device_id"`
-	DevicePurchaseLineItems []interface{} `json:"device_purchase_line_items"`
-	HddDetails              interface{}   `json:"hdd_details"`
-	Hddcount                interface{}   `json:"hddcount"`
-	Hddraid                 interface{}   `json:"hddraid"`
-	HddraidType             interface{}   `json:"hddraid_type"`
-	Hddsize                 interface{}   `json:"hddsize"`
-	HwDepth                 interface{}   `json:"hw_depth"`
-	HwModel                 interface{}   `json:"hw_model"`
-	HwModelID               interface{}   `json:"hw_model_id"`
-	HwSize                  interface{}   `json:"hw_size"`
 	ID                      int64         `json:"id"`
-	InService               bool          `json:"in_service"`
-	IPAddresses             []interface{} `json:"ip_addresses"`
-	IsItBladeHost           string        `json:"is_it_blade_host"`
-	IsItSwitch              string        `json:"is_it_switch"`
-	IsItVirtualHost         string        `json:"is_it_virtual_host"`
-	LastUpdated             string        `json:"last_updated"`
-	MacAddresses            []interface{} `json:"mac_addresses"`
-	Manufacturer            interface{}   `json:"manufacturer"`
 	Name                    string        `json:"name"`
-	Nonauthoritativealiases []interface{} `json:"nonauthoritativealiases"`
-	Notes                   string        `json:"notes"`
-	Os                      interface{}   `json:"os"`
-	RAM                     interface{}   `json:"ram"`
-	SerialNo                string        `json:"serial_no"`
 	ServiceLevel            string        `json:"service_level"`
 	Tags                    []interface{} `json:"tags"`
 	Type                    string        `json:"type"`
-	UcsManager              interface{}   `json:"ucs_manager"`
-	UUID                    string        `json:"uuid"`
-	VirtualHostName         interface{}   `json:"virtual_host_name"`
-	VirtualSubtype          string        `json:"virtual_subtype"`
 }
 
 type apiResponse struct {
@@ -208,7 +172,7 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 	d42Url := fmt.Sprintf("/1.0/devices/id/%s/", d.Id())
 	log.Printf("[DEBUG] reading Device on target URL: %s", d42Url)
 	resp, err := client.R().
-		SetResult(apiDeviceReadResponse{}).
+		SetResult(&apiDeviceReadResponse{}).
 		Get(d42Url)
 
 	if err != nil {
