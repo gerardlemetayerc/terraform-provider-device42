@@ -232,7 +232,7 @@ func resourceDevice42DeviceUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 	formData := map[string]string{}
 	name := d.Get("name").(string)
-	d42url := fmt.Sprintf("/2.0/devices/%s", d.Id())
+	d42url := fmt.Sprintf("/2.0/devices/%s/", d.Id())
 
 	if d.HasChange("type") {
 		formData["type"] = d.Get("type").(string)
@@ -241,6 +241,8 @@ func resourceDevice42DeviceUpdate(d *schema.ResourceData, m interface{}) error {
 	if d.HasChange("service_level") {
 		formData["service_level"] = d.Get("service_level").(string)
 	}
+	log.Printf("[DEBUG] resourceDevice42DeviceUpdate - Updating : %s", d42url)
+	log.Printf("[DEBUG] resourceDevice42DeviceUpdate - Pushing new informations : %#v", formData)
 
 	_, err := client.R().
 		SetFormData(formData).
