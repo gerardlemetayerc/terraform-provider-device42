@@ -205,9 +205,11 @@ func resourceDevice42DeviceCreate(d *schema.ResourceData, m interface{}) error {
 // Permit to read data about device in Device42. It use deviceID to query data.
 func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
+	d42Url := fmt.Sprintf(d42Url)
+	log.Printf("[DEBUG] reading Device on target URL: %#v", queryParams)
 	resp, err := client.R().
 		SetResult(apiDeviceReadResponse{}).
-		Get(fmt.Sprintf("/1.0/devices/id/%s/", d.Id()))
+		Get(d42Url)
 
 	if err != nil {
 		log.Printf("[WARN] No device found: %s", d.Id())
@@ -230,10 +232,7 @@ func resourceDevice42DeviceUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 	formData := map[string]string{}
 	name := d.Get("name").(string)
-
-	if d.HasChange("name") {
-		formData["name"] = d.Get("name").(string)
-	}
+	d42url := fmt.Sprintf("/2.0/devices/%s", d.Id())
 
 	if d.HasChange("type") {
 		formData["type"] = d.Get("type").(string)
@@ -241,6 +240,15 @@ func resourceDevice42DeviceUpdate(d *schema.ResourceData, m interface{}) error {
 
 	if d.HasChange("service_level") {
 		formData["service_level"] = d.Get("service_level").(string)
+	}
+
+	_, err := client.R().
+		SetFormData(formData).
+		SetResult(apiResponse{}).
+		Put(d42url)
+	
+	if err != nil {
+		return err
 	}
 
 	if d.HasChange("custom_fields") {
