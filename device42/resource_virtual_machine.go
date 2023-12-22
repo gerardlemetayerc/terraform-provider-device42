@@ -205,8 +205,8 @@ func resourceDevice42DeviceCreate(d *schema.ResourceData, m interface{}) error {
 // Permit to read data about device in Device42. It use deviceID to query data.
 func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
-	d42Url := fmt.Sprintf(d42Url)
-	log.Printf("[DEBUG] reading Device on target URL: %#v", queryParams)
+	d42Url := fmt.Sprintf("/1.0/devices/id/%s/", d.Id())
+	log.Printf("[DEBUG] reading Device on target URL: %s", d42Url)
 	resp, err := client.R().
 		SetResult(apiDeviceReadResponse{}).
 		Get(d42Url)
