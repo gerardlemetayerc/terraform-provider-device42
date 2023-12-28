@@ -53,6 +53,10 @@ func datasourceD42Subnet() *schema.Resource {
 				Optional: true,
 				Computed: true,
 			},
+			"gateway": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"network": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -116,6 +120,8 @@ func datasourceD42SubnetRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("vrf_group_id", r.Subnets[0].VrfGroupId)
 		d.Set("vrf_group_name", r.Subnets[0].VrfGroupName)
 		d.Set("network", r.Subnets[0].Network)
+		d.Set("mask_bits", r.Subnets[0].MaskBits)
+		d.Set("gateway", r.Subnets[0].Gateway)
 		fields := flattenCustomFields(r.Subnets[0].CustomFields)
 		d.Set("custom_fields", fields)
 	} else {
