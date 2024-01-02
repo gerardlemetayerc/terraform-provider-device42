@@ -1,6 +1,6 @@
 ---
 page_title: "device42_device Data Source - terraform-provider-device42"
-subcategory: "network"
+subcategory: "network management"
 description: |-
   
 ---
