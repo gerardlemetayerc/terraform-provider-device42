@@ -25,7 +25,7 @@ type apiIPReadResponse struct {
 	Id           int32             `json:"id"`
 	Ip           string            `json:"ip"`
 	Label        string            `json:"label"`
-	Mac_Address  int64             `json:"mac_address"`
+	Mac_Address  string             `json:"mac_address"`
 	Notes        string            `json:"notes"`
 	Subnet       string            `json:"subnet"`
 	Subnet_id    int32             `json:"subnet_id"`
