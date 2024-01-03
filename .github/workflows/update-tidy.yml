@@ -1,0 +1,30 @@
+name: Update tidy
+
+on:
+  push:
+    tags:
+      - 'tidy-*'
+
+jobs:
+  go-tidy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '^1.18'
+
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Run go mod tidy
+      run: go mod tidy
+
+    - name: Commit changes
+      run: |
+        git config --global user.name 'Charles GERARD-LE METAYER'
+        git config --global user.email 'contact@glm-system.fr'
+        git add go.mod go.sum
+        git diff --staged --quiet || git commit -m "Update go.mod and go.sum"
+        git push origin HEAD:main
