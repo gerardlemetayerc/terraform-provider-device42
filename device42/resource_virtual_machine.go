@@ -183,7 +183,6 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 		Get(d42Url)
 
 	if err != nil {
-		log.Printf("[DEBUG] HTTP Response Status Code: %d", resp.StatusCode())
 		log.Printf("[WARN] No device found: %s", d.Id())
 		d.SetId("")
 		return err
