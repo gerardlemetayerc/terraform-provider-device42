@@ -60,10 +60,7 @@ func datasourceD42PasswordRead(d *schema.ResourceData, m interface{}) error {
 	queryParams := make(url.Values)
 
 	queryParams.Set("plain_text", "yes")
-
-	if v, ok := d.GetOk("category"); ok {
-		queryParams.Set("category", v.(string))
-	}
+	
 	if v, ok := d.GetOk("label"); ok {
 		queryParams.Set("label", v.(string))
 	}

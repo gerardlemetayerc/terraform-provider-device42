@@ -30,15 +30,9 @@ output "password_details" {
 
 The following arguments are supported:
 
-- `category` - (Optional) The category of the password.
-
 - `label` - (Optional) The label of the password.
 
 - `username` - (Optional) The username associated with the password.
-
-- `device` - (Optional) The device associated with the password.
-
-- `appcomp` - (Optional) The application component associated with the password.
 
 - `id` - (Optional) The ID of the password.
 
@@ -47,10 +41,6 @@ The following arguments are supported:
 In addition to all arguments above, the following attributes are exported:
 
 - `password` - The password.
-
-- `device` - The associated device.
-
-- `category` - The category of the password.
 
 - `label` - The label of the password.
 
