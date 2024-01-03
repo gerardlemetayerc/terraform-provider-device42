@@ -319,7 +319,7 @@ func getDeviceIdFromHostname(client *resty.Client, hostname string) (string, err
             Name     string `json:"name"`
         } `json:"devices"`
     }
-	url := "/api/2.0/devices/?name=%s", url.QueryEscape(hostname)
+	url := fmt.Sprintf("/api/2.0/devices/?name=%s", url.QueryEscape(hostname))
 	log.Printf("[DEBUG] Query for hostname on URL : %s", url)
     _, err := client.R().
         SetResult(&apiDeviceLookUp).

@@ -26,11 +26,6 @@ func datasourceD42Password() *schema.Resource {
 		Read:        datasourceD42PasswordRead,
 		Description: "Retrieve passwords information.",
 		Schema: map[string]*schema.Schema{
-			"category": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Category of the password.",
-			},
 			"label": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -45,11 +40,6 @@ func datasourceD42Password() *schema.Resource {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "Password of the account.",
-			},
-			"device": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Device associated with the password.",
 			},
 			"appcomp": {
 				Type:        schema.TypeString,
@@ -80,9 +70,6 @@ func datasourceD42PasswordRead(d *schema.ResourceData, m interface{}) error {
 	if v, ok := d.GetOk("username"); ok {
 		queryParams.Set("username", v.(string))
 	}
-	if v, ok := d.GetOk("device"); ok {
-		queryParams.Set("device", v.(string))
-	}
 	if v, ok := d.GetOk("appcomp"); ok {
 		queryParams.Set("appcomp", v.(string))
 	}
@@ -102,9 +89,7 @@ func datasourceD42PasswordRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	if len(resp.Passwords) > 0 {
-		d.SetId(strconv.Itoa(int((resp.Passwords[0]).id)))
-		d.Set("device_id", (resp.Passwords[0]).DeviceID)
-		d.Set("category", resp.Passwords[0].Category)
+		d.SetId(strconv.Itoa(int((resp.Passwords[0]).ID)))
 		d.Set("username", resp.Passwords[0].Username)
 		d.Set("device", resp.Passwords[0].Device)
 		d.Set("label", resp.Passwords[0].Label)
