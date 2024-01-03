@@ -2,7 +2,6 @@ package device42
 
 import (
 	"fmt"
-	"os"
 	"log"
 	"strconv"
 	"strings"
