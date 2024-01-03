@@ -172,11 +172,6 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 	d42Url := fmt.Sprintf("/1.0/devices/id/%s/", d.Id())
 	log.Printf("[DEBUG] reading Device on target URL: %s", d42Url)
-	tfLog := os.Getenv("TF_LOG")
-	log.Printf("[DEBUG] tfLOG is set to : %s, activating resty debug log (warning: some credentials could appear in logs...)", tfLog)
-	if tfLog == "DEBUG" {
-		client.SetDebug(true)
-	}
 
 	var resp apiDeviceReadResponse
 	_, err := client.R().
