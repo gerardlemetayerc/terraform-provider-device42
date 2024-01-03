@@ -21,6 +21,7 @@ Current development are available at [Github](https://github.com/gerardlemetayer
 - `d42_username` (String) The username to authenticate with Device42.
 
 ### Optional field(s)
+
 - `d42_tls_unsecure` (Boolean) Whether to perform TLS cert verification on the server's certificate. Defaults to `false`.
 
 ### Exemple
@@ -40,17 +41,15 @@ provider "device42" {
   d42_username = "${var.d42_username}" # CAN BE SET AS ENV VARIABLE
   d42_password = "${var.d42_password}" # CAN BE SET AS ENV VARIABLE
   d42_host     = "${var.d42_host}"     # CAN BE SET AS ENV VARIABLE
-
-  # Optionnal, if TLS certificate not trusted by your system, set following value to true
-  d42_tls_unsecure = true
+  d42_tls_unsecure = true              # Optionnal, if TLS certificate not trusted by your system, set following value to true
 }
 ```
 
-* In your favorite shell :
+* Configuration using environment variables in your favorite shell:
 ```bash
 export D42_USERNAME="changeit"
 export D42_PASSWORD="changeit"
 export D42_HOST="changeit"
 terraform init && terraform plan && terraform apply
 ```
-
+Make sure to replace "changeit" by a real value.
