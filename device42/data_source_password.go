@@ -90,7 +90,7 @@ func datasourceD42PasswordRead(d *schema.ResourceData, m interface{}) error {
 		queryParams.Set("id", strconv.Itoa(v.(int)))
 	}
 
-	var resp apiDeviceReadResponse
+	var resp datasourceD42PasswordResponse
 	_, err := client.R().
 		SetResult(resp{}).
 		SetQueryParamsFromValues(queryParams).
@@ -101,7 +101,7 @@ func datasourceD42PasswordRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	if len(r.Passwords) > 0 {
+	if len(resp.Passwords) > 0 {
 		d.SetId(strconv.Itoa(int((resp.Passwords[0]).id)))
 		d.Set("device_id", (resp.Passwords[0]).DeviceID)
 		d.Set("category", resp.Passwords[0].Category)
