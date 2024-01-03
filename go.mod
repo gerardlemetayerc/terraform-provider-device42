@@ -3,8 +3,8 @@ module github.com/gerardlemetayerc/terraform-provider-device42
 go 1.19
 
 require (
-	github.com/go-resty/resty/v2 v2.7.0
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.24.1
+	github.com/go-resty/resty/v2 v2.11.0
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.31.0
 
 )
 
