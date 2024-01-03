@@ -313,25 +313,28 @@ func suppressCustomFieldsDiffs(k, old, new string, d *schema.ResourceData) bool 
 }
 
 func getDeviceIdFromHostname(client *resty.Client, hostname string) (string, error) {
-    var apiResp struct {
+    var apiDeviceLookUp struct {
         TotalCount int `json:"total_count"`
         Devices    []struct {
             DeviceID int64  `json:"device_id"`
             Name     string `json:"name"`
         } `json:"devices"`
     }
-
+	url := "/api/2.0/devices/?name=%s", url.QueryEscape(hostname)
+	log.Printf("[DEBUG] Query for hostname on URL : %s", url)
     _, err := client.R().
-        SetResult(&apiResp).
-        Get(fmt.Sprintf("/api/2.0/devices/?name=%s", url.QueryEscape(hostname)))
+        SetResult(&apiDeviceLookUp).
+        Get(url)
 
+
+	log.Printf("[DEBUG] Data from device lookup : %#v", apiDeviceLookUp)
     if err != nil {
         return "", fmt.Errorf("error querying Device42 API: %s", err)
     }
 
-    if len(apiResp.Devices) == 0 {
+    if len(apiDeviceLookUp.Devices) == 0 {
         return "", fmt.Errorf("no device found with hostname: %s", hostname)
     }
 
-    return strconv.FormatInt(apiResp.Devices[0].DeviceID, 10), nil
+    return strconv.FormatInt(apiDeviceLookUp.Devices[0].DeviceID, 10), nil
 }

@@ -79,6 +79,7 @@ func Provider() *schema.Provider {
 			"device42_subnet":      datasourceD42Subnet(),
 			"device42_suggestedIp": datasourceD42SuggestedIp(),
 			"device42_businessapp": datasourceD42BusinessApp(),
+			"device42_password":    datasourceD42Password(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
