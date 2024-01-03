@@ -25,8 +25,7 @@ jobs:
       run: |
         git config --global user.name 'Charles GERARD-LE METAYER'
         git config --global user.email 'contact@glm-system.fr'
-        git branch -a "tidy-upgrade"
-        git checkout "tidy-upgrade"
+        git checkout -b "tidy-upgrade"
         git add go.mod go.sum
         git diff --staged --quiet || git commit -m "Update go.mod and go.sum"
-        git push --set-upstream origin "tidy-upgrade"
+        git push -u origin "tidy-upgrade"
