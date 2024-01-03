@@ -94,7 +94,7 @@ func datasourceD42SubnetRead(d *schema.ResourceData, m interface{}) error {
 		queryParams.Set("network", network)
 
 	}
-	client.SetDebug(true)
+	
 	resp, err := client.R().
 		SetResult(datasourceD42SubnetResponse{}).
 		SetHeader("Accept", "application/json").

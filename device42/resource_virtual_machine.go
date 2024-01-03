@@ -2,6 +2,7 @@ package device42
 
 import (
 	"fmt"
+	"os"
 	"log"
 	"strconv"
 	"strings"
@@ -171,22 +172,32 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 	d42Url := fmt.Sprintf("/1.0/devices/id/%s/", d.Id())
 	log.Printf("[DEBUG] reading Device on target URL: %s", d42Url)
-	resp, err := client.R().
-		SetResult(&apiDeviceReadResponse{}).
+	tfLog := os.Getenv("TF_LOG")
+	if tfLog == "DEBUG" {
+		client.SetDebug(true)
+	}
+	
+	var resp apiDeviceReadResponse
+	_, err := client.R().
+		SetResult(&resp).
 		Get(d42Url)
 
 	if err != nil {
+		if resp != nil {
+			log.Printf("[DEBUG] HTTP Response Status Code: %d", resp.StatusCode())
+		}
 		log.Printf("[WARN] No device found: %s", d.Id())
 		d.SetId("")
 		return err
 	}
 
-	r := resp.Result().(*apiDeviceReadResponse)
-	fields := flattenCustomFields(r.CustomFields)
+	// Update main fields
+	d.Set("name", resp.Name)
+	d.Set("type", resp.Type)
+	d.Set("service_level", resp.ServiceLevel)
 
-	d.Set("name", r.Name)
-	d.Set("type", r.Type)
-	d.Set("service_level", r.ServiceLevel)
+	// Add custom fields
+	fields := flattenCustomFields(resp.CustomFields)
 	d.Set("custom_fields", fields)
 
 	return nil
