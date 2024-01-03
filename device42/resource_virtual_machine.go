@@ -176,16 +176,14 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 	if tfLog == "DEBUG" {
 		client.SetDebug(true)
 	}
-	
+
 	var resp apiDeviceReadResponse
 	_, err := client.R().
 		SetResult(&resp).
 		Get(d42Url)
 
 	if err != nil {
-		if resp != nil {
-			log.Printf("[DEBUG] HTTP Response Status Code: %d", resp.StatusCode())
-		}
+		log.Printf("[DEBUG] HTTP Response Status Code: %d", resp.StatusCode())
 		log.Printf("[WARN] No device found: %s", d.Id())
 		d.SetId("")
 		return err
