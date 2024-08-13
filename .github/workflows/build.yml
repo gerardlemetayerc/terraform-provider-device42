@@ -38,6 +38,8 @@ jobs:
         chmod +x "build/terraform-provider-device42_${version}_linux_386"
         env GOOS=windows GOARCH=amd64 go build -o "build/terraform-provider-device42_${version}_windows_amd64.exe"
         env GOOS=windows GOARCH=386 go build -o "build/terraform-provider-device42_${version}_windows_386.exe"
+        env GOOS=darwin GOARCH=amd64 go build -o "build/terraform-provider-device42_${version}_darwin_amd64.exe"
+        env GOOS=darwin GOARCH=386 go build -o "build/terraform-provider-device42_${version}_darwin_386.exe"
 
         echo "---- ZIP directory folders"
         cd build
@@ -49,6 +51,10 @@ jobs:
         rm -f "terraform-provider-device42_${version}_windows_amd64.exe"
         zip "terraform-provider-device42_${version}_windows_386.zip" "terraform-provider-device42_${version}_windows_386.exe"
         rm "terraform-provider-device42_${version}_windows_386.exe"
+        zip "terraform-provider-device42_${version}_darwin_amd64.zip" "terraform-provider-device42_${version}_darwin_amd64.exe"
+        rm -f "terraform-provider-device42_${version}_darwin_amd64.exe"
+        zip "terraform-provider-device42_${version}_darwin_386.zip" "terraform-provider-device42_${version}_darwin_386.exe"
+        rm "terraform-provider-device42_${version}_darwin_386.exe"
 
         echo "---- Signing documents"
         echo '{
