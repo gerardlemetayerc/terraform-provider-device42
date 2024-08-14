@@ -1,12 +1,12 @@
 package device42
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"net/url"
 	"strconv"
 	"strings"
-	"net/url"
-	"context"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -19,13 +19,13 @@ type customField struct {
 }
 
 type apiDeviceReadResponse struct {
-	CustomFields            []customField `json:"custom_fields"`
-	DeviceID                int64         `json:"device_id"`
-	ID                      int64         `json:"id"`
-	Name                    string        `json:"name"`
-	ServiceLevel            string        `json:"service_level"`
-	Tags                    []interface{} `json:"tags"`
-	Type                    string        `json:"type"`
+	CustomFields []customField `json:"custom_fields"`
+	DeviceID     int64         `json:"device_id"`
+	ID           int64         `json:"id"`
+	Name         string        `json:"name"`
+	ServiceLevel string        `json:"service_level"`
+	Tags         []interface{} `json:"tags"`
+	Type         string        `json:"type"`
 }
 
 type apiResponse struct {
@@ -80,18 +80,18 @@ func resourceD42Device() *schema.Resource {
 		},
 
 		Importer: &schema.ResourceImporter{
-		    StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
-		        client := m.(*resty.Client)
-		        hostname := d.Id()
-		
-		        deviceId, err := getDeviceIdFromHostname(client, hostname)
-		        if err != nil {
-		            return nil, err
-		        }
-		
-		        d.SetId(deviceId)
-		        return []*schema.ResourceData{d}, nil
-		    },
+			StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+				client := m.(*resty.Client)
+				hostname := d.Id()
+
+				deviceId, err := getDeviceIdFromHostname(client, hostname)
+				if err != nil {
+					return nil, err
+				}
+
+				d.SetId(deviceId)
+				return []*schema.ResourceData{d}, nil
+			},
 		},
 	}
 }
@@ -215,7 +215,7 @@ func resourceDevice42DeviceUpdate(d *schema.ResourceData, m interface{}) error {
 		SetFormData(formData).
 		SetResult(apiResponse{}).
 		Put(d42url)
-	
+
 	if err != nil {
 		return err
 	}
@@ -312,28 +312,28 @@ func suppressCustomFieldsDiffs(k, old, new string, d *schema.ResourceData) bool 
 }
 
 func getDeviceIdFromHostname(client *resty.Client, hostname string) (string, error) {
-    var apiDeviceLookUp struct {
-        TotalCount int `json:"total_count"`
-        Devices    []struct {
-            DeviceID int64  `json:"device_id"`
-            Name     string `json:"name"`
-        } `json:"devices"`
-    }
+	var apiDeviceLookUp struct {
+		TotalCount int `json:"total_count"`
+		Devices    []struct {
+			DeviceID int64  `json:"device_id"`
+			Name     string `json:"name"`
+		} `json:"devices"`
+	}
 	url := fmt.Sprintf("/api/2.0/devices/?name=%s", url.QueryEscape(hostname))
 	log.Printf("[DEBUG] Query for hostname on URL : %s", url)
-    _, err := client.R().
-        SetResult(&apiDeviceLookUp).
-        Get(url)
-
+	client.SetDebug(true)
+	_, err := client.R().
+		SetResult(&apiDeviceLookUp).
+		Get(url)
 
 	log.Printf("[DEBUG] Data from device lookup : %#v", apiDeviceLookUp)
-    if err != nil {
-        return "", fmt.Errorf("error querying Device42 API: %s", err)
-    }
+	if err != nil {
+		return "", fmt.Errorf("error querying Device42 API: %s", err)
+	}
 
-    if len(apiDeviceLookUp.Devices) == 0 {
-        return "", fmt.Errorf("no device found with hostname: %s", hostname)
-    }
+	if len(apiDeviceLookUp.Devices) == 0 {
+		return "", fmt.Errorf("no device found with hostname: %s", hostname)
+	}
 
-    return strconv.FormatInt(apiDeviceLookUp.Devices[0].DeviceID, 10), nil
+	return strconv.FormatInt(apiDeviceLookUp.Devices[0].DeviceID, 10), nil
 }
