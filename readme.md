@@ -10,6 +10,14 @@ It currently provide support for following ressources :
 - Subnet
 - Device
 
+## Version v1.3.13
+
+This release includes new features :
+- Implemented import functionnality on device (works now)
+- Added build for Mac OS (darwin architecture - issue #70 reported by @gowgopal83)
+- Fixed issue on datasource (resty client was displaying too much information because debug mode)
+
+
 ## Version v1.3.10
 
 This release includes new features, performance improvements, enhanced debugging, and critical bug fixes.

@@ -39,4 +39,13 @@ resource "device42_device" "myNewVM" {
 
 - `id` (String) The ID of this resource.
 
+### Import
 
+Device object support ressource importation by device name.
+
+
+Exemple :
+
+```hcl
+terraform import module.vm.device42_device.host myVMName
+```
