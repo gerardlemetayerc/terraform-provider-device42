@@ -22,8 +22,10 @@ This release adds support for the physical infrastructure layer of Device42 (Bui
 - Added `device42_building` resource and datasource to manage Device42 buildings (address, contact, latitude/longitude, tags, custom fields, import by name).
 - Added `device42_room` resource and datasource to manage rooms, linked to a building via `building_id` or `building`.
 - Added `device42_rack` resource and datasource to manage racks, with size, manufacturer, building/room placement and orientation.
-- All three resources support import (`terraform import`) and custom fields, reusing the existing `device42` error-handling and custom-field helpers.
+- Added `device42_customer` resource and datasource to manage Device42 customers (manager, notes, contact_info, tags, custom fields, import by name).
+- All resources support import (`terraform import`) and custom fields, reusing the existing `device42` error-handling and custom-field helpers.
 - Fixed type handling for building `latitude`/`longitude` (the API returns JSON numbers or null, not always strings) and ensured room custom fields survive a read refresh.
+- Fixed device archive response decoding (the archive endpoint returns a bare JSON array, not the usual `{code,msg}` object).
 
 ## Version v1.3.13
 
