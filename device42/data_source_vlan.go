@@ -51,7 +51,7 @@ func datasourceD42VlanRead(d *schema.ResourceData, m interface{}) error {
 		SetResult(datasourceD42VlanResponse{}).
 		SetHeader("Accept", "application/json").
 		SetQueryParamsFromValues(queryParams).
-		Get("/1.0/vlans/?" + queryParams.Encode())
+		Get("/1.0/vlans/")
 	log.Printf("[DEBUG] targetURl: %s", "/1.0/vlans/")
 	if err != nil {
 		log.Printf("[WARN] No vlans found: %s", d.Id())
