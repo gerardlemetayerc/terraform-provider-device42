@@ -26,6 +26,7 @@ resource "device42_businessapp" "myNewBusinessApp" {
 
 ### Optional
 
+- `app_type_id` (String) Business App type.
 - `business_app_owner_id` (String) Business application owner ID.
 - `cust_owner_id` (String) Customer owner ID.
 - `description` (String) Description of the Business Application.
@@ -34,9 +35,18 @@ resource "device42_businessapp" "myNewBusinessApp" {
 - `service_level` (String) Service Level name (do not use with service_level_id)
 - `service_level_id` (String) D42 ID of service level name (do not use with service_level).
 - `technical_app_owner_id` (String) Technical application owner ID.
+- `vendor` (String) Business Application vendor
 
 ### Read-Only
 
+- `app_type` (String) Business App type.
+- `business_app_owner` (String) Business application owner name.
+- `custom_fields` (Map of String) Any custom fields that will be used in device42.
 - `id` (String) The ID of this resource.
+- `is_contains_pii` (Boolean) Whether the Business Application contains PII.
+- `is_internet_accessible` (Boolean) Whether the Business Application is accessible from the internet.
+- `last_changed` (String) Last change date of the Business Application.
+- `notes` (String) Any additional notes for the Business Application.
+- `technical_app_owner` (String) Technical application owner name.
 
 

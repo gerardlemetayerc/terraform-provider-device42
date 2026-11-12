@@ -31,7 +31,6 @@ The following arguments are supported:
 ## Attribute Reference
 In addition to all arguments above, the following attributes are exported:
 
-- `name` - The name of the VLAN.
-- `description` - A description of the VLAN.
+- `id` - The unique identifier for the VLAN in Device42.
 
 Note: Only one of vlan_id or number should be provided to query a VLAN. If both are provided, vlan_id will take precedence.

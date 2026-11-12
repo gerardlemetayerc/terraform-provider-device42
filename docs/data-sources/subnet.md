@@ -38,9 +38,11 @@ datasource "device42_subnet" "searchSubnet3" {
 - `network`(String) Network ID string (eg : 192.168.1.0)
 - `mask_bits`(Int) Network mask bit
 - `vrf_group_name` (String) VRF Group name
+- `vrf_group_id` (Int) VRF Group ID
 
 ### Computed
 
+- `custom_fields` (Map of String) Any custom fields that will be used in device42.
+- `gateway` (String) The gateway of the subnet.
 - `range_begin` (String) Subnet range start.
-- `range_end`(String) Subnet range start.
-- `vrf_group_id` (Int) VRF Group ID
+- `range_end`(String) Subnet range end.

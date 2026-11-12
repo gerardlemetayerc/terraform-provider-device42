@@ -17,12 +17,13 @@ Current development are available at [Github](https://github.com/gerardlemetayer
 ### Mandatory fields
 
 - `d42_host` (String) The device42 server to interact with.
-- `d42_password` (String) The password to authenticate with Device42.
+- `d42_password` (String, Sensitive) The password to authenticate with Device42.
 - `d42_username` (String) The username to authenticate with Device42.
 
 ### Optional field(s)
 
 - `d42_tls_unsecure` (Boolean) Whether to perform TLS cert verification on the server's certificate. Defaults to `false`.
+- `timeout` (Number) Timeout in seconds for API requests. Defaults to `30`.
 
 ### Exemple
 

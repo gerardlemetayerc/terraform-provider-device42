@@ -38,7 +38,6 @@ resource "device42_ip" "ip2" {
 ## Schema
 
 - `ip` (String - Optional) - Network of the subnet. Required for creation, cannot be modified after - subnet creation.
-- `subnet` (String - Optional) - Subnet name of the IP.
 - `subnet_id` (Int - Optional) - Subnet ID.
 - `available` (String - Optional) - Whether the IP is available or not. Typically "yes" or "no".
 - `vrf_group_id` (Int -Optional) - Subnet VRF Group ID.

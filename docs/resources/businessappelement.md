@@ -25,6 +25,7 @@ The following arguments are supported:
 
 - `businessapp_id` (Int - Required) - The ID of an existing Business Application to add elements (devices) to.
 - `device_id` (Int - Required) - ID of an element (device) to add to the business app.
+- `device_name` (String - Required) - Name of the to add to the business app.
 
 ## Computed
 

@@ -25,18 +25,25 @@ resource "device42_subnet" "myNewNetwork" {
 
 ### Required
 
+- `mask_bits` (Number) Mask bits of the subnet. Required for creation, can be modified after subnet creation.
+- `name` (String) Subnet name.
 - `network` (String) Network of the subnet. Required for creation, cannot be modified after subnet creation.
-- `mask_bits` (String) Mask bits of the subnet. Required for creation, can be modified after subnet creation.
 
 ### Optional
 
-- `vrf_group` (String) Subnet VRF Group
+- `category` (String) Subnet category.
+- `customer` (String) Customer attached to this network.
 - `custom_fields` (Map of String) Any custom fields that will be used in device42.
-- `parent_vlan_id` (Int) Parent vlan ID of the subnet.
-
+- `description` (String) Description of the subnet.
+- `gateway` (String) Subnet gateway.
+- `parent_subnet_id` (Number) Parent subnet id.
+- `parent_vlan_id` (Number) Parent vlan ID of the subnet.
+- `service_level` (String) Subnet service level.
+- `vrf_group` (String) Subnet VRF Group
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `vrf_group_id` (Number) VRF Group ID.
 
 
