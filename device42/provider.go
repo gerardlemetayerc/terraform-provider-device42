@@ -60,9 +60,9 @@ func Provider() *schema.Provider {
 					"Defaults to `false`.",
 			},
 			"timeout": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  30,
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Default:     30,
 				Description: "Timeout in seconds for API requests.",
 			},
 		},
@@ -73,6 +73,9 @@ func Provider() *schema.Provider {
 			"device42_businessappelement": resourceD42BusinessAppsElement(),
 			"device42_vlan":               resourceD42Vlans(),
 			"device42_ip":                 resourceD42Ip(),
+			"device42_building":           resourceD42Building(),
+			"device42_room":               resourceD42Room(),
+			"device42_rack":               resourceD42Rack(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"device42_device":      datasourceD42Device(),
@@ -81,6 +84,9 @@ func Provider() *schema.Provider {
 			"device42_suggestedIp": datasourceD42SuggestedIp(),
 			"device42_businessapp": datasourceD42BusinessApp(),
 			"device42_password":    datasourceD42Password(),
+			"device42_building":    datasourceD42Building(),
+			"device42_room":        datasourceD42Room(),
+			"device42_rack":        datasourceD42Rack(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
