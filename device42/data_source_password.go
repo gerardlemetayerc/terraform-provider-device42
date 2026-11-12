@@ -70,7 +70,7 @@ func datasourceD42PasswordRead(d *schema.ResourceData, m interface{}) error {
 	_, err := client.R().
 		SetResult(&resp).
 		SetQueryParamsFromValues(queryParams).
-		Get("/api/1.0/passwords/")
+		Get("/1.0/passwords/")
 
 	if err != nil {
 		log.Printf("[WARN] No password found: %s", err)
