@@ -154,7 +154,7 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[DEBUG] resourceDevice42SubnetCreate - Result: %#v", r)
-	if len(r.Msg) > 0 {
+	if len(r.Msg) > 1 {
 		id := int(r.Msg[1].(float64))
 		// Set ID after subnet creation
 		d.SetId(strconv.Itoa(id))
@@ -171,8 +171,6 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 			queryParams["vrf_group"] = resourceDevice42SubnetCreateForm["vrf_group"]
 			queryParams["bulk_fields"] = strings.Join(bulkFields, ",")
 			log.Printf("[DEBUG] resourceDevice42SubnetCreate - Pushing custom_fields %s", queryParams)
-			client := m.(*resty.Client)
-			client.SetDebug(true)
 			resp, err := client.R().
 				SetFormData(queryParams).
 				SetResult(apiResponse{}).
@@ -274,7 +272,6 @@ func resourceDevice42SubnetUpdate(d *schema.ResourceData, m interface{}) error {
 			queryParams["value"] = v.(string)
 
 			log.Printf("[DEBUG] resourceDevice42SubnetUpdate custom_fields  : %#v", queryParams)
-			client.SetDebug(true)
 			resp, err := client.R().
 				SetResult(apiResponse{}).
 				SetFormData(queryParams).

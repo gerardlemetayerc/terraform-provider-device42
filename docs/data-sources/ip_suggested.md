@@ -44,4 +44,5 @@ resource "device42_ip" "ip" {
 
 ### Computed
 
-- `ip` (String) Free IP returned by Device42 API.
+- `id` (String) IP as an ID.
+- `ip` (String) Calculated free IP.

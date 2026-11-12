@@ -99,7 +99,7 @@ func datasourceD42SubnetRead(d *schema.ResourceData, m interface{}) error {
 		SetResult(datasourceD42SubnetResponse{}).
 		SetHeader("Accept", "application/json").
 		SetQueryParamsFromValues(queryParams).
-		Get("/1.0/subnets/?" + queryParams.Encode())
+		Get("/1.0/subnets/")
 	log.Printf("[DEBUG] targetURl: %s", "/1.0/subnets/")
 	if err != nil {
 		log.Printf("[WARN] No subnet found: %s", d.Id())

@@ -25,7 +25,7 @@ output "businessapp_custom_fields" {
 
 The following arguments are supported:
 
-- `name` (String - Mandatory) - The name of the business application you wish to retrieve.
+- `name` (String - Optional) - The name of the business application you wish to retrieve.
 
 ## Attribute Reference
 

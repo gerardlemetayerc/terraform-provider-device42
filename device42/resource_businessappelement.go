@@ -66,6 +66,9 @@ func resourceDevice42BusinessAppsElementRead(d *schema.ResourceData, m interface
 	r := resp.Result().(*apiBusinessAppsElementApiResponse)
 	str := fmt.Sprintf("%v", r)
 	log.Printf("[DEBUG] resourceDevice42BusinessAppsElementRead - API data %s", str)
+	if len(r.BusinessappElements) == 0 {
+		return fmt.Errorf("no businessapp element found for query %s", query)
+	}
 	d.SetId(r.BusinessappElements[0].BusinessAppElementUUID)
 	return nil
 }

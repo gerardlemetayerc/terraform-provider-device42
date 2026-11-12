@@ -52,7 +52,7 @@ func datasourceD42SuggestedIpRead(d *schema.ResourceData, m interface{}) error {
 	if name != "" {
 		queryString = fmt.Sprintf("name=%s", name)
 		separator = "&"
-		d.Set("name", name)
+		d.Set("subnet_name", name)
 	}
 	if subnet_id > 0 {
 		queryString = queryString + separator + fmt.Sprintf("subnet_id=%s", strconv.Itoa(subnet_id))

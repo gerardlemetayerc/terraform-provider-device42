@@ -30,10 +30,10 @@ resource "device42_device" "myNewVM" {
 
 ### Optional
 
+- `archive_on_destroy` (String) Archive device on destroy action.
 - `custom_fields` (Map of String) Any custom fields that will be used in device42.
 - `service_level` (String) Service Level of the device (default is d42null).
 - `type` (String) The type of the device. Valid values are 'physical', 'virtual', 'unknown', 'cluster' (default is virtual)
-- `archive_on_destroy (bool)` Specify if ressource need to be archived on destroy call **(default value: false)**
 
 ### Read-Only
 

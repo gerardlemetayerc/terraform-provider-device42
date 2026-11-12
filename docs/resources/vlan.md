@@ -24,12 +24,14 @@ resource "device42_vlan" "myBrandNewVlan" {
 
 ### Required
 
-- `number` (String) Network of the subnet. Required for creation, cannot be modified after subnet creation.
+- `number` (String) VLAN ID Number.
 
 ### Optional
 
-- `name`(String) Name of the vlan.
-- `description` (String) Description of the vlan
+- `name` (String) If left blank, name will be created as VLANxxxx, e.g. VLAN# 342 will be named VLAN0342.
+- `description` (String) Description of the vlan.
+- `tags` (String) Add or update tags to a VLAN.
+- `notes` (String) Any additional notes.
 
 ### Read-Only
 

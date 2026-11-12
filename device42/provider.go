@@ -34,8 +34,9 @@ func Provider() *schema.Provider {
 				Description: "The device42 server to interact with.",
 			},
 			"d42_password": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:      schema.TypeString,
+				Optional:  true,
+				Sensitive: true,
 				DefaultFunc: schema.EnvDefaultFunc(
 					PasswordEnv,
 					"",

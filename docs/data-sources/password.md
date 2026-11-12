@@ -40,7 +40,7 @@ The following arguments are supported:
 
 In addition to all arguments above, the following attributes are exported:
 
-- `password` - The password.
+- `password` - The password of the account. This value is marked as sensitive and will not be displayed in plan or state output.
 
 - `label` - The label of the password.
 

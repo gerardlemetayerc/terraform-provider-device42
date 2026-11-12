@@ -37,8 +37,9 @@ func datasourceD42Password() *schema.Resource {
 				Description: "Username associated with the password.",
 			},
 			"password": {
-				Type:        schema.TypeString,
-				Computed:    true,
+				Type:      schema.TypeString,
+				Computed:  true,
+				Sensitive: true,
 				Description: "Password of the account.",
 			},
 			"id": {
@@ -70,7 +71,7 @@ func datasourceD42PasswordRead(d *schema.ResourceData, m interface{}) error {
 	_, err := client.R().
 		SetResult(&resp).
 		SetQueryParamsFromValues(queryParams).
-		Get("/api/1.0/passwords/")
+		Get("/1.0/passwords/")
 
 	if err != nil {
 		log.Printf("[WARN] No password found: %s", err)

@@ -119,6 +119,26 @@ func resourceD42BusinessApps() *schema.Resource {
 				Computed:    true,
 				Description: "Any custom fields that will be used in device42.",
 			},
+			"is_contains_pii": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Whether the Business Application contains PII.",
+			},
+			"is_internet_accessible": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Whether the Business Application is accessible from the internet.",
+			},
+			"last_changed": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Last change date of the Business Application.",
+			},
+			"notes": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Any additional notes for the Business Application.",
+			},
 		},
 	}
 }
@@ -138,25 +158,22 @@ func resourceDevice42BusinessAppsRead(d *schema.ResourceData, m interface{}) err
 	r := resp.Result().(*apiBusinessAppsReadResponse)
 	d.Set("name", r.Name)
 	d.Set("description", r.Description)
-	d.Set("business_app_owner_id", r.BusinessAppOwerId)
+	d.Set("business_app_owner_id", strconv.FormatInt(r.BusinessAppOwerId, 10))
 	d.Set("business_app_owner", r.BusinessAppOwner)
 	d.Set("app_type", r.AppType)
-	d.Set("app_type_id", r.AppTypeId)
-	d.Set("created", r.Created)
-	d.Set("criticality_id", r.CriticalityId)
-	d.Set("cust_owner", r.CustOwner)
-	d.Set("cust_owner_id", r.CustOwnerId)
+	d.Set("app_type_id", strconv.FormatInt(r.AppTypeId, 10))
+	d.Set("cust_owner_id", strconv.FormatInt(r.CustOwnerId, 10))
 	d.Set("is_contains_pii", r.IsContainsPII)
 	d.Set("is_internet_accessible", r.IsInternetAccessible)
 	d.Set("last_changed", r.LastChanged)
 	d.Set("migration_group", r.MigrationGroup)
-	d.Set("migration_group_id", r.MigrationGroupId)
+	d.Set("migration_group_id", strconv.FormatInt(r.MigrationGroupId, 10))
 	d.Set("notes", r.Notes)
 	d.Set("service_level", r.ServiceLevel)
-	d.Set("service_level_id", r.ServiceLevelId)
+	d.Set("service_level_id", strconv.FormatInt(r.ServiceLevelId, 10))
 	d.Set("technical_app_owner", r.TechnicalAppOwner)
-	d.Set("technical_app_owner_id", r.TechnicalAppOwnerId)
-	d.Set("vendor", r.VendorId)
+	d.Set("technical_app_owner_id", strconv.FormatInt(r.TechnicalAppOwnerId, 10))
+	d.Set("vendor", strconv.FormatInt(r.VendorId, 10))
 	fields := flattenCustomFields(r.CustomFields)
 	d.Set("custom_fields", fields)
 	return nil
