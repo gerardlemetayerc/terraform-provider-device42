@@ -258,22 +258,22 @@ func resourceDevice42DeviceDelete(d *schema.ResourceData, m interface{}) error {
 		resp1, err := client.R().
 			SetResult(apiArchiveResponse{}).
 			Post(url)
-		r1 := resp1.Result().(*apiArchiveResponse)
-		log.Printf("[DEBUG] Result: %#v", r1)
 		if err != nil {
 			log.Printf("[ERROR] Failed to archive Device ID %s", d.Id())
 			return err
 		}
+		r1 := resp1.Result().(*apiArchiveResponse)
+		log.Printf("[DEBUG] Result: %#v", r1)
 		return nil
 	} else {
 		resp2, err := client.R().
 			SetResult(apiResponse{}).
 			Delete(url)
-		r2 := resp2.Result().(*apiResponse)
-		log.Printf("[DEBUG] Result: %#v", r2)
 		if err != nil {
 			return err
 		}
+		r2 := resp2.Result().(*apiResponse)
+		log.Printf("[DEBUG] Result: %#v", r2)
 		return nil
 	}
 }
