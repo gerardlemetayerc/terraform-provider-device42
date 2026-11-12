@@ -1,6 +1,7 @@
 package device42
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
@@ -25,7 +26,7 @@ type apiIPReadResponse struct {
 	Id           int32             `json:"id"`
 	Ip           string            `json:"ip"`
 	Label        string            `json:"label"`
-	Mac_Address  string             `json:"mac_address"`
+	Mac_Address  string            `json:"mac_address"`
 	Notes        string            `json:"notes"`
 	Subnet       string            `json:"subnet"`
 	Subnet_id    int32             `json:"subnet_id"`
@@ -82,6 +83,20 @@ func resourceD42Ip() *schema.Resource {
 				Optional:    true,
 				Description: "Use device42 IP suggestion functionnality to retrieve available IP.",
 				Default:     false,
+			},
+		},
+
+		Importer: &schema.ResourceImporter{
+			StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+				// The import key is the Device42 IP id. Validate it is numeric so a
+				// malformed key fails fast; resourceDevice42IpRead then populates the
+				// remaining fields via /2.0/ips/?ip_id=<id>.
+				id, err := strconv.Atoi(d.Id())
+				if err != nil {
+					return nil, fmt.Errorf("expected ip id to be a numeric id, got %q", d.Id())
+				}
+				d.SetId(strconv.Itoa(id))
+				return []*schema.ResourceData{d}, nil
 			},
 		},
 	}
