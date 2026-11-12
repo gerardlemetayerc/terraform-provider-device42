@@ -10,10 +10,10 @@ description: |-
 ## Exemple 
 
 ```hcl
-resource "device42_vlan" "myBrandNewVlan" {
-    name            = "myNewVlan"
-    number          = 16
-    description     = "This is the new vlan description"
+resource "device42_vlan" "myNewVlan" {
+   name   = "test"
+   number = "5"
+   description = "My new description"
 }
 ```
 
