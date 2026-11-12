@@ -2,6 +2,7 @@ package device42
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
@@ -28,13 +29,37 @@ type apiDeviceReadResponse struct {
 	Type         string        `json:"type"`
 }
 
+// apiCode tolerates Device42's inconsistent `code` encoding: some endpoints
+// return a JSON number (0), others a quoted string ("0"). A plain int64 fails
+// to unmarshal the string form, which breaks the operation.
+type apiCode int64
+
+func (c *apiCode) UnmarshalJSON(b []byte) error {
+	var s string
+	if err := json.Unmarshal(b, &s); err == nil {
+		v, err := strconv.ParseInt(strings.TrimSpace(s), 10, 64)
+		if err != nil {
+			return fmt.Errorf("cannot parse code %q: %w", s, err)
+		}
+		*c = apiCode(v)
+		return nil
+	}
+	var n int64
+	if err := json.Unmarshal(b, &n); err == nil {
+		*c = apiCode(n)
+		return nil
+	}
+	return fmt.Errorf("cannot unmarshal code value: %s", string(b))
+}
+
 type apiResponse struct {
-	Code int64         `json:"code"`
+	Code apiCode        `json:"code"`
 	Msg  []interface{} `json:"msg"`
 }
 
 type apiArchiveResponse struct {
-	Code int64 `json:"code"`
+	Code apiCode `json:"code"`
+	Msg  []interface{} `json:"msg"`
 }
 
 func resourceD42Device() *schema.Resource {

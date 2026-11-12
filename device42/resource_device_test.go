@@ -1,6 +1,7 @@
 package device42
 
 import (
+	"encoding/json"
 	"reflect"
 	"testing"
 
@@ -82,4 +83,47 @@ func TestSuppressCustomFieldsDiffs(t *testing.T) {
 			t.Fatal("expected suppression for a field not in state")
 		}
 	})
+}
+
+func TestAPICodeUnmarshal(t *testing.T) {
+	tests := []struct {
+		name    string
+		json    string
+		want    apiCode
+		wantErr bool
+	}{
+		{"json number", `0`, 0, false},
+		{"json number non-zero", `400`, 400, false},
+		{"quoted string", `"0"`, 0, false},
+		{"quoted string non-zero", `"400"`, 400, false},
+		{"invalid string", `"abc"`, 0, true},
+		{"invalid type", `true`, 0, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var c apiCode
+			err := json.Unmarshal([]byte(tt.json), &c)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("json %s: err=%v, wantErr=%v", tt.json, err, tt.wantErr)
+			}
+			if !tt.wantErr && c != tt.want {
+				t.Fatalf("json %s: code=%d, want=%d", tt.json, c, tt.want)
+			}
+		})
+	}
+}
+
+func TestArchiveResponseDecodesStringCode(t *testing.T) {
+	body := `{"msg":["Object archived",46,"db-080-westport",true,true],"code":"0"}`
+	var r apiArchiveResponse
+	if err := json.Unmarshal([]byte(body), &r); err != nil {
+		t.Fatalf("unmarshal archive response: %s", err)
+	}
+	if r.Code != 0 {
+		t.Fatalf("code=%d, want 0", r.Code)
+	}
+	if len(r.Msg) != 5 {
+		t.Fatalf("msg has %d elements, want 5", len(r.Msg))
+	}
 }
