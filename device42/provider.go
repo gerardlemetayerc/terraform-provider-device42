@@ -76,6 +76,7 @@ func Provider() *schema.Provider {
 			"device42_building":           resourceD42Building(),
 			"device42_room":               resourceD42Room(),
 			"device42_rack":               resourceD42Rack(),
+			"device42_customer":           resourceD42Customer(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"device42_device":      datasourceD42Device(),
@@ -87,6 +88,7 @@ func Provider() *schema.Provider {
 			"device42_building":    datasourceD42Building(),
 			"device42_room":        datasourceD42Room(),
 			"device42_rack":        datasourceD42Rack(),
+			"device42_customer":    datasourceD42Customer(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
