@@ -47,7 +47,6 @@ func datasourceD42VlanRead(d *schema.ResourceData, m interface{}) error {
 		queryParams.Set("number", strconv.Itoa(number))
 	}
   
-	client.SetDebug(true)
 	resp, err := client.R().
 		SetResult(datasourceD42VlanResponse{}).
 		SetHeader("Accept", "application/json").

@@ -171,8 +171,6 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 			queryParams["vrf_group"] = resourceDevice42SubnetCreateForm["vrf_group"]
 			queryParams["bulk_fields"] = strings.Join(bulkFields, ",")
 			log.Printf("[DEBUG] resourceDevice42SubnetCreate - Pushing custom_fields %s", queryParams)
-			client := m.(*resty.Client)
-			client.SetDebug(true)
 			resp, err := client.R().
 				SetFormData(queryParams).
 				SetResult(apiResponse{}).
@@ -274,7 +272,6 @@ func resourceDevice42SubnetUpdate(d *schema.ResourceData, m interface{}) error {
 			queryParams["value"] = v.(string)
 
 			log.Printf("[DEBUG] resourceDevice42SubnetUpdate custom_fields  : %#v", queryParams)
-			client.SetDebug(true)
 			resp, err := client.R().
 				SetResult(apiResponse{}).
 				SetFormData(queryParams).
