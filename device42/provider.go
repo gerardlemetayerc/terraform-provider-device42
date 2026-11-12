@@ -79,6 +79,7 @@ func Provider() *schema.Provider {
 			"device42_customer":           resourceD42Customer(),
 			"device42_customer_contact":   resourceD42CustomerContact(),
 			"device42_certificate":        resourceD42Certificate(),
+			"device42_vendor":             resourceD42Vendor(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"device42_device":           datasourceD42Device(),
@@ -95,6 +96,7 @@ func Provider() *schema.Provider {
 			"device42_customer_contact": datasourceD42CustomerContact(),
 			"device42_certificate":      datasourceD42Certificate(),
 			"device42_service_level":    datasourceD42ServiceLevel(),
+			"device42_vendor":             datasourceD42Vendor(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
