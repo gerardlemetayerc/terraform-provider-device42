@@ -18,6 +18,8 @@ It currently provides support for the following resources and data sources :
 - Customer Contact (`device42_customer_contact`)
 - Certificate (`device42_certificate`)
 - Vendor (`device42_vendor`)
+- Software (`device42_software`)
+- Software License Key (`device42_software_license_key`)
 
 **Data sources**
 - Device (`device42_device`)
@@ -35,6 +37,8 @@ It currently provides support for the following resources and data sources :
 - Certificate (`device42_certificate`)
 - Service Level (`device42_service_level`)
 - Vendor (`device42_vendor`)
+- Software (`device42_software`)
+- Software Details (`device42_software_details`)
 
 ## Version v1.4.1
 
@@ -52,6 +56,9 @@ This release adds support for the physical infrastructure layer of Device42 (Bui
 - Added `device42_ip` datasource to look up an existing Device42 IP by its address (subnet, availability, attached device).
 - Added `device42_service_level` datasource to read Device42 service levels, either by name or as a full list (`TypeList`).
 - Added `device42_vendor` resource to manage vendors (upsert by name, import by `vendor_id`, custom fields) and datasource to look up a vendor by name or list all vendors.
+- Added `device42_software` resource and datasource to manage software components (vendor, description, type, category, aliases, custom fields, import by `software_id`).
+- Added `device42_software_license_key` resource to manage software license keys.
+- Added `device42_software_details` datasource to list software-in-use instances, optionally filtered by software or device.
 - All resources support import (`terraform import`) and custom fields, reusing the existing `device42` error-handling and custom-field helpers.
 - Fixed type handling for building `latitude`/`longitude` (the API returns JSON numbers or null, not always strings) and ensured room custom fields survive a read refresh.
 - Fixed device archive response decoding (the archive endpoint returns a bare JSON array, not the usual `{code,msg}` object).
