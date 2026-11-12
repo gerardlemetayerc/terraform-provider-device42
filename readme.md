@@ -2,16 +2,39 @@
 
 This provider has the purpose to manage Device42 CMDB application. 
 
-It currently provide support for following ressources :
-- Business Application
-- Business Application Element
-- IP
-- VLAN
-- Subnet
-- Device
-- Building
-- Room
-- Rack
+It currently provides support for the following resources and data sources :
+
+**Resources**
+- Business Application (`device42_businessapp`)
+- Business Application Element (`device42_businessappelement`)
+- Device (`device42_device`)
+- IP (`device42_ip`)
+- VLAN (`device42_vlan`)
+- Subnet (`device42_subnet`)
+- Building (`device42_building`)
+- Room (`device42_room`)
+- Rack (`device42_rack`)
+- Customer (`device42_customer`)
+- Customer Contact (`device42_customer_contact`)
+- Certificate (`device42_certificate`)
+- Vendor (`device42_vendor`)
+
+**Data sources**
+- Device (`device42_device`)
+- IP (`device42_ip`)
+- Suggested IP (`device42_ip_suggested`)
+- VLAN (`device42_vlan`)
+- Subnet (`device42_subnet`)
+- Business Application (`device42_businessapp`)
+- Password (`device42_password`)
+- Building (`device42_building`)
+- Room (`device42_room`)
+- Rack (`device42_rack`)
+- Customer (`device42_customer`)
+- Customer Contact (`device42_customer_contact`)
+- Certificate (`device42_certificate`)
+- Service Level (`device42_service_level`)
+- Vendor (`device42_vendor`)
 
 ## Version v1.4.1
 
@@ -25,6 +48,10 @@ This release adds support for the physical infrastructure layer of Device42 (Bui
 - Added `device42_customer` resource and datasource to manage Device42 customers (manager, notes, contact_info, tags, custom fields, import by name).
 - Added `device42_customer_contact` resource and datasource to manage customer contacts (name, type, email, phone, address).
 - Added `device42_certificate` resource and datasource to manage certificates (subject, SAN, validity dates, serial number, vendor, custom fields, import by common name).
+- Added import support to the `device42_ip` resource.
+- Added `device42_ip` datasource to look up an existing Device42 IP by its address (subnet, availability, attached device).
+- Added `device42_service_level` datasource to read Device42 service levels, either by name or as a full list (`TypeList`).
+- Added `device42_vendor` resource to manage vendors (upsert by name, import by `vendor_id`, custom fields) and datasource to look up a vendor by name or list all vendors.
 - All resources support import (`terraform import`) and custom fields, reusing the existing `device42` error-handling and custom-field helpers.
 - Fixed type handling for building `latitude`/`longitude` (the API returns JSON numbers or null, not always strings) and ensured room custom fields survive a read refresh.
 - Fixed device archive response decoding (the archive endpoint returns a bare JSON array, not the usual `{code,msg}` object).
