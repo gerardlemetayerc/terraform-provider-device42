@@ -119,6 +119,26 @@ func resourceD42BusinessApps() *schema.Resource {
 				Computed:    true,
 				Description: "Any custom fields that will be used in device42.",
 			},
+			"is_contains_pii": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Whether the Business Application contains PII.",
+			},
+			"is_internet_accessible": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Whether the Business Application is accessible from the internet.",
+			},
+			"last_changed": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Last change date of the Business Application.",
+			},
+			"notes": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "Any additional notes for the Business Application.",
+			},
 		},
 	}
 }
@@ -142,9 +162,6 @@ func resourceDevice42BusinessAppsRead(d *schema.ResourceData, m interface{}) err
 	d.Set("business_app_owner", r.BusinessAppOwner)
 	d.Set("app_type", r.AppType)
 	d.Set("app_type_id", strconv.FormatInt(r.AppTypeId, 10))
-	d.Set("created", r.Created)
-	d.Set("criticality_id", r.CriticalityId)
-	d.Set("cust_owner", r.CustOwner)
 	d.Set("cust_owner_id", strconv.FormatInt(r.CustOwnerId, 10))
 	d.Set("is_contains_pii", r.IsContainsPII)
 	d.Set("is_internet_accessible", r.IsInternetAccessible)
