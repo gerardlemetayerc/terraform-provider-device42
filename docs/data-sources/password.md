@@ -15,7 +15,7 @@ The `device42_password` data source allows you to retrieve details about a speci
 ```hcl
 data "device42_password" "example" {
   username = "exampleUsername"
-  category = "exampleCategory"
+  id       = 123
 }
 
 output "password_details" {
