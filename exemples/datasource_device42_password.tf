@@ -1,6 +1,6 @@
 data "device42_password" "example" {
   username = "exampleUsername"
-  category = "exampleCategory"
+  id       = 123
 }
 
 output "password_details" {
