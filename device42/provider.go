@@ -94,6 +94,7 @@ func Provider() *schema.Provider {
 			"device42_customer":         datasourceD42Customer(),
 			"device42_customer_contact": datasourceD42CustomerContact(),
 			"device42_certificate":      datasourceD42Certificate(),
+			"device42_service_level":    datasourceD42ServiceLevel(),
 		},
 		ConfigureFunc: providerConfigure,
 	}
