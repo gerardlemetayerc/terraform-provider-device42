@@ -8,9 +8,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -22,7 +24,7 @@ jobs:
 
     - name: Extract version from tag
       id: get_version
-      run: echo "::set-output name=version::${GITHUB_REF#refs/tags/v}"
+      run: echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
 
     - name: Build binaries and package
       env:
@@ -84,25 +86,15 @@ jobs:
         echo "36AB0929E76749F8C9FE82B3C50AB7CBE7A52C36:6:" | gpg --import-ownertrust
         gpg --yes --passphrase "${{ secrets.GPG_PASSPHRASE }}" --batch --no-tty --pinentry-mode loopback --output "build/terraform-provider-device42_${version}_SHA256SUMS.sig" --detach-sig "build/terraform-provider-device42_${version}_SHA256SUMS"
 
-    - name: Install Hub
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y hub
-
     - name: Upload Release Assets
       run: |
-        set -x
-        cmd="hub release create"
-        for asset in build/*; do
-          cmd="$cmd -a $asset"
-        done
-        cmd="$cmd -d -m \"${{ env.TAG_NAME }}\" \"${{ env.TAG_NAME }}\""
-        eval $cmd
+        cd build
+        gh release create "${{ env.TAG_NAME }}" ./* --title "${{ env.TAG_NAME }}" --notes "Release ${{ env.TAG_NAME }}"
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Upload package as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: myapp-package
         path: build/*
