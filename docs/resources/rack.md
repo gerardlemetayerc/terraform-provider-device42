@@ -49,3 +49,11 @@ resource "device42_rack" "myNewRack" {
 
 - `id` (String) The ID of this resource.
 - `rack_id` (Number) ID of the rack.
+
+### Import
+
+Rack resources can be imported using the rack name, e.g.
+
+```bash
+$ terraform import device42_rack.myNewRack myNewRack
+```
