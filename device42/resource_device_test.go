@@ -127,3 +127,17 @@ func TestArchiveResponseDecodesStringCode(t *testing.T) {
 		t.Fatalf("msg has %d elements, want 5", len(r.Msg))
 	}
 }
+
+func TestArchiveResponseDecodesBareArray(t *testing.T) {
+	body := `["Object archived",11,"tf-e2e-archive-620500",true,true]`
+	var r apiArchiveResponse
+	if err := json.Unmarshal([]byte(body), &r); err != nil {
+		t.Fatalf("unmarshal bare-array archive response: %s", err)
+	}
+	if len(r.Msg) != 5 {
+		t.Fatalf("msg has %d elements, want 5", len(r.Msg))
+	}
+	if got, _ := r.Msg[0].(string); got != "Object archived" {
+		t.Fatalf("msg[0]=%q, want %q", got, "Object archived")
+	}
+}
