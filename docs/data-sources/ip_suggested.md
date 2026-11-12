@@ -1,5 +1,5 @@
 ---
-page_title: "device42_device Data Source - terraform-provider-device42"
+page_title: "device42_ip_suggested Data Source - terraform-provider-device42"
 subcategory: "network management"
 description: |-
   
@@ -16,7 +16,7 @@ Reservation need to be done using ip datasource.
 
 ```hcl
 
-datasource "device42_ip_suggested" "searchFreeIP" {
+data "device42_ip_suggested" "searchFreeIP" {
   subnet_id    = 1
 }
 

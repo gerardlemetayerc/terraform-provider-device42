@@ -12,7 +12,7 @@ Allow to query data about a device in Device42
 ## Exemple 
 
 ```hcl
-datasource "device42_device" "searchVM" {
+data "device42_device" "searchVM" {
   name    = "myNewVMName"
 }
 ```
