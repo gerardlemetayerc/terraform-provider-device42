@@ -47,3 +47,11 @@ resource "device42_room" "myNewRoom" {
 - `grid_cols` (Number) Number of columns in the room grid.
 - `grid_rows` (Number) Number of rows in the room grid.
 - `room_id` (Number) ID of the room.
+
+### Import
+
+Room resources can be imported using the room name, e.g.
+
+```bash
+$ terraform import device42_room.myNewRoom myNewRoom
+```
