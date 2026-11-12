@@ -43,3 +43,11 @@ resource "device42_customer" "acmeCorp" {
 
 - `id` (String) The ID of this resource.
 - `customer_id` (Number) ID of the customer.
+
+### Import
+
+Customer resources can be imported using the customer name, e.g.
+
+```bash
+$ terraform import device42_customer.acmeCorp acmeCorp
+```

@@ -48,3 +48,11 @@ resource "device42_building" "myNewBuilding" {
 
 - `id` (String) The ID of this resource.
 - `building_id` (Number) ID of the building.
+
+### Import
+
+Building resources can be imported using the building name, e.g.
+
+```bash
+$ terraform import device42_building.myNewBuilding myNewBuilding
+```
