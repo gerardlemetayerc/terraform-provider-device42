@@ -31,13 +31,35 @@ resource "device42_device" "myNewVM" {
 ### Optional
 
 - `archive_on_destroy` (String) Archive device on destroy action.
+- `asset_no` (String) Asset number of the device.
+- `blade_chassis` (String) Whether the device is a blade chassis (yes/no).
+- `building` (String) Name of the building that contains this device.
+- `building_id` (Number) ID of the building that contains this device.
 - `custom_fields` (Map of String) Any custom fields that will be used in device42.
+- `customer` (String) Customer associated with the device.
+- `customer_id` (String) Customer ID associated with the device.
+- `datacenter` (String) Name of the data center that contains this device.
+- `hardware` (String) Hardware model name of the device.
+- `hardware_id` (String) Hardware model ID of the device.
+- `in_service` (String) Whether the device is in service (yes/no).
+- `manufacturer` (String) Hardware manufacturer of the device.
+- `network_device` (String) Whether the device is a network switch (yes/no).
+- `objectcategory` (String) Object category name of the device.
+- `objectcategory_id` (String) Object category ID of the device.
+- `serial_no` (String) Serial number of the device.
 - `service_level` (String) Service Level of the device (default is d42null).
+- `storage_room` (String) Name of the storage room that contains this device.
+- `storage_room_id` (Number) ID of the storage room that contains this device.
+- `tags_remove` (String) Tags to remove from the device (comma separated).
 - `type` (String) The type of the device. Valid values are 'physical', 'virtual', 'unknown', 'cluster' (default is virtual)
+- `virtual_host_device` (String) Virtual host device name for this device.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `notes` (String) Notes for the device.
+- `os_name` (String) Operating system name of the device.
+- `tags` (String) Tags of the device (comma separated).
 
 ### Import
 
