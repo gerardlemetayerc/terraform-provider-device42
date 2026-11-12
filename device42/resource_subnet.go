@@ -154,7 +154,7 @@ func resourceDevice42SubnetCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[DEBUG] resourceDevice42SubnetCreate - Result: %#v", r)
-	if len(r.Msg) > 0 {
+	if len(r.Msg) > 1 {
 		id := int(r.Msg[1].(float64))
 		// Set ID after subnet creation
 		d.SetId(strconv.Itoa(id))
