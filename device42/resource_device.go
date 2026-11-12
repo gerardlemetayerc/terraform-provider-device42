@@ -1,6 +1,7 @@
 package device42
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -72,6 +73,24 @@ type apiResponse struct {
 type apiArchiveResponse struct {
 	Code apiCode       `json:"code"`
 	Msg  []interface{} `json:"msg"`
+}
+
+// UnmarshalJSON tolerates Device42's inconsistent archive response shapes.
+// The /2.0/devices/{id}/archive/ endpoint returns a bare JSON array on some
+// instances (e.g. ["Object archived",11,"name",true,true]) instead of the
+// usual {"code":0,"msg":[...]} object. A bare array is treated as Msg.
+func (r *apiArchiveResponse) UnmarshalJSON(b []byte) error {
+	trimmed := bytes.TrimSpace(b)
+	if len(trimmed) > 0 && trimmed[0] == '[' {
+		return json.Unmarshal(trimmed, &r.Msg)
+	}
+	type alias apiArchiveResponse
+	var aux alias
+	if err := json.Unmarshal(trimmed, &aux); err != nil {
+		return err
+	}
+	*r = apiArchiveResponse(aux)
+	return nil
 }
 
 func resourceD42Device() *schema.Resource {
