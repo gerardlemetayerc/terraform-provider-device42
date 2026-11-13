@@ -87,6 +87,7 @@ func Provider() *schema.Provider {
 			"device42_device":           datasourceD42Device(),
 			"device42_vlan":             datasourceD42Vlan(),
 			"device42_subnet":           datasourceD42Subnet(),
+			"device42_subnets":          datasourceD42Subnets(),
 			"device42_ip":               datasourceD42Ip(),
 			"device42_suggestedIp":      datasourceD42SuggestedIp(),
 			"device42_businessapp":      datasourceD42BusinessApp(),
