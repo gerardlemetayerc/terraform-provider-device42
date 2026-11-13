@@ -41,6 +41,7 @@ func resourceD42SoftwareLicenseKey() *schema.Resource {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
+				Sensitive:   true,
 				Description: "The license key value. Used as the upsert key by the Device42 API.",
 			},
 			"software_id": {
@@ -176,7 +177,7 @@ func resourceDevice42SoftwareLicenseKeyUpdate(d *schema.ResourceData, m interfac
 		formData["notes"] = d.Get("notes").(string)
 	}
 
-	log.Printf("[DEBUG] resourceDevice42SoftwareLicenseKeyUpdate - Pushing new informations : %#v", formData)
+	log.Printf("[DEBUG] resourceDevice42SoftwareLicenseKeyUpdate - updating license key ID %s", d.Id())
 
 	resp, err := client.R().
 		SetFormData(formData).
@@ -206,7 +207,7 @@ func resourceDevice42SoftwareLicenseKeyUpdate(d *schema.ResourceData, m interfac
 
 func resourceDevice42SoftwareLicenseKeyDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
-	log.Printf("Deleting software license key %s (ID: %s)", d.Get("key"), d.Id())
+	log.Printf("Deleting software license key ID %s", d.Id())
 
 	url := fmt.Sprintf("/1.0/software/license_keys/%s/", d.Id())
 
