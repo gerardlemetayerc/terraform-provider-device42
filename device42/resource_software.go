@@ -269,35 +269,35 @@ func resourceDevice42SoftwareUpdate(d *schema.ResourceData, m interface{}) error
 	formData := map[string]string{}
 	formData["name"] = name
 
-	if v := d.Get("vendor").(string); v != "" {
-		formData["vendor"] = v
+	if d.HasChange("vendor") {
+		formData["vendor"] = d.Get("vendor").(string)
 	}
-	if v := d.Get("description").(string); v != "" {
-		formData["description"] = v
+	if d.HasChange("description") {
+		formData["description"] = d.Get("description").(string)
 	}
-	if v := d.Get("notes").(string); v != "" {
-		formData["notes"] = v
+	if d.HasChange("notes") {
+		formData["notes"] = d.Get("notes").(string)
 	}
-	if v := d.Get("software_type").(string); v != "" {
-		formData["software_type"] = v
+	if d.HasChange("software_type") {
+		formData["software_type"] = d.Get("software_type").(string)
 	}
-	if v := d.Get("deployment_type").(string); v != "" {
-		formData["deployment_type"] = v
+	if d.HasChange("deployment_type") {
+		formData["deployment_type"] = d.Get("deployment_type").(string)
 	}
-	if v := d.Get("category").(string); v != "" {
-		formData["category"] = v
+	if d.HasChange("category") {
+		formData["category"] = d.Get("category").(string)
 	}
-	if v := d.Get("aliases").(string); v != "" {
-		formData["aliases"] = v
+	if d.HasChange("aliases") {
+		formData["aliases"] = d.Get("aliases").(string)
 	}
-	if v := d.Get("licensing_model").(string); v != "" {
-		formData["licensing_model"] = v
+	if d.HasChange("licensing_model") {
+		formData["licensing_model"] = d.Get("licensing_model").(string)
 	}
-	if v := d.Get("track_licensed_count_by_keys").(string); v != "" {
-		formData["track_licensed_count_by_keys"] = v
+	if d.HasChange("track_licensed_count_by_keys") {
+		formData["track_licensed_count_by_keys"] = d.Get("track_licensed_count_by_keys").(string)
 	}
-	if v := d.Get("tags").(string); v != "" {
-		formData["tags"] = v
+	if d.HasChange("tags") {
+		formData["tags"] = d.Get("tags").(string)
 	}
 
 	log.Printf("[DEBUG] resourceDevice42SoftwareUpdate - Pushing new informations : %#v", formData)
