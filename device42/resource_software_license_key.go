@@ -166,11 +166,11 @@ func resourceDevice42SoftwareLicenseKeyUpdate(d *schema.ResourceData, m interfac
 	formData["key"] = d.Get("key").(string)
 	formData["software_id"] = strconv.Itoa(d.Get("software_id").(int))
 
-	if v := d.Get("license_count").(int); v > 0 {
-		formData["count"] = strconv.Itoa(v)
+	if d.HasChange("license_count") {
+		formData["count"] = strconv.Itoa(d.Get("license_count").(int))
 	}
-	if v := d.Get("notes").(string); v != "" {
-		formData["notes"] = v
+	if d.HasChange("notes") {
+		formData["notes"] = d.Get("notes").(string)
 	}
 
 	log.Printf("[DEBUG] resourceDevice42SoftwareLicenseKeyUpdate - Pushing new informations : %#v", formData)

@@ -193,14 +193,14 @@ func resourceDevice42CustomerContactUpdate(d *schema.ResourceData, m interface{}
 	formData["type"] = d.Get("type").(string)
 	formData["contact_id"] = strconv.Itoa(d.Get("contact_id").(int))
 
-	if v := d.Get("email").(string); v != "" {
-		formData["email"] = v
+	if d.HasChange("email") {
+		formData["email"] = d.Get("email").(string)
 	}
-	if v := d.Get("phone").(string); v != "" {
-		formData["phone"] = v
+	if d.HasChange("phone") {
+		formData["phone"] = d.Get("phone").(string)
 	}
-	if v := d.Get("address").(string); v != "" {
-		formData["address"] = v
+	if d.HasChange("address") {
+		formData["address"] = d.Get("address").(string)
 	}
 
 	resp, err := client.R().

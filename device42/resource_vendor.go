@@ -244,29 +244,29 @@ func resourceDevice42VendorUpdate(d *schema.ResourceData, m interface{}) error {
 	formData := map[string]string{}
 	formData["name"] = name
 
-	if v := d.Get("home_page").(string); v != "" {
-		formData["home_page"] = v
+	if d.HasChange("home_page") {
+		formData["home_page"] = d.Get("home_page").(string)
 	}
-	if v := d.Get("contact_info").(string); v != "" {
-		formData["contact_info"] = v
+	if d.HasChange("contact_info") {
+		formData["contact_info"] = d.Get("contact_info").(string)
 	}
-	if v := d.Get("account_no").(string); v != "" {
-		formData["account_no"] = v
+	if d.HasChange("account_no") {
+		formData["account_no"] = d.Get("account_no").(string)
 	}
-	if v := d.Get("aliases").(string); v != "" {
-		formData["aliases"] = v
+	if d.HasChange("aliases") {
+		formData["aliases"] = d.Get("aliases").(string)
 	}
-	if v := d.Get("escalation_1").(string); v != "" {
-		formData["escalation_1"] = v
+	if d.HasChange("escalation_1") {
+		formData["escalation_1"] = d.Get("escalation_1").(string)
 	}
-	if v := d.Get("escalation_2").(string); v != "" {
-		formData["escalation_2"] = v
+	if d.HasChange("escalation_2") {
+		formData["escalation_2"] = d.Get("escalation_2").(string)
 	}
-	if v := d.Get("notes").(string); v != "" {
-		formData["notes"] = v
+	if d.HasChange("notes") {
+		formData["notes"] = d.Get("notes").(string)
 	}
-	if v := d.Get("tags").(string); v != "" {
-		formData["tags"] = v
+	if d.HasChange("tags") {
+		formData["tags"] = d.Get("tags").(string)
 	}
 
 	log.Printf("[DEBUG] resourceDevice42VendorUpdate - Pushing new informations : %#v", formData)
