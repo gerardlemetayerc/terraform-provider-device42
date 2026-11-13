@@ -17,6 +17,10 @@ func datasourceD42SuggestedIp() *schema.Resource {
 	return &schema.Resource{
 		Read:        datasourceD42SuggestedIpRead,
 		Description: "Read suggested IP.",
+		DeprecationMessage: "This data source is deprecated. The free-IP suggestion logic has been " +
+			"moved directly into the device42_ip resource, which now computes the next available IP " +
+			"itself. Use device42_ip instead; this data source does not reserve the IP it returns and " +
+			"keeping it would re-suggest the same value on every plan.",
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:        schema.TypeString,
