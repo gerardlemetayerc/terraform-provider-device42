@@ -26,7 +26,7 @@ It currently provides support for the following resources and data sources :
 - Device (`device42_device`)
 - IP (`device42_ip`)
 - IPs (`device42_ips`)
-- Suggested IP (`device42_ip_suggested`)
+- Suggested IP (`device42_ip_suggested`) — **deprecated**: prefer `device42_ip`
 - VLAN (`device42_vlan`)
 - VLANs (`device42_vlans`)
 - Subnet (`device42_subnet`)
