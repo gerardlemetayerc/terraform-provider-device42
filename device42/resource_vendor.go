@@ -204,11 +204,14 @@ func resourceDevice42VendorRead(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] resourceDevice42VendorRead - starting read for vendor id %s", d.Id())
 
 	var resp apiVendorsResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get("/1.0/vendors/")
 	if err != nil {
 		return err
+	}
+	if apiResp.StatusCode() >= 400 && apiResp.StatusCode() != 404 {
+		return fmt.Errorf("resourceDevice42VendorRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	id, err := strconv.Atoi(d.Id())

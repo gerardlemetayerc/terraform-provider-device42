@@ -62,6 +62,9 @@ func resourceDevice42BusinessAppsElementRead(d *schema.ResourceData, m interface
 		log.Printf("[WARN] No data found for query %s", query)
 		return err
 	}
+	if resp.StatusCode() >= 400 && resp.StatusCode() != 404 {
+		return fmt.Errorf("resourceDevice42BusinessAppsElementRead - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
 
 	r := resp.Result().(*apiBusinessAppsElementApiResponse)
 	str := fmt.Sprintf("%v", r)

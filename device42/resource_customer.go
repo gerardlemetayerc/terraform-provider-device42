@@ -177,7 +177,7 @@ func resourceDevice42CustomerRead(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] resourceDevice42CustomerRead - reading customer on target URL: %s", d42Url)
 
 	var resp apiCustomersResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get(d42Url)
 
@@ -187,6 +187,12 @@ func resourceDevice42CustomerRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
+	// resty does not surface a 4xx/5xx as an error, so a 403/500 leaves the
+	// Customers array empty and would be mistaken for a deleted resource. Fail
+	// the read on those statuses instead of dropping the resource from state.
+	if apiResp.StatusCode() >= 400 && apiResp.StatusCode() != 404 {
+		return fmt.Errorf("resourceDevice42CustomerRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
+	}
 	if len(resp.Customers) == 0 {
 		log.Printf("[WARN] No customer found: %s", d.Id())
 		d.SetId("")

@@ -253,12 +253,15 @@ func getCustomerContact(client *resty.Client, customerName string, contactID int
 	var lookup apiCustomerContactsResponse
 	url := fmt.Sprintf("/1.0/customers/")
 	log.Printf("[DEBUG] getCustomerContact - Query customers on URL : %s", url)
-	_, err := client.R().
+	resp, err := client.R().
 		SetResult(&lookup).
 		Get(url)
 
 	if err != nil {
 		return apiCustomerContactResponse{}, fmt.Errorf("error querying Device42 API: %s", err)
+	}
+	if resp.StatusCode() >= 400 && resp.StatusCode() != 404 {
+		return apiCustomerContactResponse{}, fmt.Errorf("getCustomerContact - HTTP %d: %s", resp.StatusCode(), resp.String())
 	}
 
 	parent, err := filterCustomerByName(toPlainCustomers(lookup.Customers), customerName)

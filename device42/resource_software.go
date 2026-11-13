@@ -227,11 +227,14 @@ func resourceDevice42SoftwareRead(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] resourceDevice42SoftwareRead - starting read for software id %s", d.Id())
 
 	var resp apiSoftwareListResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get("/1.0/software/")
 	if err != nil {
 		return err
+	}
+	if apiResp.StatusCode() >= 400 && apiResp.StatusCode() != 404 {
+		return fmt.Errorf("resourceDevice42SoftwareRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	id, err := strconv.Atoi(d.Id())
