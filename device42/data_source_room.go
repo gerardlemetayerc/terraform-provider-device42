@@ -3,6 +3,7 @@ package device42
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"net/url"
 	"strconv"
 
@@ -99,14 +100,17 @@ func datasourceD42RoomRead(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[DEBUG] datasourceD42RoomRead - Query rooms on URL : %s", url)
 
 		var lookup apiRoomLookupResponse
-		_, err := client.R().
+		apiResp, err := client.R().
 			SetResult(&lookup).
 			Get(url)
 
 		if err != nil {
 			log.Printf("[WARN] No room found: %s", name)
 			d.SetId("")
-			return nil
+			return err
+		}
+		if apiResp.StatusCode() >= 400 && apiResp.StatusCode() != http.StatusNotFound {
+			return fmt.Errorf("datasourceD42RoomRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 		}
 
 		if len(lookup.Rooms) == 0 {
@@ -146,14 +150,22 @@ func datasourceD42RoomRead(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[DEBUG] datasourceD42RoomRead - Query room on URL : %s", url)
 
 		var resp apiRoomReadResponse
-		_, err := client.R().
+		apiResp, err := client.R().
 			SetResult(&resp).
 			Get(url)
 
 		if err != nil {
 			log.Printf("[WARN] No room found: %d", roomID)
 			d.SetId("")
+			return err
+		}
+		if apiResp.StatusCode() == http.StatusNotFound {
+			log.Printf("[WARN] No room found: %d", roomID)
+			d.SetId("")
 			return nil
+		}
+		if apiResp.StatusCode() >= 400 {
+			return fmt.Errorf("datasourceD42RoomRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 		}
 
 		d.SetId(strconv.Itoa(roomID))

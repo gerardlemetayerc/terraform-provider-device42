@@ -3,6 +3,7 @@ package device42
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"net/url"
 	"strconv"
 
@@ -83,14 +84,17 @@ func datasourceD42BuildingRead(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[DEBUG] datasourceD42BuildingRead - Query buildings on URL : %s", url)
 
 		var lookup apiBuildingLookupResponse
-		_, err := client.R().
+		apiResp, err := client.R().
 			SetResult(&lookup).
 			Get(url)
 
 		if err != nil {
 			log.Printf("[WARN] No building found: %s", name)
 			d.SetId("")
-			return nil
+			return err
+		}
+		if apiResp.StatusCode() >= 400 && apiResp.StatusCode() != http.StatusNotFound {
+			return fmt.Errorf("datasourceD42BuildingRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 		}
 
 		if len(lookup.Buildings) == 0 {
@@ -126,14 +130,22 @@ func datasourceD42BuildingRead(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[DEBUG] datasourceD42BuildingRead - Query building on URL : %s", url)
 
 		var resp apiBuildingReadResponse
-		_, err := client.R().
+		apiResp, err := client.R().
 			SetResult(&resp).
 			Get(url)
 
 		if err != nil {
 			log.Printf("[WARN] No building found: %d", buildingID)
 			d.SetId("")
+			return err
+		}
+		if apiResp.StatusCode() == http.StatusNotFound {
+			log.Printf("[WARN] No building found: %d", buildingID)
+			d.SetId("")
 			return nil
+		}
+		if apiResp.StatusCode() >= 400 {
+			return fmt.Errorf("datasourceD42BuildingRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 		}
 
 		d.SetId(strconv.Itoa(buildingID))

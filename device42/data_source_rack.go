@@ -3,6 +3,7 @@ package device42
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"net/url"
 	"strconv"
 
@@ -83,14 +84,17 @@ func datasourceD42RackRead(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[DEBUG] datasourceD42RackRead - Query racks on URL : %s", url)
 
 		var lookup apiRackLookupResponse
-		_, err := client.R().
+		apiResp, err := client.R().
 			SetResult(&lookup).
 			Get(url)
 
 		if err != nil {
 			log.Printf("[WARN] No rack found: %s", name)
 			d.SetId("")
-			return nil
+			return err
+		}
+		if apiResp.StatusCode() >= 400 && apiResp.StatusCode() != http.StatusNotFound {
+			return fmt.Errorf("datasourceD42RackRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 		}
 
 		if len(lookup.Racks) == 0 {
@@ -126,14 +130,22 @@ func datasourceD42RackRead(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[DEBUG] datasourceD42RackRead - Query rack on URL : %s", url)
 
 		var resp apiRackReadResponse
-		_, err := client.R().
+		apiResp, err := client.R().
 			SetResult(&resp).
 			Get(url)
 
 		if err != nil {
 			log.Printf("[WARN] No rack found: %d", rackID)
 			d.SetId("")
+			return err
+		}
+		if apiResp.StatusCode() == http.StatusNotFound {
+			log.Printf("[WARN] No rack found: %d", rackID)
+			d.SetId("")
 			return nil
+		}
+		if apiResp.StatusCode() >= 400 {
+			return fmt.Errorf("datasourceD42RackRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 		}
 
 		d.SetId(strconv.Itoa(rackID))
