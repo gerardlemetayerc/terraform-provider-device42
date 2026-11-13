@@ -4,5 +4,6 @@ data "device42_customer_contact" "searchContact" {
 }
 
 data "device42_customer_contact" "searchContact2" {
+    customer   = "acmeCorp"
     contact_id = 1
 }

@@ -1,9 +1,9 @@
-data "device42_vendor" "acme" {
+data "device42_vendor" "acme_ds" {
   name = "Acme Corp"
 }
 
 output "acme_id" {
-  value = data.device42_vendor.acme.vendor_id
+  value = data.device42_vendor.acme_ds.vendor_id
 }
 
 data "device42_vendor" "all" {}

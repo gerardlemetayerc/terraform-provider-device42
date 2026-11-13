@@ -1,9 +1,9 @@
-data "device42_software" "apache" {
+data "device42_software" "apache_ds" {
   name = "Apache HTTP Server"
 }
 
 output "apache_id" {
-  value = data.device42_software.apache.software_id
+  value = data.device42_software.apache_ds.software_id
 }
 
 data "device42_software" "all" {}
