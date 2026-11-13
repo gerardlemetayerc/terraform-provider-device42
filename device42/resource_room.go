@@ -382,6 +382,9 @@ func resourceDevice42RoomUpdate(d *schema.ResourceData, m interface{}) error {
 			}
 
 			r := resp.Result().(*apiResponse)
+			if resp.IsError() || r.Code != 0 {
+				return fmt.Errorf("resourceDevice42RoomUpdate - custom field %q update failed (HTTP %d, API code %d)", k, resp.StatusCode(), r.Code)
+			}
 			log.Printf("[DEBUG] resourceDevice42RoomUpdate - Result: %#v", r)
 		}
 	}
