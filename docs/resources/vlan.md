@@ -1,6 +1,6 @@
 ---
 page_title: "device42_vlan Resource - terraform-provider-device42"
-subcategory: "network management"
+subcategory: "Network Management"
 description: |-
 ---
 

@@ -1,6 +1,6 @@
 ---
 page_title: "device42_rack Data Source - terraform-provider-device42"
-subcategory: "infrastructure management"
+subcategory: "Infrastructure Management"
 description: |-
   
 ---

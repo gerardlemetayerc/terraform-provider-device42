@@ -1,6 +1,6 @@
 ---
 page_title: "device42_ips Data Source - terraform-provider-device42"
-subcategory: "network management"
+subcategory: "Network Management"
 description: |-
   Read Device42 IPs of a subnet (server-side filtered).
 ---

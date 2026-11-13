@@ -1,6 +1,6 @@
 ---
 page_title: "device42_vlans Data Source - terraform-provider-device42"
-subcategory: "network management"
+subcategory: "Network Management"
 description: |-
   Read multiple Device42 VLANs, optionally filtered by name or id.
 ---

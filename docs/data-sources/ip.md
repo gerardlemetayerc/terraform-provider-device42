@@ -1,6 +1,6 @@
 ---
 page_title: "device42_ip Data Source - terraform-provider-device42"
-subcategory: "network management"
+subcategory: "Network Management"
 description: |-
   Look up an existing Device42 IP by its address.
 ---

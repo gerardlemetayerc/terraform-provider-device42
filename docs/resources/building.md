@@ -1,6 +1,6 @@
 ---
 page_title: "device42_building Resource - terraform-provider-device42"
-subcategory: "infrastructure management"
+subcategory: "Infrastructure Management"
 description: |-
 ---
 

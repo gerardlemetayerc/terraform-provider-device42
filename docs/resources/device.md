@@ -1,6 +1,6 @@
 ---
 page_title: "device42_device Resource - terraform-provider-device42"
-subcategory: "asset management"
+subcategory: "Asset Management"
 description: |-
   
 ---

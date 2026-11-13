@@ -1,6 +1,6 @@
 ---
 page_title: "device42_ip_suggested Data Source - terraform-provider-device42"
-subcategory: "network management"
+subcategory: "Network Management"
 description: |-
   Deprecated: use the device42_ip resource instead, which computes the next available IP itself.
 ---
