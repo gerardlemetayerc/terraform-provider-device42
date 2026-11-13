@@ -130,11 +130,14 @@ func resourceDevice42SoftwareLicenseKeyRead(d *schema.ResourceData, m interface{
 	log.Printf("[DEBUG] resourceDevice42SoftwareLicenseKeyRead - starting read for license key id %s", d.Id())
 
 	var resp apiSoftwareLicenseKeyListResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get("/1.0/software/license_keys/")
 	if err != nil {
 		return err
+	}
+	if apiResp.StatusCode() >= 400 && apiResp.StatusCode() != 404 {
+		return fmt.Errorf("resourceDevice42SoftwareLicenseKeyRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	id, err := strconv.Atoi(d.Id())

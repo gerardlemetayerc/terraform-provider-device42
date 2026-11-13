@@ -19,6 +19,11 @@ func apiDevice42Get(client *resty.Client, path string, result interface{}) (*res
 		return nil, err
 	}
 
+	if resp.StatusCode() >= 400 && resp.StatusCode() != 404 {
+		log.Printf("[WARN] apiGet - GET %s returned HTTP %d", path, resp.StatusCode())
+		return nil, fmt.Errorf("apiGet - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
+
 	return resp, nil
 }
 

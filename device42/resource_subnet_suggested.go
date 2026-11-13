@@ -114,6 +114,9 @@ func resourceD42SubnetSuggestedCreate(d *schema.ResourceData, m interface{}) err
 func resourceD42SubnetSuggestedRead(d *schema.ResourceData, m interface{}) error {
 	readResponse, err := apiDevice42Get(m.(*resty.Client), fmt.Sprintf("/1.0/subnets/%s/", d.Id()), apiSubnetReadResponse{})
 	if err != nil {
+		return err
+	}
+	if readResponse.StatusCode() == http.StatusNotFound {
 		log.Printf("[WARN] No subnet found: %s", d.Id())
 		d.SetId("")
 		return nil
