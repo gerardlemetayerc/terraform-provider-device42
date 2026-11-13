@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -97,20 +98,43 @@ func datasourceD42IpsRead(d *schema.ResourceData, m interface{}) error {
 	}
 	log.Printf("[DEBUG] datasourceD42IpsRead - querying %s", path)
 
-	var resp apiReadData
-	apiResp, err := client.R().
-		SetResult(&resp).
-		Get(path)
-	if err != nil {
-		log.Printf("[WARN] datasourceD42IpsRead - error querying IPs: %s", err)
-		return err
+	var allIPs []apiIPReadResponse
+	// /2.0/ips/ is paginated (max 1000 records per response), so results must be
+	// collected page by page. The response carries total_count so the loop can
+	// stop once every matching IP has been fetched, whatever the page size.
+	const pageSize = 1000
+	separator := "?"
+	if strings.Contains(path, "?") {
+		separator = "&"
 	}
-	if apiResp.StatusCode() >= 400 {
-		return fmt.Errorf("datasourceD42IpsRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
+	total := -1
+	for offset := 0; total < 0 || len(allIPs) < total; offset += pageSize {
+		pagePath := fmt.Sprintf("%s%soffset=%d&limit=%d", path, separator, offset, pageSize)
+		var resp apiReadData
+		apiResp, err := client.R().
+			SetResult(&resp).
+			Get(pagePath)
+		if err != nil {
+			log.Printf("[WARN] datasourceD42IpsRead - error querying IPs: %s", err)
+			return err
+		}
+		if apiResp.StatusCode() >= 400 {
+			return fmt.Errorf("datasourceD42IpsRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
+		}
+		if total < 0 {
+			total = int(resp.TotalCount)
+		}
+		allIPs = append(allIPs, resp.Ips...)
+		if len(resp.Ips) == 0 {
+			break
+		}
+		if len(allIPs) >= total {
+			break
+		}
 	}
 
-	ips := make([]interface{}, 0, len(resp.Ips))
-	for _, ip := range resp.Ips {
+	ips := make([]interface{}, 0, len(allIPs))
+	for _, ip := range allIPs {
 		var deviceID int32
 		if len(ip.Devices) > 0 {
 			deviceID = ip.Devices[0].DeviceID
