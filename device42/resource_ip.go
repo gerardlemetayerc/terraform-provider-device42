@@ -120,6 +120,10 @@ func resourceDevice42IpRead(d *schema.ResourceData, m interface{}) error {
 		}
 		d.Set("available", r.Ips[0].Available)
 		d.Set("ip", r.Ips[0].Ip)
+	} else {
+		log.Printf("[WARN] No IP found for id %s", d.Id())
+		d.SetId("")
+		return nil
 	}
 	return nil
 }
