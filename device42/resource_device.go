@@ -412,7 +412,7 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] reading Device on target URL: %s", d42Url)
 
 	var resp apiDeviceReadResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get(d42Url)
 
@@ -420,6 +420,14 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[WARN] No device found: %s", d.Id())
 		d.SetId("")
 		return err
+	}
+	if apiResp.StatusCode() == 404 {
+		log.Printf("[WARN] No device found: %s", d.Id())
+		d.SetId("")
+		return nil
+	}
+	if apiResp.StatusCode() >= 400 {
+		return fmt.Errorf("resourceDevice42DeviceRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	// Update main fields

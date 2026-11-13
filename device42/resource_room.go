@@ -253,7 +253,7 @@ func resourceDevice42RoomRead(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] resourceDevice42RoomRead - reading room on target URL: %s", d42Url)
 
 	var resp apiRoomReadResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get(d42Url)
 
@@ -261,6 +261,14 @@ func resourceDevice42RoomRead(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[WARN] No room found: %s", d.Id())
 		d.SetId("")
 		return err
+	}
+	if apiResp.StatusCode() == 404 {
+		log.Printf("[WARN] No room found: %s", d.Id())
+		d.SetId("")
+		return nil
+	}
+	if apiResp.StatusCode() >= 400 {
+		return fmt.Errorf("resourceDevice42RoomRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	d.Set("name", resp.Name)

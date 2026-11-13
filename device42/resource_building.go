@@ -239,7 +239,7 @@ func resourceDevice42BuildingRead(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] resourceDevice42BuildingRead - reading building on target URL: %s", d42Url)
 
 	var resp apiBuildingReadResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get(d42Url)
 
@@ -247,6 +247,14 @@ func resourceDevice42BuildingRead(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[WARN] No building found: %s", d.Id())
 		d.SetId("")
 		return err
+	}
+	if apiResp.StatusCode() == 404 {
+		log.Printf("[WARN] No building found: %s", d.Id())
+		d.SetId("")
+		return nil
+	}
+	if apiResp.StatusCode() >= 400 {
+		return fmt.Errorf("resourceDevice42BuildingRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	d.Set("name", resp.Name)

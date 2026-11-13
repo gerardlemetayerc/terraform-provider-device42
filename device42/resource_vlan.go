@@ -68,6 +68,14 @@ func resourceDevice42VlanRead(d *schema.ResourceData, m interface{}) error {
 		d.SetId("")
 		return err
 	}
+	if resp.StatusCode() == 404 {
+		log.Printf("[WARN] No vlans found for id %s", d.Id())
+		d.SetId("")
+		return nil
+	}
+	if resp.StatusCode() >= 400 {
+		return fmt.Errorf("resourceDevice42VlanRead - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
 
 	r := resp.Result().(*apiVlanReadReponse)
 	str := fmt.Sprintf("%v", r)
