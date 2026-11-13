@@ -1,6 +1,7 @@
 package device42
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 
@@ -66,13 +67,15 @@ func datasourceD42VlansRead(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] datasourceD42VlansRead - querying VLANs")
 
 	var resp datasourceD42VlanResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get("/1.0/vlans/")
 	if err != nil {
 		log.Printf("[WARN] datasourceD42VlansRead - error querying VLANs: %s", err)
-		d.SetId("")
-		return nil
+		return err
+	}
+	if apiResp.StatusCode() >= 400 {
+		return fmt.Errorf("datasourceD42VlansRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	name := d.Get("name").(string)

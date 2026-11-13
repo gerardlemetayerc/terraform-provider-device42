@@ -1,6 +1,7 @@
 package device42
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 
@@ -126,13 +127,15 @@ func datasourceD42SubnetsRead(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] datasourceD42SubnetsRead - querying subnets")
 
 	var resp datasourceD42SubnetResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get("/1.0/subnets/")
 	if err != nil {
 		log.Printf("[WARN] datasourceD42SubnetsRead - error querying subnets: %s", err)
-		d.SetId("")
-		return nil
+		return err
+	}
+	if apiResp.StatusCode() >= 400 {
+		return fmt.Errorf("datasourceD42SubnetsRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	name := d.Get("name").(string)

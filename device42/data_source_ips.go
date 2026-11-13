@@ -98,13 +98,15 @@ func datasourceD42IpsRead(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] datasourceD42IpsRead - querying %s", path)
 
 	var resp apiReadData
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get(path)
 	if err != nil {
 		log.Printf("[WARN] datasourceD42IpsRead - error querying IPs: %s", err)
-		d.SetId("")
-		return nil
+		return err
+	}
+	if apiResp.StatusCode() >= 400 {
+		return fmt.Errorf("datasourceD42IpsRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	ips := make([]interface{}, 0, len(resp.Ips))
