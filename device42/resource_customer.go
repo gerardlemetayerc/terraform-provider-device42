@@ -284,6 +284,9 @@ func resourceDevice42CustomerDelete(d *schema.ResourceData, m interface{}) error
 	if err != nil {
 		return err
 	}
+	if resp.StatusCode() >= 400 && resp.StatusCode() != 404 {
+		return fmt.Errorf("resourceDevice42CustomerDelete - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
 
 	r := resp.Result().(*apiDeleteResponse)
 	log.Printf("[DEBUG] resourceDevice42CustomerDelete - Result: %#v", r)

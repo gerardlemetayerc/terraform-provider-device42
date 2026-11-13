@@ -1,6 +1,7 @@
 package device42
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/go-resty/resty/v2"
@@ -46,6 +47,11 @@ func apiDevice42Delete(client *resty.Client, path string, result interface{}) (*
 	if err != nil {
 		log.Printf("[WARN] apiDelete - Error in DELETE request for path %s", path)
 		return nil, err
+	}
+
+	if resp.StatusCode() >= 400 && resp.StatusCode() != 404 {
+		log.Printf("[WARN] apiDelete - DELETE %s returned HTTP %d", path, resp.StatusCode())
+		return nil, fmt.Errorf("apiDelete - HTTP %d: %s", resp.StatusCode(), resp.String())
 	}
 
 	return resp, nil

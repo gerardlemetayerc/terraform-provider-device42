@@ -447,6 +447,9 @@ func resourceDevice42CertificateDelete(d *schema.ResourceData, m interface{}) er
 	if err != nil {
 		return err
 	}
+	if resp.StatusCode() >= 400 && resp.StatusCode() != 404 {
+		return fmt.Errorf("resourceDevice42CertificateDelete - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
 
 	r := resp.Result().(*apiDeleteResponse)
 	log.Printf("[DEBUG] resourceDevice42CertificateDelete - Result: %#v", r)

@@ -25,7 +25,7 @@ type apiSubnetReadResponse struct {
 	ParentSubnetId int32         `json:"parent_subnet_id"`
 	Customer       string        `json:"customer"`
 	CustomFields   []customField `json:"custom_fields"`
-	VlanId         int			 `json:"parent_vlan_id"`
+	VlanId         int           `json:"parent_vlan_id"`
 }
 
 func resourceD42Subnet() *schema.Resource {
@@ -307,6 +307,9 @@ func resourceDevice42SubnetDelete(d *schema.ResourceData, m interface{}) error {
 
 	if err != nil {
 		return err
+	}
+	if resp.StatusCode() >= 400 && resp.StatusCode() != 404 {
+		return fmt.Errorf("resourceDevice42SubnetDelete - HTTP %d: %s", resp.StatusCode(), resp.String())
 	}
 
 	r := resp.Result().(*apiResponse)

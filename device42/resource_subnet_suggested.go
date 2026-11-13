@@ -141,6 +141,9 @@ func resourceD42SubnetSuggestedDelete(d *schema.ResourceData, m interface{}) err
 	if err != nil {
 		return err
 	}
+	if resp.StatusCode() >= 400 && resp.StatusCode() != 404 {
+		return fmt.Errorf("resourceD42SubnetSuggestedDelete - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
 
 	r := resp.Result().(*apiResponse)
 	log.Printf("[DEBUG] resourceD42SubnetSuggestedDelete - Result: %#v", r)
