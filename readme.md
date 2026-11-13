@@ -11,6 +11,7 @@ It currently provides support for the following resources and data sources :
 - IP (`device42_ip`)
 - VLAN (`device42_vlan`)
 - Subnet (`device42_subnet`)
+- Suggested Subnet (`device42_subnet_suggested`)
 - Building (`device42_building`)
 - Room (`device42_room`)
 - Rack (`device42_rack`)
@@ -30,7 +31,6 @@ It currently provides support for the following resources and data sources :
 - VLANs (`device42_vlans`)
 - Subnet (`device42_subnet`)
 - Subnets (`device42_subnets`)
-- Suggested Subnet (`device42_subnet_suggested`)
 - Business Application (`device42_businessapp`)
 - Password (`device42_password`)
 - Building (`device42_building`)
@@ -66,7 +66,7 @@ This release adds support for the physical infrastructure layer of Device42 (Bui
 - Added `device42_subnets` datasource to read multiple subnets at once, filtered by parent VLAN, name or VRF group (the plural counterpart of `device42_subnet`).
 - Added `device42_ips` datasource to read the IPs of a subnet (server-side `subnet_id` filter, since the `/2.0/ips/` API is paginated at 1000 records).
 - Added `device42_vlans` datasource to read multiple VLANs at once, optionally filtered by name or id (the plural counterpart of `device42_vlan`).
-- Added `device42_subnet_suggested` datasource to suggest the next available sub-subnet under a parent subnet (`GET /1.0/suggest_subnet/{id}/?mask_bits=`).
+- Added `device42_subnet_suggested` resource to suggest and reserve the next available sub-subnet under a parent subnet (`GET /1.0/suggest_subnet/{id}/?mask_bits=` then `POST /1.0/subnets/`, so the suggestion is consumed and repeated applies stay stable).
 - All resources support import (`terraform import`) and custom fields, reusing the existing `device42` error-handling and custom-field helpers.
 - Fixed type handling for building `latitude`/`longitude` (the API returns JSON numbers or null, not always strings) and ensured room custom fields survive a read refresh.
 - Fixed device archive response decoding (the archive endpoint returns a bare JSON array, not the usual `{code,msg}` object).
