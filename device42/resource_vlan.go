@@ -72,10 +72,10 @@ func resourceDevice42VlanRead(d *schema.ResourceData, m interface{}) error {
 	r := resp.Result().(*apiVlanReadReponse)
 	str := fmt.Sprintf("%v", r)
 	log.Printf("[DEBUG] resourceDevice42VlanRead - API data %s", str)
-	d.Set("number", r.Number)
+	d.Set("number", strconv.FormatInt(r.Number, 10))
 	d.Set("name", r.Name)
 	d.Set("description", r.Description)
-	d.Set("tags", r.Tags)
+	d.Set("tags", joinBuildingList(r.Tags))
 
 	return nil
 }
