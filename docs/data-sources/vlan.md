@@ -9,6 +9,8 @@ description: |-
 
 The `device42_vlan` data source allows you to fetch details of a specific VLAN from your Device42 instance. This can be useful when you need to access VLAN information, such as its ID, number, and description, for use in other parts of your Terraform configurations.
 
+> **Note:** this data source is **singular** — it looks up a **single** VLAN. To read **multiple** VLANs at once, use the plural data source [`device42_vlans`](vlans.md) with the `name` / `vlan_id` filters.
+
 ## Example Usage 
 
 ```hcl

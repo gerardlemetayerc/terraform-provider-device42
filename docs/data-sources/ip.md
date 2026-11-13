@@ -9,6 +9,8 @@ description: |-
 
 The `device42_ip` data source retrieves details of an **existing** Device42 IP address. Unlike `device42_ip_suggested` (which finds a *free* IP), this data source looks up an IP that is already recorded in Device42 so you can reference its metadata (subnet, device, availability) elsewhere in your configuration.
 
+> **Note:** this data source is **singular** — it looks up a **single** IP by address. To read **multiple** IPs at once (for example all IPs of a subnet), use the plural data source [`device42_ips`](ips.md) with the `subnet_id` filter.
+
 ## Example Usage
 
 ```hcl

@@ -10,6 +10,8 @@ description: |-
 This datasource permit to query free IP from a given subnet. Each call will query an IP.
 Reservation need to be done using ip datasource.
 
+> **Note:** the network counterpart of this data source is [`device42_subnet_suggested`](subnet_suggested.md), which suggests the next available **sub-subnet** under a parent subnet.
+
 
 
 ## Exemple 
