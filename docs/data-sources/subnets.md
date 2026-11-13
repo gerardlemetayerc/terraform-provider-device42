@@ -1,6 +1,6 @@
 ---
 page_title: "device42_subnets Data Source - terraform-provider-device42"
-subcategory: "network management"
+subcategory: "Network Management"
 description: |-
   Read multiple Device42 subnets, optionally filtered by VLAN, name or VRF group.
 ---

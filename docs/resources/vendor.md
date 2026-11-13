@@ -1,6 +1,6 @@
 ---
 page_title: "device42_vendor Resource - terraform-provider-device42"
-subcategory: "asset management"
+subcategory: "Asset Management"
 description: |-
   Create, update and delete a Device42 vendor.
 ---

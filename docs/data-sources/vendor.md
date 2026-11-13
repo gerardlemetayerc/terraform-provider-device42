@@ -1,6 +1,6 @@
 ---
 page_title: "device42_vendor Data Source - terraform-provider-device42"
-subcategory: "asset management"
+subcategory: "Asset Management"
 description: |-
   Read Device42 vendors, either by name or as a full list.
 ---

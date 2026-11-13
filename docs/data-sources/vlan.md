@@ -1,6 +1,6 @@
 ---
 page_title: "device42_vlan Data Source - terraform-provider-device42"
-subcategory: "network management"
+subcategory: "Network Management"
 description: |-
   This data source allows you to retrieve details about a specific VLAN in your Device42 instance using Terraform.
 ---

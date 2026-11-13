@@ -1,6 +1,6 @@
 ---
 page_title: "device42_subnet_suggested Resource - terraform-provider-device42"
-subcategory: "network management"
+subcategory: "Network Management"
 description: |-
   Suggest and reserve the next available sub-subnet of a parent subnet.
 ---

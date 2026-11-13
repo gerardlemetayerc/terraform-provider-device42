@@ -1,6 +1,6 @@
 ---
 page_title: "device42_service_level Data Source - terraform-provider-device42"
-subcategory: "asset management"
+subcategory: "Asset Management"
 description: |-
   Read Device42 service levels (tiers), either by name or as a full list.
 ---

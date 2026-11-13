@@ -1,6 +1,6 @@
 ---
 page_title: "device42_certificate Resource - terraform-provider-device42"
-subcategory: "asset management"
+subcategory: "Asset Management"
 description: |-
 ---
 

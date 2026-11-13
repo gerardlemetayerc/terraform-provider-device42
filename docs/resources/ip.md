@@ -1,6 +1,6 @@
 ---
 page_title: "device42_IP Resource - terraform-provider-device42"
-subcategory: "network management"
+subcategory: "Network Management"
 description: |-
 ---
 
