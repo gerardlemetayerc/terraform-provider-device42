@@ -69,6 +69,7 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"device42_device":             resourceD42Device(),
 			"device42_subnet":             resourceD42Subnet(),
+			"device42_subnet_suggested":   resourceD42SubnetSuggested(),
 			"device42_businessapp":        resourceD42BusinessApps(),
 			"device42_businessappelement": resourceD42BusinessAppsElement(),
 			"device42_vlan":               resourceD42Vlans(),
@@ -87,7 +88,6 @@ func Provider() *schema.Provider {
 			"device42_device":           datasourceD42Device(),
 			"device42_subnet":           datasourceD42Subnet(),
 			"device42_subnets":          datasourceD42Subnets(),
-			"device42_subnet_suggested": datasourceD42SubnetSuggested(),
 			"device42_ip":               datasourceD42Ip(),
 			"device42_ips":              datasourceD42Ips(),
 			"device42_vlan":             datasourceD42Vlan(),
