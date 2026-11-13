@@ -7,7 +7,9 @@ description: |-
 
 # device42_subnet (Datasource)
 
-Reseach subnet using different parameters.
+Reasearch subnet using different parameters.
+
+> **Note:** this data source is **singular** — it looks up a **single** subnet and clears its state if more than one matches. To search **multiple** subnets at once (for example all subnets attached to a VLAN, or a whole VRF group), use the plural data source [`device42_subnets`](subnets.md) with the `parent_vlan_id` / `vrf_group_id` / `name` filters.
 
 ## Exemple 
 
