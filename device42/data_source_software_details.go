@@ -1,6 +1,7 @@
 package device42
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 
@@ -142,11 +143,14 @@ func datasourceD42SoftwareDetailsRead(d *schema.ResourceData, m interface{}) err
 	// GET /1.0/software_details/ returns ALL instances in one response, so any
 	// filtering is done client-side.
 	var resp apiSoftwareDetailListResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get("/1.0/software_details/")
 	if err != nil {
 		return err
+	}
+	if apiResp.StatusCode() >= 400 {
+		return fmt.Errorf("datasourceD42SoftwareDetailsRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	softwareID := int64(d.Get("software_id").(int))
