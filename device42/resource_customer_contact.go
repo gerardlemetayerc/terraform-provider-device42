@@ -2,6 +2,7 @@ package device42
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -10,6 +11,11 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+// errNotFound distinguishes a confirmed-absent object from a transport/HTTP
+// failure, so callers can clear state without mistaking a request error for a
+// deletion.
+var errNotFound = errors.New("not found")
 
 // apiCustomerContactResponse is a single contact embedded in a parent customer's
 // "Contacts" array, as returned by GET /1.0/customers/{id}/ and GET /1.0/customers/.
@@ -170,9 +176,12 @@ func resourceDevice42CustomerContactRead(d *schema.ResourceData, m interface{}) 
 
 	contact, err := getCustomerContact(client, customerName, contactID)
 	if err != nil {
-		log.Printf("[WARN] No customer contact found: %d", contactID)
-		d.SetId("")
-		return nil
+		if errors.Is(err, errNotFound) {
+			log.Printf("[WARN] No customer contact found: %d", contactID)
+			d.SetId("")
+			return nil
+		}
+		return err
 	}
 
 	d.Set("name", contact.Name)
@@ -266,6 +275,9 @@ func getCustomerContact(client *resty.Client, customerName string, contactID int
 
 	parent, err := filterCustomerByName(toPlainCustomers(lookup.Customers), customerName)
 	if err != nil {
+		if strings.Contains(err.Error(), "no customer found") {
+			return apiCustomerContactResponse{}, errNotFound
+		}
 		return apiCustomerContactResponse{}, err
 	}
 
@@ -275,11 +287,11 @@ func getCustomerContact(client *resty.Client, customerName string, contactID int
 			if ok {
 				return contact, nil
 			}
-			return apiCustomerContactResponse{}, fmt.Errorf("no customer contact found with id: %d", contactID)
+			return apiCustomerContactResponse{}, errNotFound
 		}
 	}
 
-	return apiCustomerContactResponse{}, fmt.Errorf("no customer found with name: %s", customerName)
+	return apiCustomerContactResponse{}, errNotFound
 }
 
 // findContact returns the contact whose id matches contactID within the parent
