@@ -342,6 +342,9 @@ func resourceDevice42SoftwareUpdate(d *schema.ResourceData, m interface{}) error
 			}
 
 			r := resp.Result().(*apiResponse)
+			if resp.IsError() || r.Code != 0 {
+				return fmt.Errorf("resourceDevice42SoftwareUpdate - custom field %q update failed (HTTP %d, API code %d)", k, resp.StatusCode(), r.Code)
+			}
 			log.Printf("[DEBUG] resourceDevice42SoftwareUpdate - Result: %#v", r)
 		}
 	}
