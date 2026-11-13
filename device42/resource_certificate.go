@@ -348,41 +348,41 @@ func resourceDevice42CertificateUpdate(d *schema.ResourceData, m interface{}) er
 	formData := map[string]string{}
 	formData["issued_to"] = issuedTo
 
-	if v := d.Get("serial_number").(string); v != "" {
-		formData["serial_number"] = v
+	if d.HasChange("serial_number") {
+		formData["serial_number"] = d.Get("serial_number").(string)
 	}
-	if v := d.Get("subject").(string); v != "" {
-		formData["subject"] = v
+	if d.HasChange("subject") {
+		formData["subject"] = d.Get("subject").(string)
 	}
-	if v := d.Get("san").(string); v != "" {
-		formData["san"] = v
+	if d.HasChange("san") {
+		formData["san"] = d.Get("san").(string)
 	}
-	if v := d.Get("valid_from").(string); v != "" {
-		formData["valid_from"] = v
+	if d.HasChange("valid_from") {
+		formData["valid_from"] = d.Get("valid_from").(string)
 	}
-	if v := d.Get("valid_to").(string); v != "" {
-		formData["valid_to"] = v
+	if d.HasChange("valid_to") {
+		formData["valid_to"] = d.Get("valid_to").(string)
 	}
-	if v := d.Get("vendor").(string); v != "" {
-		formData["vendor"] = v
+	if d.HasChange("vendor") {
+		formData["vendor"] = d.Get("vendor").(string)
 	}
-	if v := d.Get("signature_algorithm").(string); v != "" {
-		formData["signature_algorithm"] = v
+	if d.HasChange("signature_algorithm") {
+		formData["signature_algorithm"] = d.Get("signature_algorithm").(string)
 	}
-	if v := d.Get("signature_hash").(string); v != "" {
-		formData["signature_hash"] = v
+	if d.HasChange("signature_hash") {
+		formData["signature_hash"] = d.Get("signature_hash").(string)
 	}
-	if v := d.Get("extended_key_usage").(string); v != "" {
-		formData["extended_key_usage"] = v
+	if d.HasChange("extended_key_usage") {
+		formData["extended_key_usage"] = d.Get("extended_key_usage").(string)
 	}
-	if v := d.Get("issued_by").(string); v != "" {
-		formData["issued_by"] = v
+	if d.HasChange("issued_by") {
+		formData["issued_by"] = d.Get("issued_by").(string)
 	}
-	if v := d.Get("parent_cert").(string); v != "" {
-		formData["parent_cert"] = v
+	if d.HasChange("parent_cert") {
+		formData["parent_cert"] = d.Get("parent_cert").(string)
 	}
-	if v := d.Get("version").(string); v != "" {
-		formData["version"] = v
+	if d.HasChange("version") {
+		formData["version"] = d.Get("version").(string)
 	}
 
 	log.Printf("[DEBUG] resourceDevice42CertificateUpdate - Pushing new informations : %#v", formData)
