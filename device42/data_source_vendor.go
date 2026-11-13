@@ -54,11 +54,14 @@ func datasourceD42VendorRead(d *schema.ResourceData, m interface{}) error {
 	// GET /1.0/vendors/ returns ALL vendors (no filter param is honoured), so any
 	// filtering is done client-side.
 	var resp apiVendorsResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get("/1.0/vendors/")
 	if err != nil {
 		return err
+	}
+	if apiResp.StatusCode() >= 400 {
+		return fmt.Errorf("datasourceD42VendorRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	// Always expose the full list so the data source can be used as a list-all
