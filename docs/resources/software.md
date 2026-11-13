@@ -1,6 +1,6 @@
 ---
 page_title: "device42_software Resource - terraform-provider-device42"
-subcategory: "asset management"
+subcategory: "Business Services & Software"
 description: |-
   Create, update and delete a Device42 software component.
 ---

@@ -1,6 +1,6 @@
 ---
 page_title: "device42_businessappelement Resource - terraform-provider-device42"
-subcategory: "asset management"
+subcategory: "Business Services & Software"
 description: |-
   This resource allows you to manage and associate devices with Business Applications in your Device42 instance using Terraform.
 ---

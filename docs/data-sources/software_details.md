@@ -1,6 +1,6 @@
 ---
 page_title: "device42_software_details Data Source - terraform-provider-device42"
-subcategory: "asset management"
+subcategory: "Business Services & Software"
 description: |-
   Read Device42 software-in-use instances, optionally filtered by software or device.
 ---
