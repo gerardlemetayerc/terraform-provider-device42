@@ -146,13 +146,13 @@ func datasourceD42RoomRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	if roomID > 0 {
-		url := fmt.Sprintf("/1.0/rooms/%d/", roomID)
-		log.Printf("[DEBUG] datasourceD42RoomRead - Query room on URL : %s", url)
+		getURL := fmt.Sprintf("/1.0/rooms/%d/", roomID)
+		log.Printf("[DEBUG] datasourceD42RoomRead - Query room on URL : %s", getURL)
 
 		var resp apiRoomReadResponse
 		apiResp, err := client.R().
 			SetResult(&resp).
-			Get(url)
+			Get(getURL)
 
 		if err != nil {
 			log.Printf("[WARN] No room found: %d", roomID)
@@ -184,6 +184,24 @@ func datasourceD42RoomRead(d *schema.ResourceData, m interface{}) error {
 		d.Set("reverse_yaxis", resp.ReverseYaxis)
 		d.Set("tags", joinBuildingList(resp.Tags))
 		d.Set("custom_fields", flattenCustomFields(resp.CustomFields))
+
+		// The rooms single-GET endpoint omits custom_fields (unlike /rooms/?name=),
+		// so enrich them from the list endpoint by name, matching on room_id.
+		if resp.Name != "" {
+			var lookup apiRoomLookupResponse
+			if lookupResp, err := client.R().
+				SetResult(&lookup).
+				Get(fmt.Sprintf("/1.0/rooms/?name=%s", url.QueryEscape(resp.Name))); err == nil {
+				if lookupResp.StatusCode() < 400 {
+					for _, r := range lookup.Rooms {
+						if r.RoomID == resp.RoomID {
+							d.Set("custom_fields", flattenCustomFields(r.CustomFields))
+							break
+						}
+					}
+				}
+			}
+		}
 		return nil
 	}
 

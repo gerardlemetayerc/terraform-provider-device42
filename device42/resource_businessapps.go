@@ -154,6 +154,14 @@ func resourceDevice42BusinessAppsRead(d *schema.ResourceData, m interface{}) err
 		d.SetId("")
 		return err
 	}
+	if resp.StatusCode() == 404 {
+		log.Printf("[WARN] No Business App found: %s", d.Id())
+		d.SetId("")
+		return nil
+	}
+	if resp.StatusCode() >= 400 {
+		return fmt.Errorf("resourceDevice42BusinessAppsRead - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
 
 	r := resp.Result().(*apiBusinessAppsReadResponse)
 	d.Set("name", r.Name)
