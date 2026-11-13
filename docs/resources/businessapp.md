@@ -1,6 +1,6 @@
 ---
 page_title: "device42_businessapp Resource - terraform-provider-device42"
-subcategory: "asset management"
+subcategory: "Business Services & Software"
 description: |-
   
 ---

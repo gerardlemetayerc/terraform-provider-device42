@@ -1,6 +1,6 @@
 ---
 page_title: "device42_businessapp Data Source - terraform-provider-device42"
-subcategory: "asset management"
+subcategory: "Business Services & Software"
 description: |-
   This data source allows you to retrieve details about a specific Business Application in your Device42 instance using Terraform.
 ---
