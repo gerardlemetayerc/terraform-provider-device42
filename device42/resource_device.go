@@ -579,6 +579,9 @@ func resourceDevice42DeviceDelete(d *schema.ResourceData, m interface{}) error {
 			log.Printf("[ERROR] Failed to archive Device ID %s", d.Id())
 			return err
 		}
+		if resp1.StatusCode() >= 400 && resp1.StatusCode() != 404 {
+			return fmt.Errorf("resourceDevice42DeviceDelete - archive HTTP %d: %s", resp1.StatusCode(), resp1.String())
+		}
 		r1 := resp1.Result().(*apiArchiveResponse)
 		log.Printf("[DEBUG] Result: %#v", r1)
 		return nil
@@ -588,6 +591,9 @@ func resourceDevice42DeviceDelete(d *schema.ResourceData, m interface{}) error {
 			Delete(url)
 		if err != nil {
 			return err
+		}
+		if resp2.StatusCode() >= 400 && resp2.StatusCode() != 404 {
+			return fmt.Errorf("resourceDevice42DeviceDelete - HTTP %d: %s", resp2.StatusCode(), resp2.String())
 		}
 		r2 := resp2.Result().(*apiResponse)
 		log.Printf("[DEBUG] Result: %#v", r2)

@@ -133,6 +133,9 @@ func resourceDevice42BusinessAppsElementDelete(d *schema.ResourceData, m interfa
 	if err != nil {
 		return err
 	}
+	if resp.StatusCode() >= 400 && resp.StatusCode() != 404 {
+		return fmt.Errorf("resourceDevice42BusinessAppsElementDelete - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
 
 	r := resp.Result().(*apiResponse)
 	log.Printf("[DEBUG] Result: %#v", r)

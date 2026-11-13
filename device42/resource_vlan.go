@@ -93,6 +93,9 @@ func resourceDevice42VlanDelete(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
+	if resp.StatusCode() >= 400 && resp.StatusCode() != 404 {
+		return fmt.Errorf("resourceDevice42VlanDelete - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
 
 	r := resp.Result().(*apiResponse)
 	log.Printf("[DEBUG] Result: %#v", r)

@@ -213,6 +213,9 @@ func resourceDevice42SoftwareLicenseKeyDelete(d *schema.ResourceData, m interfac
 	if err != nil {
 		return err
 	}
+	if resp.StatusCode() >= 400 && resp.StatusCode() != 404 {
+		return fmt.Errorf("resourceDevice42SoftwareLicenseKeyDelete - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
 
 	r := resp.Result().(*apiDeleteResponse)
 	log.Printf("[DEBUG] resourceDevice42SoftwareLicenseKeyDelete - Result: %#v", r)
