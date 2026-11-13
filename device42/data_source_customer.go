@@ -3,6 +3,7 @@ package device42
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/go-resty/resty/v2"
@@ -62,14 +63,17 @@ func datasourceD42CustomerRead(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[DEBUG] datasourceD42CustomerRead - Query customers on URL : %s", url)
 
 		var lookup apiCustomersResponse
-		_, err := client.R().
+		apiResp, err := client.R().
 			SetResult(&lookup).
 			Get(url)
 
 		if err != nil {
 			log.Printf("[WARN] No customer found: %s", name)
 			d.SetId("")
-			return nil
+			return err
+		}
+		if apiResp.StatusCode() >= 400 && apiResp.StatusCode() != http.StatusNotFound {
+			return fmt.Errorf("datasourceD42CustomerRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 		}
 
 		c, err := filterCustomerByName(lookup.Customers, name)
@@ -95,14 +99,22 @@ func datasourceD42CustomerRead(d *schema.ResourceData, m interface{}) error {
 		log.Printf("[DEBUG] datasourceD42CustomerRead - Query customer on URL : %s", url)
 
 		var resp apiCustomersResponse
-		_, err := client.R().
+		apiResp, err := client.R().
 			SetResult(&resp).
 			Get(url)
 
 		if err != nil {
 			log.Printf("[WARN] No customer found: %d", customerID)
 			d.SetId("")
+			return err
+		}
+		if apiResp.StatusCode() == http.StatusNotFound {
+			log.Printf("[WARN] No customer found: %d", customerID)
+			d.SetId("")
 			return nil
+		}
+		if apiResp.StatusCode() >= 400 {
+			return fmt.Errorf("datasourceD42CustomerRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 		}
 
 		if len(resp.Customers) == 0 {

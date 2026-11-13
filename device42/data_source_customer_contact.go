@@ -3,6 +3,7 @@ package device42
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/go-resty/resty/v2"
@@ -71,14 +72,17 @@ func datasourceD42CustomerContactRead(d *schema.ResourceData, m interface{}) err
 	log.Printf("[DEBUG] datasourceD42CustomerContactRead - Query customers on URL : %s", url)
 
 	var lookup apiCustomerContactsResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&lookup).
 		Get(url)
 
 	if err != nil {
 		log.Printf("[WARN] No customer found: %s", customerName)
 		d.SetId("")
-		return nil
+		return err
+	}
+	if apiResp.StatusCode() >= 400 && apiResp.StatusCode() != http.StatusNotFound {
+		return fmt.Errorf("datasourceD42CustomerContactRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	parent, err := filterCustomerByName(toPlainCustomers(lookup.Customers), customerName)
