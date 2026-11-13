@@ -7,7 +7,7 @@ output "installed" {
 }
 
 data "device42_software_details" "runs_apache" {
-  software_id = data.device42_software.apache.software_id
+  software_id = data.device42_software.apache_ds.software_id
 }
 
 output "devices" {
