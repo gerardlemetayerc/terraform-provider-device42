@@ -27,6 +27,7 @@ It currently provides support for the following resources and data sources :
 - Suggested IP (`device42_ip_suggested`)
 - VLAN (`device42_vlan`)
 - Subnet (`device42_subnet`)
+- Subnets (`device42_subnets`)
 - Business Application (`device42_businessapp`)
 - Password (`device42_password`)
 - Building (`device42_building`)
@@ -59,6 +60,7 @@ This release adds support for the physical infrastructure layer of Device42 (Bui
 - Added `device42_software` resource and datasource to manage software components (vendor, description, type, category, aliases, custom fields, import by `software_id`).
 - Added `device42_software_license_key` resource to manage software license keys.
 - Added `device42_software_details` datasource to list software-in-use instances, optionally filtered by software or device.
+- Added `device42_subnets` datasource to read multiple subnets at once, filtered by parent VLAN, name or VRF group (the plural counterpart of `device42_subnet`).
 - All resources support import (`terraform import`) and custom fields, reusing the existing `device42` error-handling and custom-field helpers.
 - Fixed type handling for building `latitude`/`longitude` (the API returns JSON numbers or null, not always strings) and ensured room custom fields survive a read refresh.
 - Fixed device archive response decoding (the archive endpoint returns a bare JSON array, not the usual `{code,msg}` object).
