@@ -136,6 +136,7 @@ func resourceD42Device() *schema.Resource {
 			"building": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Name of the building that contains this device.",
 			},
 			"building_id": {
@@ -162,16 +163,19 @@ func resourceD42Device() *schema.Resource {
 			"asset_no": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Asset number of the device.",
 			},
 			"serial_no": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Serial number of the device.",
 			},
 			"manufacturer": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Hardware manufacturer of the device.",
 			},
 			"hardware": {
@@ -193,6 +197,7 @@ func resourceD42Device() *schema.Resource {
 			"in_service": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Whether the device is in service (yes/no).",
 			},
 			"notes": {
@@ -215,6 +220,7 @@ func resourceD42Device() *schema.Resource {
 			"objectcategory": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Object category name of the device.",
 			},
 			"objectcategory_id": {
@@ -241,11 +247,13 @@ func resourceD42Device() *schema.Resource {
 			"network_device": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Whether the device is a network switch (yes/no).",
 			},
 			"blade_chassis": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Whether the device is a blade chassis (yes/no).",
 			},
 		},
