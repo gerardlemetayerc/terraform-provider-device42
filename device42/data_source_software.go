@@ -54,11 +54,14 @@ func datasourceD42SoftwareRead(d *schema.ResourceData, m interface{}) error {
 	// GET /1.0/software/ returns ALL components in one response (the ?name= filter
 	// is exact-match only), so any filtering is done client-side.
 	var resp apiSoftwareListResponse
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&resp).
 		Get("/1.0/software/")
 	if err != nil {
 		return err
+	}
+	if apiResp.StatusCode() >= 400 {
+		return fmt.Errorf("datasourceD42SoftwareRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	// Always expose the full list so the data source can be used as a list-all

@@ -62,11 +62,14 @@ func datasourceD42ServiceLevelRead(d *schema.ResourceData, m interface{}) error 
 	// GET /1.0/service_level/ returns a flat JSON array of {name, id}. The
 	// ?name= query param is ignored by the API, so any filtering is client-side.
 	var levels []apiServiceLevel
-	_, err := client.R().
+	apiResp, err := client.R().
 		SetResult(&levels).
 		Get("/1.0/service_level/")
 	if err != nil {
 		return err
+	}
+	if apiResp.StatusCode() >= 400 {
+		return fmt.Errorf("datasourceD42ServiceLevelRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
 
 	// Always expose the full list so the data source can be used as a
