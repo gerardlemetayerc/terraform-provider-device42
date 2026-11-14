@@ -10,8 +10,8 @@ import (
 )
 
 type datasourceD42VlanResponse struct {
-	TotalCount int                     `json:"total_count"`
-	Vlans      []apiVlanReadReponse    `json:"vlans"`
+	TotalCount int                  `json:"total_count"`
+	Vlans      []apiVlanReadReponse `json:"vlans"`
 }
 
 func datasourceD42Vlan() *schema.Resource {
@@ -37,16 +37,16 @@ func datasourceD42VlanRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*resty.Client)
 
 	vlan_id := d.Get("vlan_id").(int)
-	number  := d.Get("number").(int)
+	number := d.Get("number").(int)
 	queryParams := make(url.Values)
-  
+
 	if vlan_id > 0 {
 		queryParams.Set("vlan_id", strconv.Itoa(vlan_id))
 	}
 	if number > 0 {
 		queryParams.Set("number", strconv.Itoa(number))
 	}
-  
+
 	resp, err := client.R().
 		SetResult(datasourceD42VlanResponse{}).
 		SetHeader("Accept", "application/json").

@@ -88,9 +88,10 @@ func resourceD42Vendor() *schema.Resource {
 				Description: "Any additional notes.",
 			},
 			"tags": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Add or update tags to a vendor (comma separated).",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Description:      "Add or update tags to a vendor (comma separated).",
+				DiffSuppressFunc: suppressCommaSeparatedOrderDiff,
 			},
 			"custom_fields": {
 				Type:             schema.TypeMap,

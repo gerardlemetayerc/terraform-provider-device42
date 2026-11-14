@@ -81,11 +81,13 @@ func resourceD42Room() *schema.Resource {
 			"horizontal_grid_start": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Horizontal grid start value.",
 			},
 			"vertical_grid_start": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Vertical grid start value.",
 			},
 			"grid_rows": {
@@ -113,9 +115,10 @@ func resourceD42Room() *schema.Resource {
 				Description: "Reverse y-axis numbering (yes/no).",
 			},
 			"tags": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Add or update tags to a room (comma separated).",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Description:      "Add or update tags to a room (comma separated).",
+				DiffSuppressFunc: suppressCommaSeparatedOrderDiff,
 			},
 			"custom_fields": {
 				Type:             schema.TypeMap,

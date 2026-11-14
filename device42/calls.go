@@ -3,9 +3,33 @@ package device42
 import (
 	"fmt"
 	"log"
+	"sort"
+	"strings"
 
 	"github.com/go-resty/resty/v2"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+// suppressCommaSeparatedOrderDiff suppresses diffs where the only difference is
+// the ordering of a comma-separated list (e.g. tags/groups). Device42 returns
+// such lists in an arbitrary order, so "a,b" and "b,a" are semantically equal.
+func suppressCommaSeparatedOrderDiff(k, old, new string, d *schema.ResourceData) bool {
+	if old == new {
+		return true
+	}
+	normalize := func(s string) string {
+		if s == "" {
+			return ""
+		}
+		parts := strings.Split(s, ",")
+		for i := range parts {
+			parts[i] = strings.TrimSpace(parts[i])
+		}
+		sort.Strings(parts)
+		return strings.Join(parts, ",")
+	}
+	return normalize(old) == normalize(new)
+}
 
 func apiDevice42Get(client *resty.Client, path string, result interface{}) (*resty.Response, error) {
 	log.Printf("[DEBUG] apiGet - Calling API on path %s", path)

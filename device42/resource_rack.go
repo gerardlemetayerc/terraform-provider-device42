@@ -89,9 +89,10 @@ func resourceD42Rack() *schema.Resource {
 				Description: "Orientation of the rack: left, right, up or down.",
 			},
 			"tags": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Add or update tags to a rack (comma separated).",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Description:      "Add or update tags to a rack (comma separated).",
+				DiffSuppressFunc: suppressCommaSeparatedOrderDiff,
 			},
 			"custom_fields": {
 				Type:             schema.TypeMap,
