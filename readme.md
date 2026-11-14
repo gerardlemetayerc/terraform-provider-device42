@@ -21,6 +21,7 @@ It currently provides support for the following resources and data sources :
 - Vendor (`device42_vendor`)
 - Software (`device42_software`)
 - Software License Key (`device42_software_license_key`)
+- Cable (`device42_cable`)
 
 **Data sources**
 - Device (`device42_device`)
@@ -43,6 +44,14 @@ It currently provides support for the following resources and data sources :
 - Vendor (`device42_vendor`)
 - Software (`device42_software`)
 - Software Details (`device42_software_details`)
+
+## Version v1.4.2
+
+This release adds support for Device42 cables, connecting two endpoints (patch panel ports, netports, circuits), validated against the Device42 public API.
+
+### What's New
+
+- Added `device42_cable` resource to manage cables linking two Device42 endpoints (`origin`/`end` of type `patch_panel_port`, `cable`, `circuit`, `netport` or `tap_port`), with length, units, notes, vendor, tags and custom fields. The `cable_id` is the unique logical name used by the API to upsert.
 
 ## Version v1.4.1
 
