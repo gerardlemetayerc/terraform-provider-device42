@@ -29,6 +29,16 @@ It currently provides support for the following resources and data sources :
 - Subnet Category (`device42_subnet_category`)
 - MAC (`device42_mac`)
 - IP NAT (`device42_ip_nat`)
+- Auto Discovery Certificate (`device42_auto_discovery_certificate`)
+- Auto Discovery DNS (`device42_auto_discovery_dns`)
+- Auto Discovery Ping Sweep (`device42_auto_discovery_pingsweep`)
+- Auto Discovery Port Scan (`device42_auto_discovery_portscan`)
+- Auto Discovery Nmap (`device42_auto_discovery_nmap`)
+- Auto Discovery Blade (`device42_auto_discovery_blade`)
+- Auto Discovery Networks (`device42_auto_discovery_networks`)
+- Auto Discovery SNMP (`device42_auto_discovery_snmp_disc`)
+- Auto Discovery IPMI (`device42_auto_discovery_ipmi`)
+- Auto Discovery Cloud Account (`device42_auto_discovery_cloudaccount`)
 
 **Data sources**
 - Device (`device42_device`)
@@ -59,6 +69,16 @@ It currently provides support for the following resources and data sources :
 - Subnet Category (`device42_subnet_category`)
 - MAC (`device42_mac`)
 - IP NAT (`device42_ip_nat`)
+- Auto Discovery Certificate (`device42_auto_discovery_certificate`)
+- Auto Discovery DNS (`device42_auto_discovery_dns`)
+- Auto Discovery Ping Sweep (`device42_auto_discovery_pingsweep`)
+- Auto Discovery Port Scan (`device42_auto_discovery_portscan`)
+- Auto Discovery Nmap (`device42_auto_discovery_nmap`)
+- Auto Discovery Blade (`device42_auto_discovery_blade`)
+- Auto Discovery Networks (`device42_auto_discovery_networks`)
+- Auto Discovery SNMP (`device42_auto_discovery_snmp_disc`)
+- Auto Discovery IPMI (`device42_auto_discovery_ipmi`)
+- Auto Discovery Cloud Account (`device42_auto_discovery_cloudaccount`)
 
 ## Version v1.4.2
 
@@ -72,6 +92,9 @@ This release adds support for Device42 cables, connecting two endpoints (patch p
 - Added `device42_vrf_group` resource to manage VRF groups (name, description, tags). Tags are appended by the API on update, so drift is suppressed when the configured set is a subset of the state.
 - Added `device42_subnet_category` resource to manage subnet categories, `device42_mac` resource to manage MAC addresses (upserted by address), and `device42_ip_nat` resource to manage IP NAT rules. The IP NAT `ip_address_to` field is not updatable by the API and therefore forces a recreate when changed.
 - Added matching data sources for the new resources: `device42_cable`, `device42_power_circuit`, `device42_pdu_model`, `device42_pdu`, `device42_vrf_group`, `device42_subnet_category`, `device42_mac` and `device42_ip_nat`.
+- Added `device42_auto_discovery_certificate` resource to manage certificate autodiscovery jobs (name, server, ports, follow_chain) and its data source. This is the reference implementation for the Auto Discovery pattern: jobs are upserted by identifier via `POST`, read back by listing the matching job, and deleted via `DELETE /auto_discovery/{category}/{id}/`.
+- Added Auto Discovery resources for the DNS (`device42_auto_discovery_dns`, read-only over `zonename`, updates recreate the job), ping sweep (`device42_auto_discovery_pingsweep`), TCP port scan (`device42_auto_discovery_portscan`), nmap (`device42_auto_discovery_nmap`), blade (`device42_auto_discovery_blade`), networks (`device42_auto_discovery_networks`), SNMP discovery (`device42_auto_discovery_snmp_disc`), IPMI (`device42_auto_discovery_ipmi`) and cloud account (`device42_auto_discovery_cloudaccount`), each with a matching data source.
+- The Auto Discovery `Run` operation (`PUT /auto_discovery/{category}/{id}/run/`) is intentionally not implemented because running a discovery job has a side effect on the CMDB. Jobs are created, updated and deleted as configuration, while the actual run is left to the user.
 
 ## Version v1.4.1
 
