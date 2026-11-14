@@ -22,6 +22,7 @@ It currently provides support for the following resources and data sources :
 - Software (`device42_software`)
 - Software License Key (`device42_software_license_key`)
 - Cable (`device42_cable`)
+- Power Circuit (`device42_power_circuit`)
 
 **Data sources**
 - Device (`device42_device`)
@@ -52,6 +53,7 @@ This release adds support for Device42 cables, connecting two endpoints (patch p
 ### What's New
 
 - Added `device42_cable` resource to manage cables linking two Device42 endpoints (`origin`/`end` of type `patch_panel_port`, `cable`, `circuit`, `netport` or `tap_port`), with length, units, notes, vendor, tags and custom fields. The `cable_id` is the unique logical name used by the API to upsert.
+- Added `device42_power_circuit` resource to manage power circuits attached to a breaker panel (`breakerpanel_id` + `number`), with label, amps, voltage and connection.
 
 ## Version v1.4.1
 

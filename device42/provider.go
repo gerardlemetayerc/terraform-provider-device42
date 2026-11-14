@@ -84,6 +84,7 @@ func Provider() *schema.Provider {
 			"device42_software":             resourceD42Software(),
 			"device42_software_license_key": resourceD42SoftwareLicenseKey(),
 			"device42_cable":                resourceD42Cable(),
+			"device42_power_circuit":        resourceD42PowerCircuit(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"device42_device":           datasourceD42Device(),
