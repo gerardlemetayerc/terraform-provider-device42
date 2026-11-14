@@ -23,6 +23,8 @@ It currently provides support for the following resources and data sources :
 - Software License Key (`device42_software_license_key`)
 - Cable (`device42_cable`)
 - Power Circuit (`device42_power_circuit`)
+- PDU Model (`device42_pdu_model`)
+- PDU (`device42_pdu`)
 
 **Data sources**
 - Device (`device42_device`)
@@ -54,6 +56,7 @@ This release adds support for Device42 cables, connecting two endpoints (patch p
 
 - Added `device42_cable` resource to manage cables linking two Device42 endpoints (`origin`/`end` of type `patch_panel_port`, `cable`, `circuit`, `netport` or `tap_port`), with length, units, notes, vendor, tags and custom fields. The `cable_id` is the unique logical name used by the API to upsert.
 - Added `device42_power_circuit` resource to manage power circuits attached to a breaker panel (`breakerpanel_id` + `number`), with label, amps, voltage and connection.
+- Added `device42_pdu_model` resource to manage PDU models (manufacturer, depth, size, width, height) and `device42_pdu` resource to manage physical PDUs, linked to a PDU model by name.
 
 ## Version v1.4.1
 
