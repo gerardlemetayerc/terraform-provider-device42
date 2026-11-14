@@ -3,6 +3,7 @@ package device42
 import (
 	"fmt"
 	"log"
+	"net/url"
 	"strconv"
 
 	"github.com/go-resty/resty/v2"
@@ -255,9 +256,16 @@ func resourceDevice42BusinessAppsCreate(d *schema.ResourceData, m interface{}) e
 		return fmt.Errorf("API returned code %d", r.Code)
 	}
 
+	// The demo API upserts by name: a create for an existing name returns
+	// {code:0, msg:[]} rather than the usual [msg, id, ...]. Recover the ID
+	// by name lookup so create stays idempotent across re-runs.
 	if len(r.Msg) < 1 {
-		str := fmt.Sprintf("%v", r)
-		return fmt.Errorf("please check account permission or credentials - api returned :  %s", str)
+		id, err := d42BusinessAppIdByName(client, name)
+		if err != nil {
+			return err
+		}
+		d.SetId(strconv.FormatInt(id, 10))
+		return resourceDevice42BusinessAppsRead(d, m)
 	}
 
 	log.Printf("[DEBUG] Result: %#v", r)
@@ -267,6 +275,23 @@ func resourceDevice42BusinessAppsCreate(d *schema.ResourceData, m interface{}) e
 	d.SetId(strconv.Itoa(id))
 
 	return resourceDevice42BusinessAppsRead(d, m)
+}
+
+func d42BusinessAppIdByName(client *resty.Client, name string) (int64, error) {
+	resp, err := client.R().
+		SetResult(datasourceD42BusinessAppApi{}).
+		Get(fmt.Sprintf("/1.0/businessapps/?name=%s", url.QueryEscape(name)))
+	if err != nil {
+		return 0, err
+	}
+	if resp.StatusCode() >= 400 {
+		return 0, fmt.Errorf("lookup businessapp by name - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
+	r := resp.Result().(*datasourceD42BusinessAppApi)
+	if len(r.Businessapps) == 0 {
+		return 0, fmt.Errorf("businessapp %q not found after create (empty API response)", name)
+	}
+	return r.Businessapps[0].BusinessAppId, nil
 }
 
 func resourceDevice42BusinessAppsDelete(d *schema.ResourceData, m interface{}) error {
