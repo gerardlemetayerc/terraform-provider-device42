@@ -37,9 +37,9 @@ func datasourceD42Password() *schema.Resource {
 				Description: "Username associated with the password.",
 			},
 			"password": {
-				Type:      schema.TypeString,
-				Computed:  true,
-				Sensitive: true,
+				Type:        schema.TypeString,
+				Computed:    true,
+				Sensitive:   true,
 				Description: "Password of the account.",
 			},
 			"id": {

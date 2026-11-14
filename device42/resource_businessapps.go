@@ -57,6 +57,7 @@ func resourceD42BusinessApps() *schema.Resource {
 			"app_type_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Business App type.",
 			},
 			"description": {
@@ -72,6 +73,7 @@ func resourceD42BusinessApps() *schema.Resource {
 			"business_app_owner_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Business application owner ID.",
 			},
 			"technical_app_owner": {
@@ -82,36 +84,43 @@ func resourceD42BusinessApps() *schema.Resource {
 			"technical_app_owner_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Technical application owner ID.",
 			},
 			"cust_owner_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Customer owner ID.",
 			},
 			"service_level_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "D42 ID of service level name (do not use with service_level).",
 			},
 			"service_level": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Service Level name (do not use with service_level_id)",
 			},
 			"migration_group": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Business application Migration Group name (do not use with migration_group_id)",
 			},
 			"migration_group_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "D42 ID of business application Migration Group (do not use with migration_group)",
 			},
 			"vendor": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Business Application vendor",
 			},
 			"custom_fields": {

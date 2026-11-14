@@ -117,7 +117,7 @@ func resourceD42Device() *schema.Resource {
 			"service_level": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     "d42null",
+				Computed:    true,
 				Description: "Service Level of the device (default is d42null).",
 			},
 			"custom_fields": {
@@ -207,10 +207,11 @@ func resourceD42Device() *schema.Resource {
 				Description: "Notes for the device.",
 			},
 			"tags": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "Tags of the device (comma separated).",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Computed:         true,
+				Description:      "Tags of the device (comma separated).",
+				DiffSuppressFunc: suppressCommaSeparatedOrderDiff,
 			},
 			"tags_remove": {
 				Type:        schema.TypeString,
@@ -283,6 +284,9 @@ func resourceDevice42DeviceCreate(d *schema.ResourceData, m interface{}) error {
 
 	if deviceType == "" {
 		deviceType = "virtual"
+	}
+	if serviceLevel == "" {
+		serviceLevel = "d42null"
 	}
 	formData := map[string]string{
 		"name":          name,
@@ -442,7 +446,9 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", resp.Name)
 	d.Set("type", resp.Type)
 	d.Set("service_level", resp.ServiceLevel)
-	d.Set("building", resp.Building)
+	if resp.Building != "" {
+		d.Set("building", resp.Building)
+	}
 	d.Set("asset_no", resp.AssetNo)
 	d.Set("serial_no", resp.SerialNo)
 	d.Set("manufacturer", resp.Manufacturer)

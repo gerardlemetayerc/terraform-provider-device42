@@ -66,9 +66,10 @@ func resourceD42Customer() *schema.Resource {
 				Description: "Contact information for the customer.",
 			},
 			"tags": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Add or update tags to a customer (comma separated).",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Description:      "Add or update tags to a customer (comma separated).",
+				DiffSuppressFunc: suppressCommaSeparatedOrderDiff,
 			},
 			"custom_fields": {
 				Type:             schema.TypeMap,

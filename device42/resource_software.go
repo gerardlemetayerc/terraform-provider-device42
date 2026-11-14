@@ -75,37 +75,45 @@ func resourceD42Software() *schema.Resource {
 			"software_type": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Type of the software component.",
 			},
 			"deployment_type": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Deployment type of the software component.",
 			},
 			"category": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Category of the software component.",
 			},
 			"aliases": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Aliases of the software component.",
 			},
 			"licensing_model": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Licensing model of the software component.",
 			},
 			"track_licensed_count_by_keys": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Whether licensed counts are tracked by license keys (yes/no).",
 			},
 			"tags": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Comma-separated tags to attach to the software component.",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Computed:         true,
+				Description:      "Comma-separated tags to attach to the software component.",
+				DiffSuppressFunc: suppressCommaSeparatedOrderDiff,
 			},
 			"custom_fields": {
 				Type:             schema.TypeMap,

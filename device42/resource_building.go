@@ -76,6 +76,7 @@ func resourceD42Building() *schema.Resource {
 			"address": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Address of the building.",
 			},
 			"building_id": {
@@ -86,37 +87,46 @@ func resourceD42Building() *schema.Resource {
 			"contact_name": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Contact name of the building.",
 			},
 			"contact_phone": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Contact phone of the building.",
 			},
 			"latitude": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "North-south position.",
 			},
 			"longitude": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "East-west position.",
 			},
 			"notes": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
 				Description: "Any additional notes.",
 			},
 			"tags": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Add or update tags to a building (comma separated).",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Computed:         true,
+				Description:      "Add or update tags to a building (comma separated).",
+				DiffSuppressFunc: suppressCommaSeparatedOrderDiff,
 			},
 			"groups": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Admin groups that have access to this building (multitenancy), e.g. Prod_East:no,Corp:yes.",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Computed:         true,
+				Description:      "Admin groups that have access to this building (multitenancy), e.g. Prod_East:no,Corp:yes.",
+				DiffSuppressFunc: suppressCommaSeparatedOrderDiff,
 			},
 			"custom_fields": {
 				Type:             schema.TypeMap,
@@ -264,7 +274,9 @@ func resourceDevice42BuildingRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("contact_phone", resp.ContactPhone)
 	d.Set("latitude", string(resp.Latitude))
 	d.Set("longitude", string(resp.Longitude))
-	d.Set("notes", resp.Notes)
+	if resp.Notes != "" {
+		d.Set("notes", resp.Notes)
+	}
 	d.Set("tags", joinBuildingList(resp.Tags))
 	d.Set("groups", joinBuildingList(resp.Groups))
 	d.Set("custom_fields", flattenCustomFields(resp.CustomFields))
