@@ -31,6 +31,32 @@ func suppressCommaSeparatedOrderDiff(k, old, new string, d *schema.ResourceData)
 	return normalize(old) == normalize(new)
 }
 
+func suppressTagsAppendDiff(k, old, new string, d *schema.ResourceData) bool {
+	if old == new {
+		return true
+	}
+	if new == "" {
+		return old == "" || old == ","
+	}
+	want := make(map[string]bool)
+	for _, p := range strings.Split(new, ",") {
+		p = strings.TrimSpace(p)
+		if p != "" {
+			want[p] = true
+		}
+	}
+	if len(want) == 0 {
+		return true
+	}
+	for _, p := range strings.Split(old, ",") {
+		p = strings.TrimSpace(p)
+		if want[p] {
+			delete(want, p)
+		}
+	}
+	return len(want) == 0
+}
+
 func apiDevice42Get(client *resty.Client, path string, result interface{}) (*resty.Response, error) {
 	log.Printf("[DEBUG] apiGet - Calling API on path %s", path)
 

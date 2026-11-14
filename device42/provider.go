@@ -87,6 +87,7 @@ func Provider() *schema.Provider {
 			"device42_power_circuit":        resourceD42PowerCircuit(),
 			"device42_pdu_model":            resourceD42PduModel(),
 			"device42_pdu":                  resourceD42Pdu(),
+			"device42_vrf_group":            resourceD42VrfGroup(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"device42_device":           datasourceD42Device(),
