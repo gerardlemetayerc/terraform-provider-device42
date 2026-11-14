@@ -88,6 +88,9 @@ func Provider() *schema.Provider {
 			"device42_pdu_model":            resourceD42PduModel(),
 			"device42_pdu":                  resourceD42Pdu(),
 			"device42_vrf_group":            resourceD42VrfGroup(),
+			"device42_subnet_category":      resourceD42SubnetCategory(),
+			"device42_mac":                  resourceD42Mac(),
+			"device42_ip_nat":               resourceD42IpNat(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"device42_device":           datasourceD42Device(),

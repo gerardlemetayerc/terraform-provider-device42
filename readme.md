@@ -26,6 +26,9 @@ It currently provides support for the following resources and data sources :
 - PDU Model (`device42_pdu_model`)
 - PDU (`device42_pdu`)
 - VRF Group (`device42_vrf_group`)
+- Subnet Category (`device42_subnet_category`)
+- MAC (`device42_mac`)
+- IP NAT (`device42_ip_nat`)
 
 **Data sources**
 - Device (`device42_device`)
@@ -59,6 +62,7 @@ This release adds support for Device42 cables, connecting two endpoints (patch p
 - Added `device42_power_circuit` resource to manage power circuits attached to a breaker panel (`breakerpanel_id` + `number`), with label, amps, voltage and connection.
 - Added `device42_pdu_model` resource to manage PDU models (manufacturer, depth, size, width, height) and `device42_pdu` resource to manage physical PDUs, linked to a PDU model by name.
 - Added `device42_vrf_group` resource to manage VRF groups (name, description, tags). Tags are appended by the API on update, so drift is suppressed when the configured set is a subset of the state.
+- Added `device42_subnet_category` resource to manage subnet categories, `device42_mac` resource to manage MAC addresses (upserted by address), and `device42_ip_nat` resource to manage IP NAT rules. The IP NAT `ip_address_to` field is not updatable by the API and therefore forces a recreate when changed.
 
 ## Version v1.4.1
 
