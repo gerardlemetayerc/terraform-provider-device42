@@ -29,14 +29,17 @@ func resourceD42Mac() *schema.Resource {
 			"macaddress": {
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 			"vlan_id": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
 			},
 			"port": {
 				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
 			},
 		},
 	}
@@ -79,9 +82,7 @@ func resourceDevice42MacRead(d *schema.ResourceData, m interface{}) error {
 		SetResult(&resp).
 		Get(fmt.Sprintf("/1.0/macs/%s/", d.Id()))
 	if err != nil {
-		log.Printf("[WARN] No mac found for id %s", d.Id())
-		d.SetId("")
-		return err
+		return fmt.Errorf("resourceDevice42MacRead - request error for id %s: %w", d.Id(), err)
 	}
 	if apiResp.StatusCode() == 404 {
 		log.Printf("[WARN] No mac found for id %s", d.Id())
@@ -94,7 +95,11 @@ func resourceDevice42MacRead(d *schema.ResourceData, m interface{}) error {
 
 	mac := resp
 	d.Set("macaddress", mac.Macaddress)
-	d.Set("vlan_id", strconv.FormatInt(mac.VlanId, 10))
+	if mac.VlanId != 0 {
+		d.Set("vlan_id", strconv.FormatInt(mac.VlanId, 10))
+	} else {
+		d.Set("vlan_id", "")
+	}
 	d.Set("port", mac.Port)
 
 	return nil
