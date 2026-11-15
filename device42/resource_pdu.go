@@ -116,9 +116,7 @@ func resourceDevice42PduRead(d *schema.ResourceData, m interface{}) error {
 		SetResult(&resp).
 		Get(fmt.Sprintf("/1.0/pdus/%s/", d.Id()))
 	if err != nil {
-		log.Printf("[WARN] No pdu found for id %s", d.Id())
-		d.SetId("")
-		return err
+		return fmt.Errorf("resourceDevice42PduRead - request error for id %s: %w", d.Id(), err)
 	}
 	if apiResp.StatusCode() == 404 {
 		log.Printf("[WARN] No pdu found for id %s", d.Id())

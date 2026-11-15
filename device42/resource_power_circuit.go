@@ -100,9 +100,7 @@ func resourceDevice42PowerCircuitRead(d *schema.ResourceData, m interface{}) err
 		Get(fmt.Sprintf("/1.0/powercircuits/%s/", d.Id()))
 
 	if err != nil {
-		log.Printf("[WARN] No power circuit found for id %s", d.Id())
-		d.SetId("")
-		return err
+		return fmt.Errorf("resourceDevice42PowerCircuitRead - request error for id %s: %w", d.Id(), err)
 	}
 	if resp.StatusCode() == 404 {
 		log.Printf("[WARN] No power circuit found for id %s", d.Id())
