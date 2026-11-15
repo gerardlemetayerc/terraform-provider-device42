@@ -36,7 +36,7 @@ func suppressTagsAppendDiff(k, old, new string, d *schema.ResourceData) bool {
 		return true
 	}
 	if new == "" {
-		return old == "" || old == ","
+		return true
 	}
 	want := make(map[string]bool)
 	for _, p := range strings.Split(new, ",") {

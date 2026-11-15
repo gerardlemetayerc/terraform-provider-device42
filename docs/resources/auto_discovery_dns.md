@@ -26,7 +26,7 @@ resource "device42_auto_discovery_dns" "myDnsJob" {
 ### Required
 
 - `nameserver` (String) IP or FQDN of the nameserver. Create only.
-- `zonename` (String) Zone name to discover. Create only (the API upserts by name).
+- `zonename` (String) Zone name to discover. Create only; the API always creates a new job.
 
 ### Optional
 

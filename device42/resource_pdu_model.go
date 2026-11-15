@@ -154,6 +154,9 @@ func resourceDevice42PduModelUpdate(d *schema.ResourceData, m interface{}) error
 	if err != nil {
 		return err
 	}
+	if resp.StatusCode() >= 400 {
+		return fmt.Errorf("resourceDevice42PduModelUpdate - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
 
 	r := resp.Result().(*apiResponse)
 	if r.Code != 0 {
