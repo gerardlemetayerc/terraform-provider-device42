@@ -438,6 +438,14 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 		d.SetId("")
 		return nil
 	}
+	// The Device42 API returns a 500 with a "Device matching query does
+	// not exist" body (code 3) for a missing device instead of a 404, so
+	// treat that as a deleted resource too.
+	if apiResp.StatusCode() == 500 && strings.Contains(apiResp.String(), "does not exist") {
+		log.Printf("[WARN] No device found: %s", d.Id())
+		d.SetId("")
+		return nil
+	}
 	if apiResp.StatusCode() >= 400 {
 		return fmt.Errorf("resourceDevice42DeviceRead - HTTP %d: %s", apiResp.StatusCode(), apiResp.String())
 	}
