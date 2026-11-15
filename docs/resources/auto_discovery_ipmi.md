@@ -39,7 +39,7 @@ resource "device42_auto_discovery_ipmi" "example" {
 - `ip_end` (String) End of the IP address range.
 - `ip_start` (String) Start of the IP address range.
 - `object_category` (String) Object category to assign to discovered devices.
-- `overwrite_device_categories` (String) Whether to overwrite the object categories of existing devices.
+- `overwrite_object_categories` (String) Whether to overwrite the object categories of existing devices.
 - `overwrite_device_name` (String) Whether to overwrite the name of existing devices.
 - `run_as_operator` (String) Whether to run discovery as operator.
 - `schedule_days` (String) Comma separated days of week (Monday = 0).

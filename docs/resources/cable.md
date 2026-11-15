@@ -12,7 +12,7 @@ description: |-
 ```hcl
 resource "device42_cable" "myNewCable" {
    cable_id           = "my-cable-001"
-   origin_type        = "patch_panel"
+   origin_type        = "patch_panel_port"
    origin_id          = "5"
    end_type           = "netport"
    end_id             = "42"
