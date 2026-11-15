@@ -137,9 +137,9 @@ func resourceDevice42AutoDiscoveryDnsDelete(d *schema.ResourceData, m interface{
 	return nil
 }
 
-// autoDiscoveryDnsFormData builds the create/update payload. The API upserts by
-// zonename: re-posting the same zonename updates the existing job, so the form
-// data is identical for create and update.
+// autoDiscoveryDnsFormData builds the create payload. The DNS API always
+// creates a new job, even for an existing zonename, so this resource has no
+// update callback and changes recreate the job instead of updating in place.
 func autoDiscoveryDnsFormData(d *schema.ResourceData) map[string]string {
 	formData := map[string]string{
 		"zonename": d.Get("zonename").(string),

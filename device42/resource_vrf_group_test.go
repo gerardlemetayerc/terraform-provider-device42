@@ -19,7 +19,7 @@ func TestSuppressTagsAppendDiff(t *testing.T) {
 		{"config subset of state reversed", "prod,vrf,updated,test", "vrf,updated,prod", true},
 		{"missing config tag -> drift", "vrf,test", "vrf,test,extra", false},
 		{"empty both", "", "", true},
-		{"empty new, non-empty old", "vrf,test", "", false},
+		{"empty new, non-empty old (config removes all tags -> subset)", "vrf,test", "", true},
 		{"empty old, non-empty new", "", "vrf,test", false},
 	}
 

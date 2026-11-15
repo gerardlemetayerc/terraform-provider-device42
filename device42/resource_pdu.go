@@ -137,6 +137,9 @@ func resourceDevice42PduRead(d *schema.ResourceData, m interface{}) error {
 		}
 		d.Set("pdu_model", model.Name)
 		d.Set("pdu_model_id", strconv.FormatInt(model.PduModelId, 10))
+	} else {
+		d.Set("pdu_model", "")
+		d.Set("pdu_model_id", "")
 	}
 	d.Set("notes", p.Notes)
 	d.Set("gateway_pdu_id", p.GatewayPduId)
@@ -162,6 +165,9 @@ func resourceDevice42PduUpdate(d *schema.ResourceData, m interface{}) error {
 	if v, ok := d.GetOk("notes"); ok {
 		payload["notes"] = v.(string)
 	}
+	if v, ok := d.GetOk("gateway_pdu_id"); ok {
+		payload["gateway_pdu_id"] = v.(string)
+	}
 
 	resp, err := client.R().
 		SetResult(apiResponse{}).
@@ -171,6 +177,9 @@ func resourceDevice42PduUpdate(d *schema.ResourceData, m interface{}) error {
 
 	if err != nil {
 		return err
+	}
+	if resp.StatusCode() >= 400 {
+		return fmt.Errorf("resourceDevice42PduUpdate - HTTP %d: %s", resp.StatusCode(), resp.String())
 	}
 
 	r := resp.Result().(*apiResponse)

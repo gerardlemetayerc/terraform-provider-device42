@@ -136,6 +136,9 @@ func resourceDevice42PowerCircuitUpdate(d *schema.ResourceData, m interface{}) e
 	if err != nil {
 		return err
 	}
+	if resp.StatusCode() >= 400 {
+		return fmt.Errorf("resourceDevice42PowerCircuitUpdate - HTTP %d: %s", resp.StatusCode(), resp.String())
+	}
 
 	r := resp.Result().(*apiResponse)
 	if r.Code != 0 {
