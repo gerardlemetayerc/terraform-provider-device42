@@ -141,3 +141,24 @@ func TestArchiveResponseDecodesBareArray(t *testing.T) {
 		t.Fatalf("msg[0]=%q, want %q", got, "Object archived")
 	}
 }
+
+func TestIsDeviceNotFound(t *testing.T) {
+	tests := []struct {
+		name string
+		body string
+		want bool
+	}{
+		{"missing device (code 3)", `{"msg":"Device matching query does not exist.","code":"3"}`, true},
+		{"other code", `{"msg":"Something else.","code":"2"}`, false},
+		{"unrelated 500", `{"msg":"Internal server error.","code":"3"}`, false},
+		{"malformed body", `not-json`, false},
+		{"empty body", ``, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := isDeviceNotFound(tt.body); got != tt.want {
+				t.Errorf("isDeviceNotFound(%q) = %v, want %v", tt.body, got, tt.want)
+			}
+		})
+	}
+}

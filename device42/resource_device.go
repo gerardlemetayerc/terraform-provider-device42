@@ -70,6 +70,22 @@ type apiResponse struct {
 	Msg  []interface{} `json:"msg"`
 }
 
+// isDeviceNotFound reports whether a Device42 error body is the specific
+// "Device matching query does not exist" response (code 3) returned for a
+// missing device, rather than an unrelated server error.
+func isDeviceNotFound(body string) bool {
+	// The not-found body is a flat object: {"msg":"...","code":"3"}, while
+	// apiResponse decodes msg as an array, so use a dedicated shape here.
+	var r struct {
+		Code apiCode `json:"code"`
+		Msg  string  `json:"msg"`
+	}
+	if err := json.Unmarshal([]byte(body), &r); err != nil || int(r.Code) != 3 {
+		return false
+	}
+	return strings.Contains(r.Msg, "does not exist")
+}
+
 type apiArchiveResponse struct {
 	Code apiCode       `json:"code"`
 	Msg  []interface{} `json:"msg"`
@@ -440,8 +456,9 @@ func resourceDevice42DeviceRead(d *schema.ResourceData, m interface{}) error {
 	}
 	// The Device42 API returns a 500 with a "Device matching query does
 	// not exist" body (code 3) for a missing device instead of a 404, so
-	// treat that as a deleted resource too.
-	if apiResp.StatusCode() == 500 && strings.Contains(apiResp.String(), "does not exist") {
+	// treat that as a deleted resource too. Require the specific code and
+	// message so an unrelated server error does not drop a live device.
+	if apiResp.StatusCode() == 500 && isDeviceNotFound(apiResp.String()) {
 		log.Printf("[WARN] No device found: %s", d.Id())
 		d.SetId("")
 		return nil
