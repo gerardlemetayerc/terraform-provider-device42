@@ -48,6 +48,8 @@ resource "device42_ip" "ip2" {
 - `suggest_ip` (Bool) A boolean indicating if the Device42 IP suggestion functionality should be used to retrieve an available IP. If true and ip is not specified, the provider will automatically fetch a suggested IP.
 - `tags` (String) Comma-separated list of tags to set on the IP address. Requires the API to be queried with `include_cols=tags` to be read back.
 
+~> **Note:** the Device42 IP API only **appends** tags to an IP; setting `tags` never removes existing ones. Any tags already present on the IP are kept, so this option is best used to add/adjust tags when you can tolerate the existing set being preserved. Removing a tag requires clearing it through the Device42 API directly.
+
 ### Read-Only
 
 - `id` (String) The ID of this resource.

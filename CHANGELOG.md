@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ### Added
 
-- **`device42_ip`**: new `tags` attribute (comma-separated) to set tags on the IP address. The API is queried with `include_cols=tags` so the value is read back and no drift occurs.
+- **`device42_ip`**: new `tags` attribute (comma-separated) to set tags on the IP address. The API is queried with `include_cols=tags` so the value is read back and no drift occurs. Note the Device42 IP API only **appends** tags (never removes them), so the attribute is best used to add tags rather than to fully replace the tag set.
 
 ### Fixed
 
