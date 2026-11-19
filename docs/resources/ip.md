@@ -46,6 +46,7 @@ resource "device42_ip" "ip2" {
 - `vrf_group_id` (Int) Subnet VRF Group ID.
 - `device_id` (Int) ID of the device to attach to the network.
 - `suggest_ip` (Bool) A boolean indicating if the Device42 IP suggestion functionality should be used to retrieve an available IP. If true and ip is not specified, the provider will automatically fetch a suggested IP.
+- `tags` (String) Comma-separated list of tags to set on the IP address. Requires the API to be queried with `include_cols=tags` to be read back.
 
 ### Read-Only
 

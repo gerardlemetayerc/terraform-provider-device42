@@ -32,6 +32,7 @@ type apiIPReadResponse struct {
 	Subnet_id    int32             `json:"subnet_id"`
 	VrfGroupName string            `json:"vrf_group_name"`
 	Devices      []apiIPReadDevice `json:"devices"`
+	Tags         []interface{}     `json:"tags"`
 }
 
 func IsIPAddress(val interface{}, key string) (warns []string, errs []error) {
@@ -84,6 +85,12 @@ func resourceD42Ip() *schema.Resource {
 				Description: "Use device42 IP suggestion functionnality to retrieve available IP.",
 				Default:     false,
 			},
+			"tags": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				Description:      "Comma-separated list of tags to set on the IP address.",
+				DiffSuppressFunc: suppressTagsAppendDiff,
+			},
 		},
 
 		Importer: &schema.ResourceImporter{
@@ -105,7 +112,10 @@ func resourceD42Ip() *schema.Resource {
 func resourceDevice42IpRead(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[DEBUG] resourceDevice42IpRead - Starting reading using API for id %s", d.Id())
 
-	resp, err := apiDevice42Get(m.(*resty.Client), fmt.Sprintf("/2.0/ips/?ip_id=%s", d.Id()), apiReadData{})
+	// include_cols is required to surface the IP tags; without it the API omits
+	// the field entirely. Passing &apiReadData{} (a pointer) is mandatory for
+	// resty to unmarshal the response body into the struct.
+	resp, err := apiDevice42Get(m.(*resty.Client), fmt.Sprintf("/2.0/ips/?ip_id=%s&include_cols=ip,available,devices,tags", d.Id()), &apiReadData{})
 
 	if err != nil {
 		return err
@@ -120,6 +130,7 @@ func resourceDevice42IpRead(d *schema.ResourceData, m interface{}) error {
 		}
 		d.Set("available", r.Ips[0].Available)
 		d.Set("ip", r.Ips[0].Ip)
+		d.Set("tags", joinBuildingList(r.Ips[0].Tags))
 	} else {
 		log.Printf("[WARN] No IP found for id %s", d.Id())
 		d.SetId("")
@@ -158,6 +169,10 @@ func resourceDevice42IpCreate(d *schema.ResourceData, m interface{}) error {
 
 	if device_id > 0 {
 		mapData["device_ids"] = strconv.Itoa(int(device_id))
+	}
+
+	if v, ok := d.GetOk("tags"); ok {
+		mapData["tags"] = v.(string)
 	}
 
 	resp, err := apiDevice42Post(m.(*resty.Client), "/2.0/ips/", mapData, apiResponse{})
